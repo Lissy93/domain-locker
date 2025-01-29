@@ -27,6 +27,7 @@ export const aboutPages: AboutPage[] = [
       { title: 'Pricing', description: 'Getting started is free, if you need to scale up, we\'ve got an affordable plan for you', link: '/about/pricing', icon: '' },
       { title: 'Comparison', description: 'Compare alternatives to Domain Locker, to find the right solution for you', link: '/about/alternatives', icon: '' },
       { title: 'Self-Hosting', description: 'Domain Locker is open source, and can be self-hosted with Docker', link: '/about/self-hosting', icon: 'pi pi-server' },
+      { title: 'Live Demo', description: 'Try Domain Locker live, before you signup/self-host', link: '/about/demo', icon: 'pi pi-desktop' },
     ],
   },
   {

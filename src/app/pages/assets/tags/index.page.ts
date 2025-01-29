@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
-import { PrimeNgModule } from '@/app/prime-ng.module';
-import { Tag } from '@/types/Database';
-import DatabaseService from '@/app/services/database.service';
+import { PrimeNgModule } from '~/app/prime-ng.module';
+import { Tag } from '~/app/../types/Database';
+import DatabaseService from '~/app/services/database.service';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { TagEditorComponent } from '@/app/components/forms/tag-editor/tag-editor.component';
+import { TagEditorComponent } from '~/app/components/forms/tag-editor/tag-editor.component';
 
 @Component({
   standalone: true,

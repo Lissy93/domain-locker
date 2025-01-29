@@ -108,6 +108,7 @@
 
         <div *ngIf="!isLogin" class="mb-4">
           <p-checkbox formControlName="acceptTerms" [binary]="true" label="I agree to the terms and conditions"></p-checkbox>
+          <a routerLink="/about/legal/terms-of-service" class="no-underline inline pr-2 text-lg" pTooltip="View Terms">*</a>
           <p-message *ngIf="form.get('acceptTerms')?.invalid && form.get('acceptTerms')?.touched" severity="error"
                     text="You must agree to the terms and conditions"></p-message>
         </div>

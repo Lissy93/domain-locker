@@ -2,11 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { PrimeNgModule } from '@/app/prime-ng.module';
-import DatabaseService from '@/app/services/database.service';
-import { ErrorHandlerService } from '@/app/services/error-handler.service';
+import { PrimeNgModule } from '~/app/prime-ng.module';
+import DatabaseService from '~/app/services/database.service';
+import { ErrorHandlerService } from '~/app/services/error-handler.service';
 import { Observable } from 'rxjs';
-import { ModifiedLink } from '@/app/pages/assets/links/index.page';
+import { ModifiedLink } from '~/app/pages/assets/links/index.page';
 
 @Component({
   standalone: true,

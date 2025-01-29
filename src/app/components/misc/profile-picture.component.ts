@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { SupabaseService } from '@/app/services/supabase.service';
+import { SupabaseService } from '~/app/services/supabase.service';
 
 interface UserThingys {
   user_metadata?: { avatar_url?: string; name?: string };

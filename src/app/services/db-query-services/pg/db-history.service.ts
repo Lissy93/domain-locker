@@ -1,5 +1,5 @@
 import { catchError, from, map, Observable, of } from 'rxjs';
-import { PgApiUtilService } from '@/app/utils/pg-api.util';
+import { PgApiUtilService } from '~/app/utils/pg-api.util';
 
 export class HistoryQueries {
   constructor(

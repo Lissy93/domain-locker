@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { PrimeNgModule } from '@/app/prime-ng.module';
-import { DomainCollectionComponent } from '@/app/components/domain-things/domain-collection/domain-collection.component';
-import { TagEditorComponent } from '@/app/components/forms/tag-editor/tag-editor.component';
+import { PrimeNgModule } from '~/app/prime-ng.module';
+import { DomainCollectionComponent } from '~/app/components/domain-things/domain-collection/domain-collection.component';
+import { TagEditorComponent } from '~/app/components/forms/tag-editor/tag-editor.component';
 import { Router } from '@angular/router';
 
 

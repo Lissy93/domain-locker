@@ -1,17 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { SubdomainListComponent } from '@/app/pages/assets/subdomains/subdomain-list.component';
-import DatabaseService from '@/app/services/database.service';
-import { PrimeNgModule } from '@/app/prime-ng.module';
-import { ErrorHandlerService } from '@/app/services/error-handler.service';
-import { NotFoundComponent } from '@/app/components/misc/domain-not-found.component';
+import { SubdomainListComponent } from '~/app/pages/assets/subdomains/subdomain-list.component';
+import DatabaseService from '~/app/services/database.service';
+import { PrimeNgModule } from '~/app/prime-ng.module';
+import { ErrorHandlerService } from '~/app/services/error-handler.service';
+import { NotFoundComponent } from '~/app/components/misc/domain-not-found.component';
 import { HttpClient } from '@angular/common/http';
-import { GlobalMessageService } from '@/app/services/messaging.service';
+import { GlobalMessageService } from '~/app/services/messaging.service';
 import { catchError, finalize, map, Observable, of, switchMap, tap } from 'rxjs';
 import { autoSubdomainsReadyForSave, filterOutIgnoredSubdomains } from '../subdomain-utils';
 import { AddSubdomainDialogComponent } from '../add-subdomain.component';
-import { EnvService } from '@/app/services/environment.service';
+import { EnvService } from '~/app/services/environment.service';
 
   @Component({
     standalone: true,

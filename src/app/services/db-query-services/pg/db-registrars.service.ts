@@ -1,6 +1,6 @@
 import { catchError, from, map, Observable, of } from 'rxjs';
-import { PgApiUtilService } from '@/app/utils/pg-api.util';
-import { DbDomain, Registrar } from '@/types/Database';
+import { PgApiUtilService } from '~/app/utils/pg-api.util';
+import { DbDomain, Registrar } from '~/app/../types/Database';
 
 export class RegistrarQueries {
   constructor(

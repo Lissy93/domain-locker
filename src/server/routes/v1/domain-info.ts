@@ -3,9 +3,9 @@ import whois from 'whois-json';
 import dns from 'dns';
 import tls from 'tls';
 import { PeerCertificate } from 'tls';
-import type { DomainInfo } from '@/app/../types/DomainInfo';
-import type { HostData } from '@/app/../types/DomainInfo';
-import { Contact, Host } from '@/app/../types/common';
+import type { DomainInfo } from '~/app/../types//DomainInfo';
+import type { HostData } from '~/app/../types//DomainInfo';
+import { Contact, Host } from '~/app/../types//common';
 import { verifyAuth } from '../../utils/auth';
 
 // Helper function to handle potential failures in asynchronous operations

@@ -30,7 +30,7 @@ To enable or disable a feature, use the `FeatureService` and the `isFeatureEnabl
 In the corresponding component:
 
 ```diff
-+ import { FeatureService } from '@/app/services/features.service';
++ import { FeatureService } from '~/app/services/features.service';
 
   export class NavbarComponent {
 +   settingsEnabled$ = this.featureService.isFeatureEnabled('accountSettings');
@@ -85,7 +85,7 @@ If a feature is unavailable, use the `FeatureNotEnabledComponent` to display a m
 ```typescript
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FeatureNotEnabledComponent } from '@/app/components/misc/feature-not-enabled.component';
+import { FeatureNotEnabledComponent } from '~/app/components/misc/feature-not-enabled.component';
 
 @Component({
   standalone: true,

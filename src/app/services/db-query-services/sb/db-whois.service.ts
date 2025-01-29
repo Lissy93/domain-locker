@@ -1,7 +1,7 @@
-import { SaveDomainData } from '@/types/Database';
+import { SaveDomainData } from '~/app/../types/Database';
 import { SupabaseClient, User } from '@supabase/supabase-js';
 import { catchError, forkJoin, from, map, Observable, of } from 'rxjs';
-// import {  } from '@/types/Database';
+// import {  } from '~/app/../types/Database';
 
 export class WhoisQueries {
   constructor(

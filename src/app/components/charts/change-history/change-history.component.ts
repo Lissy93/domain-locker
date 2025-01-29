@@ -1,8 +1,8 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { ApexChart, ApexXAxis, ApexDataLabels, ApexPlotOptions, ApexYAxis, ApexTooltip, ApexStroke, ApexFill, NgApexchartsModule } from 'ng-apexcharts';
-import DatabaseService from '@/app/services/database.service';
+import DatabaseService from '~/app/services/database.service';
 import { NgIf } from '@angular/common';
-import { PrimeNgModule } from '@/app/prime-ng.module';
+import { PrimeNgModule } from '~/app/prime-ng.module';
 
 export type ChartOptions = {
   series: any[];

@@ -2,8 +2,8 @@ import { Component, Input, HostListener, ViewEncapsulation } from '@angular/core
 import { ContentFile } from '@analogjs/content';
 import { Observable } from 'rxjs';
 import { MarkdownComponent } from '@analogjs/content';
-import { PrimeNgModule } from '@/app/prime-ng.module';
-import { MetaTagsService } from '@/app/services/meta-tags.service';
+import { PrimeNgModule } from '~/app/prime-ng.module';
+import { MetaTagsService } from '~/app/services/meta-tags.service';
 import { CommonModule, NgIf } from '@angular/common';
 
 export interface DocAttributes {

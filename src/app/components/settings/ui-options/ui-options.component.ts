@@ -1,11 +1,11 @@
 import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { PrimeNgModule } from '@/app/prime-ng.module';
-import { ThemeService, Theme, FontOption } from '@/app/services/theme.service';
-import { SupabaseService } from '@/app/services/supabase.service';
-import { TranslationService } from '@/app/services/translation.service';
+import { PrimeNgModule } from '~/app/prime-ng.module';
+import { ThemeService, Theme, FontOption } from '~/app/services/theme.service';
+import { SupabaseService } from '~/app/services/supabase.service';
+import { TranslationService } from '~/app/services/translation.service';
 import { Subscription } from 'rxjs';
-import { AccessibilityService, defaultAccessibilityOptions, accessibilityOptionsInfo, AccessibilityOptions } from '@/app/services/accessibility-options.service';
+import { AccessibilityService, defaultAccessibilityOptions, accessibilityOptionsInfo, AccessibilityOptions } from '~/app/services/accessibility-options.service';
 
 @Component({
   standalone: true,

@@ -1,12 +1,12 @@
 import { Component, OnInit, ViewChild, AfterViewInit, PLATFORM_ID, Inject, ElementRef, Input } from "@angular/core";
 import { ChartComponent, NgApexchartsModule } from "ng-apexcharts";
 import { ApexNonAxisChartSeries, ApexChart, ApexResponsive, ApexTheme, ApexLegend, ApexStroke } from "ng-apexcharts";
-import DatabaseService from '@/app/services/database.service';
+import DatabaseService from '~/app/services/database.service';
 import { Observable, of } from 'rxjs';
 import { map, tap, catchError } from 'rxjs/operators';
 import { isPlatformBrowser } from '@angular/common';
 import { NgIf } from '@angular/common';
-import { PrimeNgModule } from '@/app/prime-ng.module';
+import { PrimeNgModule } from '~/app/prime-ng.module';
 
 export type ChartOptions = {
   series: ApexNonAxisChartSeries;

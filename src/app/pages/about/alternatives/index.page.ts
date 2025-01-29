@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { PrimeNgModule } from '@/app/prime-ng.module';
-import { DlIconComponent } from '@/app/components/misc/svg-icon.component';
+import { PrimeNgModule } from '~/app/prime-ng.module';
+import { DlIconComponent } from '~/app/components/misc/svg-icon.component';
 import { alternativeComparison, providerInfo, Has, type Providers, type FeatureComparison, ProviderInfo } from '../data/feature-comparison';
 import { OnInit } from '@angular/core';
 

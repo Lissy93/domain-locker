@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { PrimeNgModule } from '../../prime-ng.module';
 import { CommonModule } from '@angular/common';
-import { ExtendedMenuItem, statsLinks } from '@/app/constants/navigation-links';
+import { ExtendedMenuItem, statsLinks } from '~/app/constants/navigation-links';
 
 @Component({
   standalone: true,

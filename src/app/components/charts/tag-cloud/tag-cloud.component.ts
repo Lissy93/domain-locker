@@ -2,9 +2,9 @@ import { Component, OnInit, ElementRef, ViewChild, HostListener, OnDestroy } fro
 import * as d3 from 'd3';
 import cloud from 'd3-cloud';
 import { CommonModule } from '@angular/common';
-import { PrimeNgModule } from '@/app/prime-ng.module';
+import { PrimeNgModule } from '~/app/prime-ng.module';
 import { Router } from '@angular/router';
-import DatabaseService from '@/app/services/database.service';
+import DatabaseService from '~/app/services/database.service';
 import { Subscription } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 

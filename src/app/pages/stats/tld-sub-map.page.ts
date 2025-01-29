@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { TldOrganizationChartComponent } from '@/app/components/charts/domain-hierarchy/domain-hierarchy.component';
+import { TldOrganizationChartComponent } from '~/app/components/charts/domain-hierarchy/domain-hierarchy.component';
 
 
 @Component({

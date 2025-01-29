@@ -1,15 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { PrimeNgModule } from '@/app/prime-ng.module';
+import { PrimeNgModule } from '~/app/prime-ng.module';
 import { ConfirmationService } from 'primeng/api';
-import { DbDomain } from '@/types/Database';
-import DatabaseService from '@/app/services/database.service';
+import { DbDomain } from '~/app/../types/Database';
+import DatabaseService from '~/app/services/database.service';
 import { MessageService } from 'primeng/api';
-import { DomainCollectionComponent } from '@/app/components/domain-things/domain-collection/domain-collection.component';
-import { TagEditorComponent } from '@/app/components/forms/tag-editor/tag-editor.component';
-import { TagPickListComponent } from '@/app/components/forms/tag-picklist/tag-picklist.component';
-import { type Tag } from '@/types/common';
+import { DomainCollectionComponent } from '~/app/components/domain-things/domain-collection/domain-collection.component';
+import { TagEditorComponent } from '~/app/components/forms/tag-editor/tag-editor.component';
+import { TagPickListComponent } from '~/app/components/forms/tag-picklist/tag-picklist.component';
+import { type Tag } from '~/app/../types/common';
 
 @Component({
   standalone: true,

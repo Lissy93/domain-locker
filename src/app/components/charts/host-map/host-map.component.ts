@@ -1,10 +1,10 @@
 import { Component, OnInit, AfterViewInit, PLATFORM_ID, Inject, ViewEncapsulation, ChangeDetectorRef } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import DatabaseService from '@/app/services/database.service';
-import { Host } from '@/types/Database';
-import { ThemeService } from '@/app/services/theme.service';
+import DatabaseService from '~/app/services/database.service';
+import { Host } from '~/app/../types/Database';
+import { ThemeService } from '~/app/services/theme.service';
 import { Subscription } from 'rxjs';
-import { PrimeNgModule } from '@/app/prime-ng.module';
+import { PrimeNgModule } from '~/app/prime-ng.module';
 
 @Component({
   selector: 'app-host-map',

@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { DomainTagCloudComponent } from '@/app/components/charts/tag-cloud/tag-cloud.component';
-import { TagGridComponent } from '@/app/components/tag-grid/tag-grid.component';
+import { DomainTagCloudComponent } from '~/app/components/charts/tag-cloud/tag-cloud.component';
+import { TagGridComponent } from '~/app/components/tag-grid/tag-grid.component';
 
 @Component({
   standalone: true,

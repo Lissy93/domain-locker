@@ -1,6 +1,6 @@
 import { catchError, forkJoin, from, map, Observable, of, throwError } from 'rxjs';
-import { Notification } from '@/types/Database';
-import { PgApiUtilService } from '@/app/utils/pg-api.util';
+import { Notification } from '~/app/../types/Database';
+import { PgApiUtilService } from '~/app/utils/pg-api.util';
 import { Inject, Injectable } from '@angular/core';
 
 

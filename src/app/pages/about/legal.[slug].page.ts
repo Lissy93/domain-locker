@@ -1,8 +1,8 @@
 import { injectContent, injectContentFiles } from '@analogjs/content';
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { PrimeNgModule } from '@/app/prime-ng.module';
-import { DocsViewerComponent, DocAttributes } from '@/app/components/about-things/doc-viewer.component';
+import { PrimeNgModule } from '~/app/prime-ng.module';
+import { DocsViewerComponent, DocAttributes } from '~/app/components/about-things/doc-viewer.component';
 
 @Component({
   standalone: true,

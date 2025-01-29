@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { DomainExpirationBarComponent } from '@/app/components/charts/domain-expiration-bar/domain-expiration-bar.component';
+import { DomainExpirationBarComponent } from '~/app/components/charts/domain-expiration-bar/domain-expiration-bar.component';
 
 
 @Component({

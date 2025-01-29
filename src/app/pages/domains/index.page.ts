@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PrimeNgModule } from '../../prime-ng.module';
-import DatabaseService from '@/app/services/database.service';
-import { DbDomain } from '@/types/Database';
-import { DomainCollectionComponent } from '@/app/components/domain-things/domain-collection/domain-collection.component';
-import { LoadingComponent } from '@/app/components/misc/loading.component';
-import { ErrorHandlerService } from '@/app/services/error-handler.service';
+import DatabaseService from '~/app/services/database.service';
+import { DbDomain } from '~/app/../types/Database';
+import { DomainCollectionComponent } from '~/app/components/domain-things/domain-collection/domain-collection.component';
+import { LoadingComponent } from '~/app/components/misc/loading.component';
+import { ErrorHandlerService } from '~/app/services/error-handler.service';
 import ts from 'typescript';
 
 @Component({

@@ -1,6 +1,6 @@
 import { SupabaseClient, User } from '@supabase/supabase-js';
 import { catchError, forkJoin, from, map, Observable, of } from 'rxjs';
-import { Dns, SaveDomainData } from '@/types/Database';
+import { Dns, SaveDomainData } from '~/app/../types/Database';
 
 export class DnsQueries {
   constructor(

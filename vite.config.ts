@@ -1,7 +1,7 @@
 /// <reference types="vitest" />
 import analog from '@analogjs/platform';
 import { defineConfig, loadEnv } from 'vite';
-import { resolve } from 'path';
+import * as path from 'node:path';
 
 export default defineConfig( ({ mode }) => {
 
@@ -43,8 +43,8 @@ export default defineConfig( ({ mode }) => {
     },
     resolve: {
       alias: {
-        '@': resolve(__dirname, './src'),
-      }
+        '~': path.resolve(__dirname, './src'),
+      },
     },
     plugins: [
       analog({

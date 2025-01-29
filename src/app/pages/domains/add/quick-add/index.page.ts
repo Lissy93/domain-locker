@@ -2,15 +2,15 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
-import { PrimeNgModule } from '@/app/prime-ng.module';
-import DatabaseService from '@/app/services/database.service';
-import { ErrorHandlerService } from '@/app/services/error-handler.service';
+import { PrimeNgModule } from '~/app/prime-ng.module';
+import DatabaseService from '~/app/services/database.service';
+import { ErrorHandlerService } from '~/app/services/error-handler.service';
 import { Router } from '@angular/router';
 import { catchError, finalize, lastValueFrom, map, Observable, of, switchMap, tap } from 'rxjs';
-import { GlobalMessageService } from '@/app/services/messaging.service';
-import { autoSubdomainsReadyForSave, filterOutIgnoredSubdomains } from '@/app/pages/assets/subdomains/subdomain-utils';
-import { SaveDomainData } from '@/types/Database';
-import { EnvService } from '@/app/services/environment.service';
+import { GlobalMessageService } from '~/app/services/messaging.service';
+import { autoSubdomainsReadyForSave, filterOutIgnoredSubdomains } from '~/app/pages/assets/subdomains/subdomain-utils';
+import { SaveDomainData } from '~/app/../types/Database';
+import { EnvService } from '~/app/services/environment.service';
 
 @Component({
   selector: 'app-quick-add-domain',

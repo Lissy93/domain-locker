@@ -1,6 +1,6 @@
 import { SupabaseClient, User } from '@supabase/supabase-js';
 import { catchError, forkJoin, from, map, Observable, of } from 'rxjs';
-import { IpAddress } from '@/types/Database';
+import { IpAddress } from '~/app/../types/Database';
 
 export class IpQueries {
   constructor(

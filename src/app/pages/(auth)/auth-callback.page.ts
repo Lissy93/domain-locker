@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { SupabaseService } from '@/app/services/supabase.service';
-import { GlobalMessageService } from '@/app/services/messaging.service';
-import { ErrorHandlerService } from '@/app/services/error-handler.service';
+import { SupabaseService } from '~/app/services/supabase.service';
+import { GlobalMessageService } from '~/app/services/messaging.service';
+import { ErrorHandlerService } from '~/app/services/error-handler.service';
 
 @Component({
   standalone: true,

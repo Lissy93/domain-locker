@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { PrimeNgModule } from '@/app/prime-ng.module';
-import DatabaseService from '@/app/services/database.service';
+import { PrimeNgModule } from '~/app/prime-ng.module';
+import DatabaseService from '~/app/services/database.service';
 import { Router } from '@angular/router';
 import { TreeNode } from 'primeng/api';
 

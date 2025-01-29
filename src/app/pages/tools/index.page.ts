@@ -1,9 +1,9 @@
 import { RouterOutlet } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
-import { PrimeNgModule } from '@/app/prime-ng.module';
+import { PrimeNgModule } from '~/app/prime-ng.module';
 import { CommonModule } from '@angular/common';
 import { MenuItem } from 'primeng/api';
-import { toolsLinks } from '@/app/constants/navigation-links';
+import { toolsLinks } from '~/app/constants/navigation-links';
 
 @Component({
   standalone: true,

@@ -4,10 +4,10 @@ import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { aboutPages, AboutLink } from './data/about-page-list';
 import { ActivatedRoute } from '@angular/router';
 import { Observable, switchMap } from 'rxjs';
-import { PrimeNgModule } from '@/app/prime-ng.module';
+import { PrimeNgModule } from '~/app/prime-ng.module';
 
-import NotFoundPage from '@/app/pages/[...not-found].page'
-import { MetaTagsService } from '@/app/services/meta-tags.service';
+import NotFoundPage from '~/app/pages/[...not-found].page'
+import { MetaTagsService } from '~/app/services/meta-tags.service';
 
 export interface DocAttributes {
   title: string;

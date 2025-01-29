@@ -11,7 +11,7 @@ The `ErrorHandlerService` is a centralized utility for handling errors in the Do
 
 1. **Import the `ErrorHandlerService`:**
 ```typescript
-import { ErrorHandlerService } from '@/app/services/error-handler.service';
+import { ErrorHandlerService } from '~/app/services/error-handler.service';
 ```
 
 2. **Inject it into a Component or Service:**
@@ -38,7 +38,7 @@ constructor(private errorHandler: ErrorHandlerService) {}
 
 ```diff
   import { Component } from '@angular/core';
-+ import { ErrorHandlerService } from '@/app/services/error-handler.service';
++ import { ErrorHandlerService } from '~/app/services/error-handler.service';
 
   @Component({
     selector: 'app-example',

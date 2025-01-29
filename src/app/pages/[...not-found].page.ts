@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { PrimeNgModule } from '@/app/prime-ng.module';
+import { PrimeNgModule } from '~/app/prime-ng.module';
 
 @Component({
   standalone: true,

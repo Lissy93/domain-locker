@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { DomainValuationChartComponent } from '@/app/components/charts/domain-valuation/domain-valuation.component';
+import { DomainValuationChartComponent } from '~/app/components/charts/domain-valuation/domain-valuation.component';
 
 @Component({
   standalone: true,

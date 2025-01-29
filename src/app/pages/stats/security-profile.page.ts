@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { EppStatusChartComponent } from '@/app/components/charts/domain-epp-status/domain-epp-status.component';
-import StatusesIndexPageComponent from '@/app/pages/assets/statuses/index.page';
+import { EppStatusChartComponent } from '~/app/components/charts/domain-epp-status/domain-epp-status.component';
+import StatusesIndexPageComponent from '~/app/pages/assets/statuses/index.page';
 
 @Component({
   standalone: true,

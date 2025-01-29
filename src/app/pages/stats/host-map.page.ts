@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { HostMapComponent } from '@/app/components/charts/host-map/host-map.component';
+import { HostMapComponent } from '~/app/components/charts/host-map/host-map.component';
 
 @Component({
   standalone: true,

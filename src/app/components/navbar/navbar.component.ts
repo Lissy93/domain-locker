@@ -2,22 +2,22 @@ import { Component, OnInit, ChangeDetectorRef, ViewChild, AfterViewInit } from '
 import { MenuItem } from 'primeng/api';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { PrimeNgModule } from '@/app/prime-ng.module';
-import { SupabaseService } from '@/app/services/supabase.service';
+import { PrimeNgModule } from '~/app/prime-ng.module';
+import { SupabaseService } from '~/app/services/supabase.service';
 import { FormsModule } from '@angular/forms';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { OverlayModule } from 'primeng/overlay';
 import { Subscription } from 'rxjs';
-import { authenticatedNavLinks, unauthenticatedNavLinks, settingsLinks } from '@/app/constants/navigation-links';
-import { UiSettingsComponent } from '@/app/components/settings/ui-options/ui-options.component';
-import { NotificationsListComponent } from '@/app/components/notifications-list/notifications-list.component';
+import { authenticatedNavLinks, unauthenticatedNavLinks, settingsLinks } from '~/app/constants/navigation-links';
+import { UiSettingsComponent } from '~/app/components/settings/ui-options/ui-options.component';
+import { NotificationsListComponent } from '~/app/components/notifications-list/notifications-list.component';
 import { OverlayPanel } from 'primeng/overlaypanel';
-import DatabaseService from '@/app/services/database.service';
-import { BillingService, UserType } from '@/app/services/billing.service';
-import { EnvironmentType, EnvService } from '@/app/services/environment.service';
-import { LogoComponent} from '@/app/components/home-things/logo/logo.component';
-import { FeatureService } from '@/app/services/features.service';
+import DatabaseService from '~/app/services/database.service';
+import { BillingService, UserType } from '~/app/services/billing.service';
+import { EnvironmentType, EnvService } from '~/app/services/environment.service';
+import { LogoComponent} from '~/app/components/home-things/logo/logo.component';
+import { FeatureService } from '~/app/services/features.service';
 
 @Component({
   selector: 'app-navbar',

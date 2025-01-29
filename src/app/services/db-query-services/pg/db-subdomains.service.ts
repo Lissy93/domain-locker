@@ -1,5 +1,5 @@
 import { catchError, forkJoin, from, map, Observable, of, switchMap, throwError } from 'rxjs';
-import { PgApiUtilService } from '@/app/utils/pg-api.util';
+import { PgApiUtilService } from '~/app/utils/pg-api.util';
 
 export class SubdomainsQueries {
   constructor(
@@ -184,15 +184,18 @@ getSubdomainsByDomain(domain: string): Observable<any[]> {
     );
   }
 
-  async deleteSubdomain(domain: string, subdomain: string): Promise<void> {
-    const domainId = await this.fetchDomainId(domain).toPromise();
-
-    const query = `
-      DELETE FROM sub_domains WHERE domain_id = $1 AND name = $2
-    `;
-    const params = [domainId, subdomain];
-
-    await this.pgApiUtil.postToPgExecutor(query, params).toPromise();
+  deleteSubdomain(domain: string, subdomain: string): Observable<void> {
+    return this.fetchDomainId(domain).pipe(
+      switchMap((domainId) => {
+        const query = `DELETE FROM sub_domains WHERE domain_id = $1 AND name = $2`;
+        const params = [domainId, subdomain];
+        return this.pgApiUtil.postToPgExecutor(query, params); // presumably returns Observable<any>
+      }),
+      map(() => {}), // map result to void
+      catchError((err) =>
+        throwError(() => new Error(`Failed to delete subdomain: ${err.message || err}`))
+      )
+    );
   }
 
   saveSubdomainForDomain(domainName: string, subdomain: string): Observable<any> {

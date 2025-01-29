@@ -1,4 +1,4 @@
-import { BillingPlans } from '@/app/services/billing.service';
+import { BillingPlans } from '~/app/services/billing.service';
 
 export type FeatureConfig<T> = {
   default: T;

@@ -1,9 +1,9 @@
 import { Component, OnInit, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PrimeNgModule } from '../../prime-ng.module';
-import { DlIconComponent } from '@/app/components/misc/svg-icon.component';
-import DatabaseService from '@/app/services/database.service';
-import { ErrorHandlerService } from '@/app/services/error-handler.service';
+import { DlIconComponent } from '~/app/components/misc/svg-icon.component';
+import DatabaseService from '~/app/services/database.service';
+import { ErrorHandlerService } from '~/app/services/error-handler.service';
 
 interface Asset {
   title: string;

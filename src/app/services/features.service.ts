@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, combineLatest, firstValueFrom, map, Observable } from 'rxjs';
-import { BillingService } from '@/app/services/billing.service';
-import { EnvService, type EnvironmentType } from '@/app/services/environment.service';
-import { features, type FeatureDefinitions } from '@/app/constants/feature-options';
+import { BillingService } from '~/app/services/billing.service';
+import { EnvService, type EnvironmentType } from '~/app/services/environment.service';
+import { features, type FeatureDefinitions } from '~/app/constants/feature-options';
 
 @Injectable({
   providedIn: 'root',

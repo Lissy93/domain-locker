@@ -1,9 +1,9 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { PrimeNgModule } from '@/app/prime-ng.module';
+import { PrimeNgModule } from '~/app/prime-ng.module';
 import { MessageService } from 'primeng/api';
-import DatabaseService from '@/app/services/database.service';
-import { Tag } from '@/types/common';
+import DatabaseService from '~/app/services/database.service';
+import { Tag } from '~/app/../types/common';
 
 @Component({
   selector: 'app-tag-editor',

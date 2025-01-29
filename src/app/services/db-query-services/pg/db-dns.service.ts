@@ -1,6 +1,6 @@
 import { catchError, forkJoin, from, map, Observable, of } from 'rxjs';
-import { PgApiUtilService } from '@/app/utils/pg-api.util';
-import { Dns, SaveDomainData } from '@/types/Database';
+import { PgApiUtilService } from '~/app/utils/pg-api.util';
+import { Dns, SaveDomainData } from '~/app/../types/Database';
 
 export class DnsQueries {
   constructor(

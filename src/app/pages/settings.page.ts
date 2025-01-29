@@ -1,13 +1,13 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
-import { PrimeNgModule } from '@/app/prime-ng.module';
+import { PrimeNgModule } from '~/app/prime-ng.module';
 import { CommonModule } from '@angular/common';
 import { MenuItem } from 'primeng/api';
-import { settingsLinks } from '@/app/constants/navigation-links';
-import { SupabaseService } from '@/app/services/supabase.service';
-import { ProfilePictureComponent } from '@/app/components/misc/profile-picture.component';
+import { settingsLinks } from '~/app/constants/navigation-links';
+import { SupabaseService } from '~/app/services/supabase.service';
+import { ProfilePictureComponent } from '~/app/components/misc/profile-picture.component';
 import { FeatureService } from '../services/features.service';
-import { FeatureNotEnabledComponent } from '@/app/components/misc/feature-not-enabled.component';
+import { FeatureNotEnabledComponent } from '~/app/components/misc/feature-not-enabled.component';
 
 @Component({
   standalone: true,

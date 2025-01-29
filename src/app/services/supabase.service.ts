@@ -1,11 +1,11 @@
-// @/app/services/supabase.service.ts
+// ~/app/services/supabase.service.ts
 import { Injectable, PLATFORM_ID, Inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { createClient, Factor, Session, SupabaseClient, User } from '@supabase/supabase-js';
 import { BehaviorSubject } from 'rxjs';
-import { EnvService } from '@/app/services/environment.service';
-import { ErrorHandlerService } from '@/app/services/error-handler.service';
-import { features } from '@/app/constants/feature-options';
+import { EnvService } from '~/app/services/environment.service';
+import { ErrorHandlerService } from '~/app/services/error-handler.service';
+import { features } from '~/app/constants/feature-options';
 
 @Injectable({
   providedIn: 'root',

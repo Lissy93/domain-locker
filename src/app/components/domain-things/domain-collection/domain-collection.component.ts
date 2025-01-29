@@ -1,11 +1,11 @@
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import Fuse from 'fuse.js';
-import { DomainCardComponent } from '@/app/components/domain-things/domain-card/domain-card.component';
-import { DomainListComponent } from '@/app/components/domain-things/domain-list/domain-list.component';
-import { PrimeNgModule } from '@/app/prime-ng.module';
-import { DbDomain } from '@/types/Database';
-import { FieldVisibilityFilterComponent, type FieldOption } from '@/app/components/domain-things/domain-filters/domain-filters.component';
+import { DomainCardComponent } from '~/app/components/domain-things/domain-card/domain-card.component';
+import { DomainListComponent } from '~/app/components/domain-things/domain-list/domain-list.component';
+import { PrimeNgModule } from '~/app/prime-ng.module';
+import { DbDomain } from '~/app/../types/Database';
+import { FieldVisibilityFilterComponent, type FieldOption } from '~/app/components/domain-things/domain-filters/domain-filters.component';
 
 @Component({
   selector: 'app-domain-view',

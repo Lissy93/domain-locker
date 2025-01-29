@@ -1,10 +1,10 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { PrimeNgModule } from '@/app/prime-ng.module';
-import { type FeatureDefinitions, featureDescriptions } from '@/app/constants/feature-options';
-import { EnvironmentType, EnvService } from '@/app/services/environment.service';
+import { PrimeNgModule } from '~/app/prime-ng.module';
+import { type FeatureDefinitions, featureDescriptions } from '~/app/constants/feature-options';
+import { EnvironmentType, EnvService } from '~/app/services/environment.service';
 import { Observable } from 'rxjs';
-import { BillingService } from '@/app/services/billing.service';
+import { BillingService } from '~/app/services/billing.service';
 
 @Component({
   selector: 'app-feature-not-enabled',

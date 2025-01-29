@@ -1,9 +1,9 @@
 import { Injectable, isDevMode, PLATFORM_ID, Inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import * as Sentry from '@sentry/angular';
-import { EnvService } from '@/app/services/environment.service';
+import { EnvService } from '~/app/services/environment.service';
 
-import { GlobalMessageService } from '@/app/services/messaging.service';
+import { GlobalMessageService } from '~/app/services/messaging.service';
 
 interface ErrorParams {
   error?: Error | any, // Should be error, but might be funny error type

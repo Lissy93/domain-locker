@@ -1,9 +1,9 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { PrimeNgModule } from '@/app/prime-ng.module';
+import { PrimeNgModule } from '~/app/prime-ng.module';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
-import { LogoComponent} from '@/app/components/home-things/logo/logo.component';
+import { LogoComponent} from '~/app/components/home-things/logo/logo.component';
 
 @Component({
   standalone: true,

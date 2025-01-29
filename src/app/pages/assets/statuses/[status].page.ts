@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
-import { PrimeNgModule } from '@/app/prime-ng.module';
-import { DbDomain } from '@/types/Database';
-import DatabaseService from '@/app/services/database.service';
+import { PrimeNgModule } from '~/app/prime-ng.module';
+import { DbDomain } from '~/app/../types/Database';
+import DatabaseService from '~/app/services/database.service';
 import { MessageService } from 'primeng/api';
-import { DomainCollectionComponent } from '@/app/components/domain-things/domain-collection/domain-collection.component';
-import { getByEppCode, type SecurityCategory } from '@/app/constants/security-categories';
+import { DomainCollectionComponent } from '~/app/components/domain-things/domain-collection/domain-collection.component';
+import { getByEppCode, type SecurityCategory } from '~/app/constants/security-categories';
 
 @Component({
   standalone: true,

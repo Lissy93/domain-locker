@@ -26,9 +26,9 @@ import {
   ServerSafeTranslateLoader,
   languageInitializerFactory,
   CustomMissingTranslationHandler,
-} from '@/app/utils/translation-loader.factory';
+} from '~/app/utils/translation-loader.factory';
 
-import { AuthInterceptor } from '@/app/utils/auth.interceptor';
+import { AuthInterceptor } from '~/app/utils/auth.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [

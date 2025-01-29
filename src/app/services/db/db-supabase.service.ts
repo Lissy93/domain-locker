@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { SupabaseClient } from '@supabase/supabase-js';
 import { from, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { ErrorHandlerService } from '@/app/services/error-handler.service';
-import { BaseDatabaseService } from '@/app/services/db/db-base.service';
+import { ErrorHandlerService } from '~/app/services/error-handler.service';
+import { BaseDatabaseService } from '~/app/services/db/db-base.service';
 
 @Injectable({
   providedIn: 'root',

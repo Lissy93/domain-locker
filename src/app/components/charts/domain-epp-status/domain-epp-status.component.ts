@@ -1,9 +1,9 @@
 import { Component, OnInit, ViewChild, Inject, PLATFORM_ID } from '@angular/core';
 import { ApexNonAxisChartSeries, ApexPlotOptions, ApexChart, ApexStroke, ApexFill, ChartComponent, NgApexchartsModule, ApexTooltip } from 'ng-apexcharts';
-import DatabaseService from '@/app/services/database.service';
+import DatabaseService from '~/app/services/database.service';
 import { NgIf, isPlatformBrowser } from '@angular/common';
-import { PrimeNgModule } from '@/app/prime-ng.module';
-import { getByEppCode } from '@/app/constants/security-categories';
+import { PrimeNgModule } from '~/app/prime-ng.module';
+import { getByEppCode } from '~/app/constants/security-categories';
 
 export type ChartOptions = {
   series: ApexNonAxisChartSeries;

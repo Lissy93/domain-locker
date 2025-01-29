@@ -1,6 +1,6 @@
 import { SupabaseClient, User } from '@supabase/supabase-js';
 import { catchError, forkJoin, from, map, Observable, of } from 'rxjs';
-import { DbDomain, Registrar } from '@/types/Database';
+import { DbDomain, Registrar } from '~/app/../types/Database';
 
 export class RegistrarQueries {
   constructor(

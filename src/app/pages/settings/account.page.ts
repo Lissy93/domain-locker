@@ -1,11 +1,11 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { PrimeNgModule } from '@/app/prime-ng.module';
+import { PrimeNgModule } from '~/app/prime-ng.module';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { SupabaseService } from '@/app/services/supabase.service';
+import { SupabaseService } from '~/app/services/supabase.service';
 import { CommonModule } from '@angular/common';
-import { GlobalMessageService } from '@/app/services/messaging.service';
-import { ErrorHandlerService } from '@/app/services/error-handler.service';
+import { GlobalMessageService } from '~/app/services/messaging.service';
+import { ErrorHandlerService } from '~/app/services/error-handler.service';
 
 @Component({
   standalone: true,

@@ -1,6 +1,6 @@
 import { SupabaseClient, User } from '@supabase/supabase-js';
 import { catchError, forkJoin, from, map, Observable, of, switchMap, throwError } from 'rxjs';
-import { Subdomain } from '@/types/Database';
+import { Subdomain } from '~/app/../types/Database';
 import { GlobalMessageService } from '../../messaging.service';
 
 export class SubdomainsQueries {
@@ -255,38 +255,42 @@ export class SubdomainsQueries {
     );
   }
 
-  async deleteSubdomain(domain: string, subdomain: string): Promise<void> {
-    try {
-      // Fetch the domain_id for the given domain name
-      const { data: domainData, error: domainError } = await this.supabase
+
+  deleteSubdomain(domain: string, subdomain: string): Observable<void> {
+    return from(
+      this.supabase
         .from('domains')
         .select('id')
         .eq('domain_name', domain)
-        .single();
-
-      if (domainError) {
-        throw new Error(`Failed to fetch domain ID: ${domainError.message}`);
-      }
-
-      const domainId = domainData?.id;
-
-      if (!domainId) {
-        throw new Error(`Domain ID not found for domain name: ${domain}`);
-      }
-
-      // Perform the delete using the domain_id
-      const { error: deleteError } = await this.supabase
-        .from('sub_domains')
-        .delete()
-        .eq('name', subdomain)
-        .eq('domain_id', domainId);
-
-      if (deleteError) {
-        throw new Error(`Failed to delete subdomain: ${deleteError.message}`);
-      }
-    } catch (error: Error | any) {
-      throw new Error(`Failed to delete subdomain: ${error.message}`);
-    }
+        .single()
+    ).pipe(
+      switchMap(({ data: domainData, error: domainError }) => {
+        if (domainError) {
+          throw new Error(`Failed to fetch domain ID: ${domainError.message}`);
+        }
+        const domainId = domainData?.id;
+        if (!domainId) {
+          throw new Error(`Domain ID not found for domain name: ${domain}`);
+        }
+        // Now delete in sub_domains
+        return from(
+          this.supabase
+            .from('sub_domains')
+            .delete()
+            .eq('name', subdomain)
+            .eq('domain_id', domainId)
+        );
+      }),
+      switchMap(({ error: deleteError }) => {
+        if (deleteError) {
+          throw new Error(`Failed to delete subdomain: ${deleteError.message}`);
+        }
+        return of<void>(undefined); // success
+      }),
+      catchError((err) =>
+        throwError(() => new Error(`Failed to delete subdomain: ${err.message || err}`))
+      )
+    );
   }
 
   // Insert a new subdomain record for the given domainName

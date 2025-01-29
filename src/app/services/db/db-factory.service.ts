@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { SupabaseDatabaseService } from './db-supabase.service';
 import { PostgresDatabaseService } from './db-postgres.service';
-import { EnvService } from '@/app/services/environment.service';
-import { BaseDatabaseService } from '@/app/services/db/db-base.service';
+import { EnvService } from '~/app/services/environment.service';
+import { BaseDatabaseService } from '~/app/services/db/db-base.service';
 
 @Injectable({
   providedIn: 'root',

@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { PrimeNgModule } from '@/app/prime-ng.module';
-import { SupabaseService } from '@/app/services/supabase.service';
+import { PrimeNgModule } from '~/app/prime-ng.module';
+import { SupabaseService } from '~/app/services/supabase.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HelpfulLinksComponent } from '@/app/components/misc/helpful-links.component';
+import { HelpfulLinksComponent } from '~/app/components/misc/helpful-links.component';
 
 interface QueryInfo {
   [key: string]: {

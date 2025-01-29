@@ -1,6 +1,6 @@
 import { AfterViewInit, Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { PrimeNgModule } from '@/app/prime-ng.module';
+import { PrimeNgModule } from '~/app/prime-ng.module';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
 @Component({

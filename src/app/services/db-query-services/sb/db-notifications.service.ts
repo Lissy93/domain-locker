@@ -1,6 +1,6 @@
 import { SupabaseClient, User } from '@supabase/supabase-js';
 import { catchError, forkJoin, from, map, Observable, of } from 'rxjs';
-import { Notification } from '@/types/Database';
+import { Notification } from '~/app/../types/Database';
 
 export class NotificationQueries {
   constructor(

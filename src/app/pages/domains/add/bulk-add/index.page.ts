@@ -7,10 +7,10 @@ import {
   ReactiveFormsModule
 } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
-import DatabaseService from '@/app/services/database.service';
-import { SaveDomainData } from '@/types/Database';
-import { Subdomain } from '@/types/common';
-import { DomainInfo } from '@/types/DomainInfo';
+import DatabaseService from '~/app/services/database.service';
+import { SaveDomainData } from '~/app/../types/Database';
+import { Subdomain } from '~/app/../types/common';
+import { DomainInfo } from '~/app/../types/DomainInfo';
 import {
   of,
   from,
@@ -21,13 +21,13 @@ import {
   map,
   Subscription
 } from 'rxjs';
-import { PrimeNgModule } from '@/app/prime-ng.module';
+import { PrimeNgModule } from '~/app/prime-ng.module';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { notificationTypes } from '@/app/constants/notification-types';
-import { ErrorHandlerService } from '@/app/services/error-handler.service';
-import { GlobalMessageService } from '@/app/services/messaging.service';
-import { EnvService } from '@/app/services/environment.service';
+import { notificationTypes } from '~/app/constants/notification-types';
+import { ErrorHandlerService } from '~/app/services/error-handler.service';
+import { GlobalMessageService } from '~/app/services/messaging.service';
+import { EnvService } from '~/app/services/environment.service';
 
 
 /**

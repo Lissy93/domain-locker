@@ -9,25 +9,25 @@ import { filter, Subscription } from 'rxjs';
 import { NgApexchartsModule } from 'ng-apexcharts';
 
 // PrimeNG module importing required components
-import { PrimeNgModule } from '@/app/prime-ng.module';
+import { PrimeNgModule } from '~/app/prime-ng.module';
 
 // Furniture Components
-import { NavbarComponent } from '@/app/components/navbar/navbar.component';
-import { FooterComponent } from '@/app/components/footer/footer.component';
-import { LoadingComponent } from '@/app/components/misc/loading.component';
-import { BreadcrumbsComponent } from '@/app/components/misc/breadcrumbs.component';
+import { NavbarComponent } from '~/app/components/navbar/navbar.component';
+import { FooterComponent } from '~/app/components/footer/footer.component';
+import { LoadingComponent } from '~/app/components/misc/loading.component';
+import { BreadcrumbsComponent } from '~/app/components/misc/breadcrumbs.component';
 
 // Services
-import { ThemeService } from '@/app/services/theme.service';
-import { GlobalMessageService } from '@/app/services/messaging.service';
-import { SupabaseService } from '@/app/services/supabase.service';
-import { HitCountingService } from '@/app/services/hit-counting.service';
-import { ErrorHandlerService } from '@/app/services/error-handler.service';
-import { TranslationService } from './services/translation.service';
-import { AccessibilityService } from '@/app/services/accessibility-options.service';
-import { EnvService } from '@/app/services/environment.service';
-import { FeatureService } from '@/app/services/features.service';
-import { MetaTagsService } from '@/app/services/meta-tags.service';
+import { ThemeService } from '~/app/services/theme.service';
+import { GlobalMessageService } from '~/app/services/messaging.service';
+import { SupabaseService } from '~/app/services/supabase.service';
+import { HitCountingService } from '~/app/services/hit-counting.service';
+import { ErrorHandlerService } from '~/app/services/error-handler.service';
+import { TranslationService } from '~/app/services/translation.service';
+import { AccessibilityService } from '~/app/services/accessibility-options.service';
+import { EnvService } from '~/app/services/environment.service';
+import { FeatureService } from '~/app/services/features.service';
+import { MetaTagsService } from '~/app/services/meta-tags.service';
 
 @Component({
   selector: 'app-root',

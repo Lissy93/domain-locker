@@ -1,4 +1,4 @@
-import { type SecurityCategory } from '@/app/constants/security-categories';
+import { type SecurityCategory } from '~/app/constants/security-categories';
 import {
   Timestamps,
   IpAddresses,
@@ -13,33 +13,33 @@ import {
   Subdomain,
   Link,
 } from './common';
-import { DnsQueries as SbDnsQueries } from '@/app/services/db-query-services/sb/db-dns.service';
-import { HistoryQueries as SbHistoryQueries } from '@/app/services/db-query-services/sb/db-history.service';
-import { HostsQueries as SbHostsQueries } from '@/app/services/db-query-services/sb/db-hosts.service';
-import { IpQueries as SbIpQueries } from '@/app/services/db-query-services/sb/db-ips.service';
-import { LinkQueries as SbLinkQueries } from '@/app/services/db-query-services/sb/db-links.service';
-import { NotificationQueries as SbNotificationQueries } from '@/app/services/db-query-services/sb/db-notifications.service';
-import { RegistrarQueries as SbRegistrarQueries } from '@/app/services/db-query-services/sb/db-registrars.service';
-import { SslQueries as SbSslQueries } from '@/app/services/db-query-services/sb/db-ssl.service';
-import { StatusQueries as SbStatusQueries } from '@/app/services/db-query-services/sb/db-statuses.service';
-import { SubdomainsQueries as SbSubdomainsQueries } from '@/app/services/db-query-services/sb/db-subdomains.service';
-import { TagQueries as SbTagQueries } from '@/app/services/db-query-services/sb/db-tags.service';
-import { ValuationQueries as SbValuationQueries } from '@/app/services/db-query-services/sb/db-valuations.service';
-import { WhoisQueries as SbWhoisQueries } from '@/app/services/db-query-services/sb/db-whois.service';
+import { DnsQueries as SbDnsQueries } from '~/app/services/db-query-services/sb/db-dns.service';
+import { HistoryQueries as SbHistoryQueries } from '~/app/services/db-query-services/sb/db-history.service';
+import { HostsQueries as SbHostsQueries } from '~/app/services/db-query-services/sb/db-hosts.service';
+import { IpQueries as SbIpQueries } from '~/app/services/db-query-services/sb/db-ips.service';
+import { LinkQueries as SbLinkQueries } from '~/app/services/db-query-services/sb/db-links.service';
+import { NotificationQueries as SbNotificationQueries } from '~/app/services/db-query-services/sb/db-notifications.service';
+import { RegistrarQueries as SbRegistrarQueries } from '~/app/services/db-query-services/sb/db-registrars.service';
+import { SslQueries as SbSslQueries } from '~/app/services/db-query-services/sb/db-ssl.service';
+import { StatusQueries as SbStatusQueries } from '~/app/services/db-query-services/sb/db-statuses.service';
+import { SubdomainsQueries as SbSubdomainsQueries } from '~/app/services/db-query-services/sb/db-subdomains.service';
+import { TagQueries as SbTagQueries } from '~/app/services/db-query-services/sb/db-tags.service';
+import { ValuationQueries as SbValuationQueries } from '~/app/services/db-query-services/sb/db-valuations.service';
+import { WhoisQueries as SbWhoisQueries } from '~/app/services/db-query-services/sb/db-whois.service';
 
-import { DnsQueries as PgDnsQueries } from '@/app/services/db-query-services/pg/db-dns.service';
-import { HistoryQueries as PgHistoryQueries } from '@/app/services/db-query-services/pg/db-history.service';
-import { HostsQueries as PgHostsQueries } from '@/app/services/db-query-services/pg/db-hosts.service';
-import { IpQueries as PgIpQueries } from '@/app/services/db-query-services/pg/db-ips.service';
-import { LinkQueries as PgLinkQueries } from '@/app/services/db-query-services/pg/db-links.service';
-import { NotificationQueries as PgNotificationQueries } from '@/app/services/db-query-services/pg/db-notifications.service';
-import { RegistrarQueries as PgRegistrarQueries } from '@/app/services/db-query-services/pg/db-registrars.service';
-import { SslQueries as PgSslQueries } from '@/app/services/db-query-services/pg/db-ssl.service';
-import { StatusQueries as PgStatusQueries } from '@/app/services/db-query-services/pg/db-statuses.service';
-import { SubdomainsQueries as PgSubdomainsQueries } from '@/app/services/db-query-services/pg/db-subdomains.service';
-import { TagQueries as PgTagQueries } from '@/app/services/db-query-services/pg/db-tags.service';
-import { ValuationQueries as PgValuationQueries } from '@/app/services/db-query-services/pg/db-valuations.service';
-import { WhoisQueries as PgWhoisQueries } from '@/app/services/db-query-services/pg/db-whois.service';
+import { DnsQueries as PgDnsQueries } from '~/app/services/db-query-services/pg/db-dns.service';
+import { HistoryQueries as PgHistoryQueries } from '~/app/services/db-query-services/pg/db-history.service';
+import { HostsQueries as PgHostsQueries } from '~/app/services/db-query-services/pg/db-hosts.service';
+import { IpQueries as PgIpQueries } from '~/app/services/db-query-services/pg/db-ips.service';
+import { LinkQueries as PgLinkQueries } from '~/app/services/db-query-services/pg/db-links.service';
+import { NotificationQueries as PgNotificationQueries } from '~/app/services/db-query-services/pg/db-notifications.service';
+import { RegistrarQueries as PgRegistrarQueries } from '~/app/services/db-query-services/pg/db-registrars.service';
+import { SslQueries as PgSslQueries } from '~/app/services/db-query-services/pg/db-ssl.service';
+import { StatusQueries as PgStatusQueries } from '~/app/services/db-query-services/pg/db-statuses.service';
+import { SubdomainsQueries as PgSubdomainsQueries } from '~/app/services/db-query-services/pg/db-subdomains.service';
+import { TagQueries as PgTagQueries } from '~/app/services/db-query-services/pg/db-tags.service';
+import { ValuationQueries as PgValuationQueries } from '~/app/services/db-query-services/pg/db-valuations.service';
+import { WhoisQueries as PgWhoisQueries } from '~/app/services/db-query-services/pg/db-whois.service';
 import { Observable } from 'rxjs';
 
 export {

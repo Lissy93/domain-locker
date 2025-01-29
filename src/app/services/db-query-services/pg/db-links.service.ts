@@ -1,7 +1,7 @@
 import { catchError, from, map, Observable, of, switchMap } from 'rxjs';
-import { PgApiUtilService } from '@/app/utils/pg-api.util';
-import { DbDomain, Link } from '@/types/Database';
-import { LinkResponse, ModifiedLink } from '@/app/pages/assets/links/index.page';
+import { PgApiUtilService } from '~/app/utils/pg-api.util';
+import { DbDomain, Link } from '~/app/../types/Database';
+import { LinkResponse, ModifiedLink } from '~/app/pages/assets/links/index.page';
 
 export class LinkQueries {
   constructor(

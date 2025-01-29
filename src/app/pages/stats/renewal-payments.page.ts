@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { YearCalendarComponent } from '@/app/components/charts/year-calendar/year-calendar.component';
+import { YearCalendarComponent } from '~/app/components/charts/year-calendar/year-calendar.component';
 
 @Component({
   standalone: true,

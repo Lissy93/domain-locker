@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { SupabaseService } from '@/app/services/supabase.service';
-import { EnvService } from '@/app/services/environment.service';
-import { ErrorHandlerService } from '@/app/services//error-handler.service';
+import { SupabaseService } from '~/app/services/supabase.service';
+import { EnvService } from '~/app/services/environment.service';
+import { ErrorHandlerService } from '~/app/services//error-handler.service';
 
 /**
  * Environment Types

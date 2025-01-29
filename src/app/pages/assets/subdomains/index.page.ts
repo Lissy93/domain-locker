@@ -1,13 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { PrimeNgModule } from '@/app/prime-ng.module';
-import DatabaseService from '@/app/services/database.service';
+import { PrimeNgModule } from '~/app/prime-ng.module';
+import DatabaseService from '~/app/services/database.service';
 import { SubdomainListComponent } from './subdomain-list.component';
-import { ErrorHandlerService } from '@/app/services/error-handler.service';
-import { DomainFaviconComponent } from '@/app/components/misc/favicon.component';
+import { ErrorHandlerService } from '~/app/services/error-handler.service';
+import { DomainFaviconComponent } from '~/app/components/misc/favicon.component';
 import { groupSubdomains } from './subdomain-utils';
-import { LazyLoadDirective } from '@/app/utils/lazy.directive';
+import { LazyLoadDirective } from '~/app/utils/lazy.directive';
 
 interface DomainGroup {
   name: string;

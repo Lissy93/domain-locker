@@ -1,11 +1,11 @@
 import { Component, OnInit, OnDestroy, ViewChild, ElementRef, ChangeDetectorRef } from '@angular/core';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
-import { PrimeNgModule } from '@/app/prime-ng.module';
+import { PrimeNgModule } from '~/app/prime-ng.module';
 import { CommonModule } from '@angular/common';
 import { MenuItem } from 'primeng/api';
-import { ExtendedMenuItem, statsLinks } from '@/app/constants/navigation-links';
-import { FeatureService } from '@/app/services/features.service';
-import { FeatureNotEnabledComponent } from '@/app/components/misc/feature-not-enabled.component';
+import { ExtendedMenuItem, statsLinks } from '~/app/constants/navigation-links';
+import { FeatureService } from '~/app/services/features.service';
+import { FeatureNotEnabledComponent } from '~/app/components/misc/feature-not-enabled.component';
 
 @Component({
   standalone: true,

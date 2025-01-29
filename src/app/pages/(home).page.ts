@@ -2,32 +2,33 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PrimeNgModule } from '../prime-ng.module';
-import DatabaseService from '@/app/services/database.service';
-import { SupabaseService } from '@/app/services/supabase.service';
-import { DbDomain } from '@/types/Database';
+import DatabaseService from '~/app/services/database.service';
+import { SupabaseService } from '~/app/services/supabase.service';
+import { DbDomain } from '~/app/../types/Database';
 import { MessageService } from 'primeng/api';
-import AssetListComponent from '@/app/components/misc/asset-list.component';
-import { DomainExpirationBarComponent } from '@/app/components/charts/domain-expiration-bar/domain-expiration-bar.component';
-import { DomainCollectionComponent } from '@/app/components/domain-things/domain-collection/domain-collection.component';
+import AssetListComponent from '~/app/components/misc/asset-list.component';
+import { DomainExpirationBarComponent } from '~/app/components/charts/domain-expiration-bar/domain-expiration-bar.component';
+import { DomainCollectionComponent } from '~/app/components/domain-things/domain-collection/domain-collection.component';
 import { Subscription } from 'rxjs';
-import { LoadingComponent } from '@/app/components/misc/loading.component';
-import { WelcomeComponent } from '@/app/components/getting-started/welcome.component';
-import { DomainPieChartsComponent } from '@/app/components/charts/domain-pie/domain-pie.component';
-import { DomainTagCloudComponent } from '@/app/components/charts/tag-cloud/tag-cloud.component';
-import { HostMapComponent } from '@/app/components/charts/host-map/host-map.component';
-import { EppStatusChartComponent } from '@/app/components/charts/domain-epp-status/domain-epp-status.component';
-import { DomainGanttChartComponent } from '@/app/components/charts/registration-lifespan/registration-lifespan.component';
-import { TagGridComponent } from '@/app/components/tag-grid/tag-grid.component';
-import { SponsorMessageComponent } from '@/app/components/sponsor-thanks/sponsor-thanks.component';
-import { FeatureCarouselComponent } from '@/app/components/home-things/feature-carousel/feature-carousel.component';
-import { FeaturesGridComponent } from '@/app/components/home-things/feature-grid/feature-grid.component';
-import { PricingCardsComponent } from '@/app/components/home-things/pricing-cards/pricing-cards.component';
-import { CtaComponent } from '@/app/components/home-things/cta/cta.component';
-import { HeroComponent } from '@/app/components/home-things/hero/hero.component';
+import { LoadingComponent } from '~/app/components/misc/loading.component';
+import { WelcomeComponent } from '~/app/components/getting-started/welcome.component';
+import { DomainPieChartsComponent } from '~/app/components/charts/domain-pie/domain-pie.component';
+import { DomainTagCloudComponent } from '~/app/components/charts/tag-cloud/tag-cloud.component';
+import { HostMapComponent } from '~/app/components/charts/host-map/host-map.component';
+import { EppStatusChartComponent } from '~/app/components/charts/domain-epp-status/domain-epp-status.component';
+import { DomainGanttChartComponent } from '~/app/components/charts/registration-lifespan/registration-lifespan.component';
+import { TagGridComponent } from '~/app/components/tag-grid/tag-grid.component';
+import { SponsorMessageComponent } from '~/app/components/sponsor-thanks/sponsor-thanks.component';
+import { FeatureCarouselComponent } from '~/app/components/home-things/feature-carousel/feature-carousel.component';
+import { FeaturesGridComponent } from '~/app/components/home-things/feature-grid/feature-grid.component';
+import { PricingCardsComponent } from '~/app/components/home-things/pricing-cards/pricing-cards.component';
+import { CtaComponent } from '~/app/components/home-things/cta/cta.component';
+import { HeroComponent } from '~/app/components/home-things/hero/hero.component';
+import { DemoComponent } from '~/app/components/home-things/demo/demo.component';
 
 import { TranslateModule } from '@ngx-translate/core';
-import { ErrorHandlerService } from '@/app/services/error-handler.service';
-import { EnvService } from '@/app/services/environment.service';
+import { ErrorHandlerService } from '~/app/services/error-handler.service';
+import { EnvService } from '~/app/services/environment.service';
 import { Router } from '@angular/router';
 
 @Component({
@@ -53,6 +54,7 @@ import { Router } from '@angular/router';
     PricingCardsComponent,
     CtaComponent,
     HeroComponent,
+    DemoComponent,
   ],
   templateUrl: './home.page.html',
   styles: [`

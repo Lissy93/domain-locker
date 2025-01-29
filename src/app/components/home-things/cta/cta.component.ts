@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { PrimeNgModule } from '@/app/prime-ng.module';
+import { PrimeNgModule } from '~/app/prime-ng.module';
 import { RouterModule } from '@angular/router';
 
 @Component({
@@ -15,13 +15,15 @@ import { RouterModule } from '@angular/router';
         Alternatively, check out our GitHub repo to run on your own infrastructure.
       </p>
       <div class="flex justify-center sm:justify-end w-full flex-wrap gap-3 my-3">
-        <p-button 
-          label="View on GitHub" 
-          severity="secondary" 
-          icon="pi pi-github" 
-          class="min-w-48" 
-          styleClass="w-full" 
-        ></p-button>
+        <a href="https://github.com/lissy93/domain-locker" target="_blank" rel="noopener noreferrer">
+          <p-button 
+            label="View on GitHub" 
+            severity="secondary" 
+            icon="pi pi-github" 
+            class="min-w-48" 
+            styleClass="w-full" 
+          ></p-button>
+        </a>
         <p-button
           routerLink="/login"
           [queryParams]="{ newUser: 'true' }"

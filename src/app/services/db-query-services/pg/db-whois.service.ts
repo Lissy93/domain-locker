@@ -1,6 +1,6 @@
-import { SaveDomainData } from '@/types/Database';
+import { SaveDomainData } from '~/app/../types/Database';
 import { Observable } from 'rxjs';
-import { PgApiUtilService } from '@/app/utils/pg-api.util';
+import { PgApiUtilService } from '~/app/utils/pg-api.util';
 
 export class WhoisQueries {
   constructor(

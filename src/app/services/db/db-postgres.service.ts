@@ -2,9 +2,9 @@ import { Injectable } from '@angular/core';
 import { from, Observable } from 'rxjs';
 import pkg from 'pg';
 import { catchError, map } from 'rxjs/operators';
-import { ErrorHandlerService } from '@/app/services/error-handler.service';
-import { EnvService } from '@/app/services/environment.service';
-import { BaseDatabaseService } from '@/app/services/db/db-base.service';
+import { ErrorHandlerService } from '~/app/services/error-handler.service';
+import { EnvService } from '~/app/services/environment.service';
+import { BaseDatabaseService } from '~/app/services/db/db-base.service';
 
 const Pool = pkg.Pool;
 

@@ -3,16 +3,16 @@ import { MenuItem } from 'primeng/api';
 import { Router } from '@angular/router';
 import { ConfirmationService, MessageService } from 'primeng/api';
 
-import { DbDomain } from '@/types/Database';
-import { PrimeNgModule } from '@/app/prime-ng.module';
+import { DbDomain } from '~/app/../types/Database';
+import { PrimeNgModule } from '~/app/prime-ng.module';
 import { NgFor, DatePipe, CommonModule } from '@angular/common';
-import { DomainUtils } from '@/app/services/domain-utils.service';
-import { DomainFaviconComponent } from '@/app/components/misc/favicon.component';
-import { type FieldOption } from '@/app/components/domain-things/domain-filters/domain-filters.component';
-import DatabaseService from '@/app/services/database.service';
-import { GlobalMessageService } from '@/app/services/messaging.service';
+import { DomainUtils } from '~/app/services/domain-utils.service';
+import { DomainFaviconComponent } from '~/app/components/misc/favicon.component';
+import { type FieldOption } from '~/app/components/domain-things/domain-filters/domain-filters.component';
+import DatabaseService from '~/app/services/database.service';
+import { GlobalMessageService } from '~/app/services/messaging.service';
 import { animate, state, style, transition, trigger } from '@angular/animations';
-import { ErrorHandlerService } from '@/app/services/error-handler.service';
+import { ErrorHandlerService } from '~/app/services/error-handler.service';
 
 @Component({
   standalone: true,

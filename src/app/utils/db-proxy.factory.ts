@@ -1,5 +1,5 @@
-import { FeatureService } from '@/app/services/features.service';
-import { GlobalMessageService } from '@/app/services/messaging.service';
+import { FeatureService } from '~/app/services/features.service';
+import { GlobalMessageService } from '~/app/services/messaging.service';
 import { defer, from, Observable, switchMap, throwError } from 'rxjs';
 
 const defaultWriteMethods = new Set([

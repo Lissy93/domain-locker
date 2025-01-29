@@ -1,14 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { PrimeNgModule } from '@/app/prime-ng.module';
-import { FeatureService } from '@/app/services/features.service';
-import { FeatureNotEnabledComponent } from '@/app/components/misc/feature-not-enabled.component';
-import { DbDomain } from '@/types/Database';
+import { PrimeNgModule } from '~/app/prime-ng.module';
+import { FeatureService } from '~/app/services/features.service';
+import { FeatureNotEnabledComponent } from '~/app/components/misc/feature-not-enabled.component';
+import { DbDomain } from '~/app/../types/Database';
 import { NgApexchartsModule } from 'ng-apexcharts';
-import DatabaseService from '@/app/services/database.service';
-import { ErrorHandlerService } from '@/app/services/error-handler.service';
+import DatabaseService from '~/app/services/database.service';
+import { ErrorHandlerService } from '~/app/services/error-handler.service';
 import { Router, RouterModule } from '@angular/router';
-import { DomainFaviconComponent } from '@/app/components/misc/favicon.component';
+import { DomainFaviconComponent } from '~/app/components/misc/favicon.component';
 import { ApexOptions } from 'ng-apexcharts';
 import { getUptimeColor, getResponseCodeColor, getPerformanceColor } from './monitor-helpers';
 

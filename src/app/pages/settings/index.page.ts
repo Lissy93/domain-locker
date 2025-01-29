@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { PrimeNgModule } from '@/app/prime-ng.module';
-import { AccountIssuesComponent } from '@/app/components/settings/account-issues/account-issues.component';
-import { BillingService } from '@/app/services/billing.service';
-import { ThemeService } from '@/app/services/theme.service';
-import { SupabaseService } from '@/app/services/supabase.service';
-import { TranslationService } from '@/app/services/translation.service';
-import DatabaseService from '@/app/services/database.service';
+import { PrimeNgModule } from '~/app/prime-ng.module';
+import { AccountIssuesComponent } from '~/app/components/settings/account-issues/account-issues.component';
+import { BillingService } from '~/app/services/billing.service';
+import { ThemeService } from '~/app/services/theme.service';
+import { SupabaseService } from '~/app/services/supabase.service';
+import { TranslationService } from '~/app/services/translation.service';
+import DatabaseService from '~/app/services/database.service';
 import { Observable, of, from } from 'rxjs';
 import { User } from '@supabase/supabase-js';
 

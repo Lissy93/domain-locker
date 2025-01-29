@@ -3,12 +3,12 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { PrimeNgModule } from '../../prime-ng.module';
 import { ReactiveFormsModule } from '@angular/forms';
-import { DlIconComponent } from '@/app/components/misc/svg-icon.component';
-import { GlobalMessageService } from '@/app/services/messaging.service';
-import DatabaseService from '@/app/services/database.service';
-import { SupabaseService } from '@/app/services/supabase.service';
-import { FeatureService } from '@/app/services/features.service';
-import { FeatureNotEnabledComponent } from '@/app/components/misc/feature-not-enabled.component';
+import { DlIconComponent } from '~/app/components/misc/svg-icon.component';
+import { GlobalMessageService } from '~/app/services/messaging.service';
+import DatabaseService from '~/app/services/database.service';
+import { SupabaseService } from '~/app/services/supabase.service';
+import { FeatureService } from '~/app/services/features.service';
+import { FeatureNotEnabledComponent } from '~/app/components/misc/feature-not-enabled.component';
 
 interface NotificationChannelField {
   label: string;

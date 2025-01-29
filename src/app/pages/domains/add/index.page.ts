@@ -1,21 +1,21 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { PrimeNgModule } from '@/app/prime-ng.module';
+import { PrimeNgModule } from '~/app/prime-ng.module';
 import { ConfirmationService, MessageService, MenuItem } from 'primeng/api';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { catchError, throwError, Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
-import DatabaseService from '@/app/services/database.service';
-import { SaveDomainData } from '@/types/Database';
-import { notificationTypes } from '@/app/constants/notification-types';
+import DatabaseService from '~/app/services/database.service';
+import { SaveDomainData } from '~/app/../types/Database';
+import { notificationTypes } from '~/app/constants/notification-types';
 
-import type { DomainInfo } from '@/types/DomainInfo';
+import type { DomainInfo } from '~/app/../types/DomainInfo';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Registrar } from '@/types/common';
-import { subdomainsReadyForSave } from '@/app/pages/assets/subdomains/subdomain-utils';
-import { EnvService } from '@/app/services/environment.service';
+import { Registrar } from '~/app/../types/common';
+import { subdomainsReadyForSave } from '~/app/pages/assets/subdomains/subdomain-utils';
+import { EnvService } from '~/app/services/environment.service';
 
 @Component({
   selector: 'app-add-domain',

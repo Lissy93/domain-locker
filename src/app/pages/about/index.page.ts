@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
-import { PrimeNgModule } from '@/app/prime-ng.module';
+import { PrimeNgModule } from '~/app/prime-ng.module';
 import { CommonModule } from '@angular/common';
-import { aboutPages } from '@/app/pages/about/data/about-page-list';
+import { aboutPages } from '~/app/pages/about/data/about-page-list';
 import { injectContentFiles } from '@analogjs/content';
-import { DocAttributes } from '@/app/components/about-things/doc-viewer.component';
+import { DocAttributes } from '~/app/components/about-things/doc-viewer.component';
 
 @Component({
   standalone: true,

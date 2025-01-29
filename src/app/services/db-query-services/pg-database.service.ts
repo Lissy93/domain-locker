@@ -1,23 +1,23 @@
 import { Injectable } from '@angular/core';
-import { DatabaseService, DbDomain, DomainExpiration, SaveDomainData } from '@/types/Database';
+import { DatabaseService, DbDomain, DomainExpiration, SaveDomainData } from '~/app/../types/Database';
 import { catchError, from, map, Observable, retry, throwError } from 'rxjs';
-import { makeEppArrayFromLabels } from '@/app/constants/security-categories';
+import { makeEppArrayFromLabels } from '~/app/constants/security-categories';
 
 // Database queries grouped by functionality into sub-services
-import { LinkQueries } from '@/app/services/db-query-services/pg/db-links.service';
-import { TagQueries } from '@/app/services/db-query-services/pg/db-tags.service';
-import { NotificationQueries } from '@/app/services/db-query-services/pg/db-notifications.service';
-import { HistoryQueries } from '@/app/services/db-query-services/pg/db-history.service';
-import { ValuationQueries } from '@/app/services/db-query-services/pg/db-valuations.service';
-import { RegistrarQueries } from '@/app/services/db-query-services/pg/db-registrars.service';
-import { DnsQueries } from '@/app/services/db-query-services/pg/db-dns.service';
-import { HostsQueries } from '@/app/services/db-query-services/pg/db-hosts.service';
-import { IpQueries } from '@/app/services/db-query-services/pg/db-ips.service';
-import { SslQueries } from '@/app/services/db-query-services/pg/db-ssl.service';
-import { WhoisQueries } from '@/app/services/db-query-services/pg/db-whois.service';
-import { StatusQueries } from '@/app/services/db-query-services/pg/db-statuses.service';
-import { SubdomainsQueries } from '@/app/services/db-query-services/pg/db-subdomains.service';
-import { PgApiUtilService } from '@/app/utils/pg-api.util';
+import { LinkQueries } from '~/app/services/db-query-services/pg/db-links.service';
+import { TagQueries } from '~/app/services/db-query-services/pg/db-tags.service';
+import { NotificationQueries } from '~/app/services/db-query-services/pg/db-notifications.service';
+import { HistoryQueries } from '~/app/services/db-query-services/pg/db-history.service';
+import { ValuationQueries } from '~/app/services/db-query-services/pg/db-valuations.service';
+import { RegistrarQueries } from '~/app/services/db-query-services/pg/db-registrars.service';
+import { DnsQueries } from '~/app/services/db-query-services/pg/db-dns.service';
+import { HostsQueries } from '~/app/services/db-query-services/pg/db-hosts.service';
+import { IpQueries } from '~/app/services/db-query-services/pg/db-ips.service';
+import { SslQueries } from '~/app/services/db-query-services/pg/db-ssl.service';
+import { WhoisQueries } from '~/app/services/db-query-services/pg/db-whois.service';
+import { StatusQueries } from '~/app/services/db-query-services/pg/db-statuses.service';
+import { SubdomainsQueries } from '~/app/services/db-query-services/pg/db-subdomains.service';
+import { PgApiUtilService } from '~/app/utils/pg-api.util';
 
 @Injectable({
   providedIn: 'root',

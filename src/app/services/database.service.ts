@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
-import { EnvService } from '@/app/services/environment.service';
-import SbDatabaseService from '@/app/services/db-query-services/sb-database.service';
-import PgDatabaseService from '@/app/services/db-query-services/pg-database.service';
-import { SupabaseService } from '@/app/services/supabase.service';
-import { ErrorHandlerService } from '@/app/services/error-handler.service';
-import { GlobalMessageService } from '@/app/services/messaging.service';
-import { PgApiUtilService } from '@/app/utils/pg-api.util';
-import { type DatabaseService as IDatabaseService } from '@/types/Database';
-import { FeatureService } from '@/app/services/features.service';
+import { EnvService } from '~/app/services/environment.service';
+import SbDatabaseService from '~/app/services/db-query-services/sb-database.service';
+import PgDatabaseService from '~/app/services/db-query-services/pg-database.service';
+import { SupabaseService } from '~/app/services/supabase.service';
+import { ErrorHandlerService } from '~/app/services/error-handler.service';
+import { GlobalMessageService } from '~/app/services/messaging.service';
+import { PgApiUtilService } from '~/app/utils/pg-api.util';
+import { type DatabaseService as IDatabaseService } from '~/app/../types/Database';
+import { FeatureService } from '~/app/services/features.service';
 
 
 @Injectable({

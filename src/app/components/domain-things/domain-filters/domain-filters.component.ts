@@ -2,9 +2,9 @@ import { Component, Output, EventEmitter, Input, OnInit, ChangeDetectorRef } fro
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DomainFaviconComponent } from '../../misc/favicon.component';
-import { PrimeNgModule } from '@/app/prime-ng.module';
+import { PrimeNgModule } from '~/app/prime-ng.module';
 import { Router } from '@angular/router';
-import QuickAddDomain from '@/app/pages/domains/add/quick-add/index.page';
+import QuickAddDomain from '~/app/pages/domains/add/quick-add/index.page';
 
 export interface FieldOption {
   label: string;

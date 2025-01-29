@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { PrimeNgModule } from '@/app/prime-ng.module';
-import { Host } from '@/types/common';
-import DatabaseService from '@/app/services/database.service';
+import { PrimeNgModule } from '~/app/prime-ng.module';
+import { Host } from '~/app/../types/common';
+import DatabaseService from '~/app/services/database.service';
 import { MessageService } from 'primeng/api';
 
 @Component({

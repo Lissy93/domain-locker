@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { DomainUpdatesComponent } from '@/app/components/domain-things/domain-updates/domain-updates.component';
-import { ChangeHistoryChartComponent } from '@/app/components/charts/change-history/change-history.component';
+import { DomainUpdatesComponent } from '~/app/components/domain-things/domain-updates/domain-updates.component';
+import { ChangeHistoryChartComponent } from '~/app/components/charts/change-history/change-history.component';
 
 @Component({
   standalone: true,

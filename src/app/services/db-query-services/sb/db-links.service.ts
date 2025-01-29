@@ -1,7 +1,7 @@
 import { SupabaseClient, User } from '@supabase/supabase-js';
 import { catchError, from, map, Observable, switchMap } from 'rxjs';
-import { Link } from '@/types/Database';
-import { LinkResponse, ModifiedLink } from '@/app/pages/assets/links/index.page';
+import { Link } from '~/app/../types/Database';
+import { LinkResponse, ModifiedLink } from '~/app/pages/assets/links/index.page';
 
 export class LinkQueries {
   constructor(

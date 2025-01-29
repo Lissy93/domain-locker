@@ -1,7 +1,7 @@
 // src/app/shared/domain.service.ts
-import { DbDomain } from '@/types/Database';
+import { DbDomain } from '~/app/../types/Database';
 import { Injectable } from '@angular/core';
-import { makeEppArrayFromLabels } from '@/app/constants/security-categories';
+import { makeEppArrayFromLabels } from '~/app/constants/security-categories';
 
 @Injectable({
   providedIn: 'root'

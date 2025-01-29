@@ -1,6 +1,6 @@
 import { catchError, concatMap, forkJoin, from, map, Observable, of, switchMap } from 'rxjs';
-import { Tag } from '@/types/Database';
-import { PgApiUtilService } from '@/app/utils/pg-api.util';
+import { Tag } from '~/app/../types/Database';
+import { PgApiUtilService } from '~/app/utils/pg-api.util';
 
 export class TagQueries {
   constructor(

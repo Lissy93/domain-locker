@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import DatabaseService from '@/app/services/database.service';
+import DatabaseService from '~/app/services/database.service';
 import { Router } from '@angular/router';
-import { PrimeNgModule } from '@/app/prime-ng.module';
+import { PrimeNgModule } from '~/app/prime-ng.module';
 import { CommonModule } from '@angular/common';
 
 interface ExpiringDomain {

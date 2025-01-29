@@ -1,6 +1,6 @@
 import { SupabaseClient, User } from '@supabase/supabase-js';
 import { catchError, concatMap, forkJoin, from, map, Observable, switchMap } from 'rxjs';
-import { Tag } from '@/types/Database';
+import { Tag } from '~/app/../types/Database';
 
 export class TagQueries {
   constructor(

@@ -1,4 +1,4 @@
-import { Subdomain } from "@/types/Database";
+import { Subdomain } from "~/app/../types/Database";
 
 /**
  * The subdomain info (from sd_info column) is stored as a stringified array of KV pairs.

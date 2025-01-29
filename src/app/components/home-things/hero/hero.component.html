@@ -18,13 +18,15 @@
     </ul>
 
     <div class="flex gap-4">
-      <p-button 
-        label="View on GitHub" 
-        severity="secondary" 
-        icon="pi pi-github" 
-        class="min-w-48"  
-        styleClass="w-full" 
-      />
+      <a href="https://github.com/lissy93/domain-locker">
+        <p-button 
+          label="View on GitHub" v
+          severity="secondary" 
+          icon="pi pi-github" 
+          class="min-w-48"  
+          styleClass="w-full" 
+        />
+      </a>
       <p-button
         routerLink="/login"
         [queryParams]="{ newUser: 'true' }"

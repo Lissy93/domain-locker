@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { SupabaseService } from '@/app/services/supabase.service';
-import { ErrorHandlerService } from '@/app/services/error-handler.service';
-import { PrimeNgModule } from '@/app/prime-ng.module';
-import { GlobalMessageService } from '@/app/services/messaging.service';
+import { SupabaseService } from '~/app/services/supabase.service';
+import { ErrorHandlerService } from '~/app/services/error-handler.service';
+import { PrimeNgModule } from '~/app/prime-ng.module';
+import { GlobalMessageService } from '~/app/services/messaging.service';
 
 @Component({
   standalone: true,

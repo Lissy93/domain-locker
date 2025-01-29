@@ -1,6 +1,6 @@
 import { SupabaseClient, User } from '@supabase/supabase-js';
 import { catchError, forkJoin, from, map, Observable, of } from 'rxjs';
-import { DbDomain, Host } from '@/types/Database';
+import { DbDomain, Host } from '~/app/../types/Database';
 
 export class HostsQueries {
   constructor(

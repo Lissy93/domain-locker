@@ -1,6 +1,6 @@
 import { Observable, throwError } from 'rxjs';
 import { DatabaseService } from './db-interface';
-import { ErrorHandlerService } from '@/app/services/error-handler.service';
+import { ErrorHandlerService } from '~/app/services/error-handler.service';
 
 export abstract class BaseDatabaseService implements DatabaseService {
   constructor(protected errorHandler: ErrorHandlerService) {}

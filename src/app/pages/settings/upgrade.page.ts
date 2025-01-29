@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { PrimeNgModule } from '@/app/prime-ng.module';
-import { BillingService } from '@/app/services/billing.service';
-import { pricingFeatures } from '@/app/constants/pricing-features';
+import { PrimeNgModule } from '~/app/prime-ng.module';
+import { BillingService } from '~/app/services/billing.service';
+import { pricingFeatures } from '~/app/constants/pricing-features';
 import { Observable } from 'rxjs';
 
 @Component({

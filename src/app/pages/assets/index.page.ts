@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import AssetListComponent from '@/app/components/misc/asset-list.component';
+import AssetListComponent from '~/app/components/misc/asset-list.component';
 
 @Component({
   standalone: true,

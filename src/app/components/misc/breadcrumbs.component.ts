@@ -1,9 +1,9 @@
 import { Component, Input, OnInit, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { PrimeNgModule } from '@/app/prime-ng.module';
+import { PrimeNgModule } from '~/app/prime-ng.module';
 import { MenuItem } from 'primeng/api';
-import { DomainFaviconComponent } from '@/app/components/misc/favicon.component';
-import { DlIconComponent } from '@/app/components/misc/svg-icon.component';
+import { DomainFaviconComponent } from '~/app/components/misc/favicon.component';
+import { DlIconComponent } from '~/app/components/misc/svg-icon.component';
 import {
   statsLinks,
   settingsLinks,
@@ -12,7 +12,7 @@ import {
   unauthenticatedNavLinks,
   ExtendedMenuItem,
   toolsLinks,
-} from '@/app/constants/navigation-links';
+} from '~/app/constants/navigation-links';
 
 @Component({
   standalone: true,

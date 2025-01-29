@@ -1,12 +1,12 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { PrimeNgModule } from '@/app/prime-ng.module';
+import { PrimeNgModule } from '~/app/prime-ng.module';
 
-import DatabaseService from '@/app/services/database.service';
-import { ErrorHandlerService } from '@/app/services/error-handler.service';
-import { GlobalMessageService } from '@/app/services/messaging.service';
-import { FeatureService } from '@/app/services/features.service';
+import DatabaseService from '~/app/services/database.service';
+import { ErrorHandlerService } from '~/app/services/error-handler.service';
+import { GlobalMessageService } from '~/app/services/messaging.service';
+import { FeatureService } from '~/app/services/features.service';
 
 @Component({
   standalone: true,

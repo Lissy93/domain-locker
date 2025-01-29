@@ -1,7 +1,7 @@
-import { PrimeNgModule } from '@/app/prime-ng.module';
+import { PrimeNgModule } from '~/app/prime-ng.module';
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { UiSettingsComponent } from '@/app/components/settings/ui-options/ui-options.component';
+import { UiSettingsComponent } from '~/app/components/settings/ui-options/ui-options.component';
 
 @Component({
   standalone: true,

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { environment } from '@/app/environments/environment';
+import { environment } from '~/app/environments/environment';
 
 export type EnvironmentType = 'dev' | 'managed' | 'selfHosted' | 'demo';
 

@@ -5,7 +5,6 @@
   "projects": {
     "domain-locker": {
       "projectType": "application",
-      "schematics": {},
       "root": ".",
       "sourceRoot": "src",
       "prefix": "app",
@@ -16,92 +15,7 @@
             "configFile": "vite.config.ts",
             "main": "src/main.ts",
             "outputPath": "dist",
-            "tsConfig": "tsconfig.app.json",
-            "assets": [
-              "src/favicon.ico",
-              "src/assets",
-              {
-                "glob": "**/*",
-                "input": "./node_modules/primeng/resources/themes",
-                "output": "/assets/primeng/resources/themes"
-              },
-              {
-                "glob": "**/*.css",
-                "input": "src/app/styles/themes",
-                "output": "/assets/themes"
-              },
-              {
-                "glob": "**/*",
-                "input": "node_modules/leaflet/dist/images/",
-                "output": "./assets/"
-              }
-            ],
-            "styles": [
-              "node_modules/primeng/resources/themes/lara-light-purple/theme.css",
-              "node_modules/primeng/resources/themes/lara-dark-purple/theme.css",
-              "node_modules/primeng/resources/primeng.min.css",
-              "node_modules/leaflet/dist/leaflet.css",
-              {
-                "input": "src/app/styles/themes/purple-light.css",
-                "bundleName": "purple-light",
-                "inject": false
-              },
-              {
-                "input": "src/app/styles/themes/purple-dark.css",
-                "bundleName": "purple-dark",
-                "inject": false
-              },
-              {
-                "input": "src/app/styles/themes/indigo-light.css",
-                "bundleName": "indigo-light",
-                "inject": false
-              },
-              {
-                "input": "src/app/styles/themes/indigo-dark.css",
-                "bundleName": "indigo-dark",
-                "inject": false
-              },
-              {
-                "input": "src/app/styles/themes/blue-light.css",
-                "bundleName": "blue-light",
-                "inject": false
-              },
-              {
-                "input": "src/app/styles/themes/blue-dark.css",
-                "bundleName": "blue-dark",
-                "inject": false
-              },
-              {
-                "input": "src/app/styles/themes/teal-light.css",
-                "bundleName": "teal-light",
-                "inject": false
-              },
-              {
-                "input": "src/app/styles/themes/teal-dark.css",
-                "bundleName": "teal-dark",
-                "inject": false
-              },
-              {
-                "input": "src/app/styles/themes/orange-light.css",
-                "bundleName": "orange-light",
-                "inject": false
-              },
-              {
-                "input": "src/app/styles/themes/orange-dark.css",
-                "bundleName": "orange-dark",
-                "inject": false
-              },
-              {
-                "input": "src/app/styles/themes/green-light.css",
-                "bundleName": "green-light",
-                "inject": false
-              },
-              {
-                "input": "src/app/styles/themes/green-dark.css",
-                "bundleName": "green-dark",
-                "inject": false
-              }
-            ]
+            "tsConfig": "tsconfig.app.json"
           },
           "defaultConfiguration": "production",
           "configurations": {

@@ -1,6 +1,6 @@
 import { catchError, from, map, Observable } from 'rxjs';
-import { PgApiUtilService } from '@/app/utils/pg-api.util';
-import { DbDomain, SaveDomainData } from '@/types/Database';
+import { PgApiUtilService } from '~/app/utils/pg-api.util';
+import { DbDomain, SaveDomainData } from '~/app/../types/Database';
 
 export class SslQueries {
   constructor(

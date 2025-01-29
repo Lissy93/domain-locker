@@ -1,16 +1,16 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, AbstractControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { SupabaseService } from '@/app/services/supabase.service';
+import { SupabaseService } from '~/app/services/supabase.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { PrimeNgModule } from '@/app/prime-ng.module';
+import { PrimeNgModule } from '~/app/prime-ng.module';
 import { Subscription } from 'rxjs';
-import { GlobalMessageService } from '@/app/services/messaging.service';
-import { ErrorHandlerService } from '@/app/services/error-handler.service';
-import { FeatureService } from '@/app/services/features.service';
-import { EnvService } from '@/app/services/environment.service';
-import { LogoComponent} from '@/app/components/home-things/logo/logo.component';
+import { GlobalMessageService } from '~/app/services/messaging.service';
+import { ErrorHandlerService } from '~/app/services/error-handler.service';
+import { FeatureService } from '~/app/services/features.service';
+import { EnvService } from '~/app/services/environment.service';
+import { LogoComponent} from '~/app/components/home-things/logo/logo.component';
 
 @Component({
   standalone: true,

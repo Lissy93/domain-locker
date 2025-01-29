@@ -1,11 +1,11 @@
 import { Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
-import DatabaseService from '@/app/services/database.service';
+import DatabaseService from '~/app/services/database.service';
 import { MessageService } from 'primeng/api';
-import { PrimeNgModule } from '@/app/prime-ng.module';
+import { PrimeNgModule } from '~/app/prime-ng.module';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { isPlatformBrowser } from '@angular/common';
-import { localeToCurrency } from '@/app/constants/currencies';
+import { localeToCurrency } from '~/app/constants/currencies';
 
 @Component({
   standalone: true,

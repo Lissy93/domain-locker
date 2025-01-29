@@ -1,27 +1,27 @@
 import { Injectable } from '@angular/core';
-import { SupabaseService } from '@/app/services/supabase.service';
-import { DatabaseService, DbDomain, IpAddress, SaveDomainData, DomainExpiration } from '@/types/Database';
+import { SupabaseService } from '~/app/services/supabase.service';
+import { DatabaseService, DbDomain, IpAddress, SaveDomainData, DomainExpiration } from '~/app/../types/Database';
 import { catchError, from, map, Observable, throwError, retry, switchMap } from 'rxjs';
-import { makeEppArrayFromLabels } from '@/app/constants/security-categories';
-import { ErrorHandlerService } from '@/app/services/error-handler.service';
-import { GlobalMessageService } from '@/app/services/messaging.service';
+import { makeEppArrayFromLabels } from '~/app/constants/security-categories';
+import { ErrorHandlerService } from '~/app/services/error-handler.service';
+import { GlobalMessageService } from '~/app/services/messaging.service';
 
 // Database queries grouped by functionality into sub-services
-import { LinkQueries } from '@/app/services/db-query-services/sb/db-links.service';
-import { TagQueries } from '@/app/services/db-query-services/sb/db-tags.service';
-import { NotificationQueries } from '@/app/services/db-query-services/sb/db-notifications.service';
-import { HistoryQueries } from '@/app/services/db-query-services/sb/db-history.service';
-import { ValuationQueries } from '@/app/services/db-query-services/sb/db-valuations.service';
-import { RegistrarQueries } from '@/app/services/db-query-services/sb/db-registrars.service';
-import { DnsQueries } from '@/app/services/db-query-services/sb/db-dns.service';
-import { HostsQueries } from '@/app/services/db-query-services/sb/db-hosts.service';
-import { IpQueries } from '@/app/services/db-query-services/sb/db-ips.service';
-import { SslQueries } from '@/app/services/db-query-services/sb/db-ssl.service';
-import { WhoisQueries } from '@/app/services/db-query-services/sb/db-whois.service';
-import { StatusQueries } from '@/app/services/db-query-services/sb/db-statuses.service';
-import { SubdomainsQueries } from '@/app/services/db-query-services/sb/db-subdomains.service';
+import { LinkQueries } from '~/app/services/db-query-services/sb/db-links.service';
+import { TagQueries } from '~/app/services/db-query-services/sb/db-tags.service';
+import { NotificationQueries } from '~/app/services/db-query-services/sb/db-notifications.service';
+import { HistoryQueries } from '~/app/services/db-query-services/sb/db-history.service';
+import { ValuationQueries } from '~/app/services/db-query-services/sb/db-valuations.service';
+import { RegistrarQueries } from '~/app/services/db-query-services/sb/db-registrars.service';
+import { DnsQueries } from '~/app/services/db-query-services/sb/db-dns.service';
+import { HostsQueries } from '~/app/services/db-query-services/sb/db-hosts.service';
+import { IpQueries } from '~/app/services/db-query-services/sb/db-ips.service';
+import { SslQueries } from '~/app/services/db-query-services/sb/db-ssl.service';
+import { WhoisQueries } from '~/app/services/db-query-services/sb/db-whois.service';
+import { StatusQueries } from '~/app/services/db-query-services/sb/db-statuses.service';
+import { SubdomainsQueries } from '~/app/services/db-query-services/sb/db-subdomains.service';
 
-import { createDbProxy } from '@/app/utils/db-proxy.factory';
+import { createDbProxy } from '~/app/utils/db-proxy.factory';
 import { FeatureService } from '../features.service';
 
 @Injectable({

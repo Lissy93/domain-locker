@@ -1,12 +1,12 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { PrimeNgModule } from '@/app/prime-ng.module';
-import { DomainUtils } from '@/app/services/domain-utils.service';
-import { DlIconComponent } from '@/app/components/misc/svg-icon.component';
-import { DomainFaviconComponent } from '@/app/components/misc/favicon.component';
-import { type DbDomain } from '@/types/Database';
-import { SecurityCategory, makeEppArrayFromLabels } from '@/app/constants/security-categories';
-import { SafeDatePipe } from '@/app/utils/safe-date.pipe';
+import { PrimeNgModule } from '~/app/prime-ng.module';
+import { DomainUtils } from '~/app/services/domain-utils.service';
+import { DlIconComponent } from '~/app/components/misc/svg-icon.component';
+import { DomainFaviconComponent } from '~/app/components/misc/favicon.component';
+import { type DbDomain } from '~/app/../types/Database';
+import { SecurityCategory, makeEppArrayFromLabels } from '~/app/constants/security-categories';
+import { SafeDatePipe } from '~/app/utils/safe-date.pipe';
 
 @Component({
   standalone: true,

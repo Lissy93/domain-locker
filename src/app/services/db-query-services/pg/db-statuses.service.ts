@@ -1,5 +1,5 @@
 import { Observable } from 'rxjs';
-import { PgApiUtilService } from '@/app/utils/pg-api.util';
+import { PgApiUtilService } from '~/app/utils/pg-api.util';
 
 export class StatusQueries {
   constructor(

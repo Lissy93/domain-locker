@@ -1,6 +1,6 @@
 import { SupabaseClient, User } from '@supabase/supabase-js';
 import { catchError, forkJoin, from, map, Observable, of } from 'rxjs';
-import { DbDomain, SaveDomainData, Ssl } from '@/types/Database';
+import { DbDomain, SaveDomainData, Ssl } from '~/app/../types/Database';
 
 export class SslQueries {
   constructor(

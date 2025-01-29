@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { DomainGanttChartComponent } from '@/app/components/charts/registration-lifespan/registration-lifespan.component';
+import { DomainGanttChartComponent } from '~/app/components/charts/registration-lifespan/registration-lifespan.component';
 
 @Component({
   standalone: true,

@@ -1,7 +1,7 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { PrimeNgModule } from '@/app/prime-ng.module';
-import { SupabaseService } from '@/app/services/supabase.service';
+import { PrimeNgModule } from '~/app/prime-ng.module';
+import { SupabaseService } from '~/app/services/supabase.service';
 
 interface AccountIssueInterface {
   type: 'warn' | 'error' | 'info' | 'success';

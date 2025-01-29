@@ -1,6 +1,6 @@
 import { catchError, from, map, Observable, of } from 'rxjs';
-import { DbDomain, Host } from '@/types/Database';
-import { PgApiUtilService } from '@/app/utils/pg-api.util';
+import { DbDomain, Host } from '~/app/../types/Database';
+import { PgApiUtilService } from '~/app/utils/pg-api.util';
 
 export class HostsQueries {
   constructor(
