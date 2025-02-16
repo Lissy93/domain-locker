@@ -40,6 +40,8 @@ export default class AddDomainComponent implements OnInit, OnDestroy {
   private subdomainInfo: { subdomain: string; [key: string]: any }[] = [];
   public initialDomain = '';
 
+  public incompleteDomainInfo = false;
+
   public readonly saveOptions: MenuItem[] = [
     {
       label: 'Save and Add New',
@@ -100,6 +102,10 @@ export default class AddDomainComponent implements OnInit, OnDestroy {
     this.domainForm.get('domainName')?.valueChanges.pipe(
       takeUntil(this.destroy$)
     );
+
+    if (this.initialDomain) {
+      this.onNextStep();
+    }
   }
 
   private setupDomainValidation(): void {
@@ -204,6 +210,7 @@ export default class AddDomainComponent implements OnInit, OnDestroy {
         // At this point, domain is valid, and we fetch subdomains in the background
         await this.fetchSubdomains(domainName);
         } else {
+          this.incompleteDomainInfo = true;
           this.messageService.add({
             severity: 'warn',
             summary: 'Warning',
@@ -266,6 +273,9 @@ export default class AddDomainComponent implements OnInit, OnDestroy {
       expiryDate: expiration,
     });
 
+    if (!this.domainInfo.registrar.name || !expiration) {
+      this.incompleteDomainInfo = true;
+    }
     if (this.domainInfo.registrar.name && !expiration) {
       this.messageService.add({
         severity: 'warn',

@@ -22,7 +22,13 @@
 
       <div class="flex flex-col justify-between min-w-40">
         <span class="text-sm opacity-70">Uptime</span>
-        <span class="text-xl font-semibold pb-2 {{getUptimeColor(summary.uptimePercentage)}}">{{ summary.uptimePercentage.toFixed(0) }}%</span>
+        <span class="text-xl font-semibold pb-2 {{getUptimeColor(summary.uptimePercentage)}}">
+          @if (isNaN(summary.uptimePercentage)) {
+            N/A
+          } @else {
+            {{ summary.uptimePercentage.toFixed(0) }}%
+          }
+        </span>
       </div>
 
       <div class="flex flex-col justify-between min-w-80">
@@ -39,12 +45,24 @@
 
       <div class="flex flex-col justify-between min-w-40">
         <span class="text-sm opacity-70">DNS Response</span>
-        <span class="text-xl font-semibold pb-2 {{getPerformanceColor(summary.avgDnsTime, 'dns')}}">{{ summary.avgDnsTime.toFixed(0) }}ms</span>
+        <span class="text-xl font-semibold pb-2 {{getPerformanceColor(summary.avgDnsTime, 'dns')}}">
+          @if (isNaN(summary.avgDnsTime)) {
+            N/A
+          } @else {
+            {{ summary.avgDnsTime.toFixed(0) }}ms
+          }
+        </span>
         
       </div>
       <div class="flex flex-col justify-between min-w-40">
         <span class="text-sm opacity-70">SSL Handshake</span>
-        <span class="text-xl font-semibold pb-2 {{getPerformanceColor(summary.avgSslTime, 'ssl')}}">{{ summary.avgSslTime.toFixed(0) }}ms</span>
+        <span class="text-xl font-semibold pb-2 {{getPerformanceColor(summary.avgSslTime, 'ssl')}}">
+          @if (isNaN(summary.avgSslTime)) {
+            N/A
+          } @else {
+            {{ summary.avgSslTime.toFixed(0) }}ms
+          }
+        </span>
       </div>
 
       <div class="flex flex-col justify-between min-w-40">

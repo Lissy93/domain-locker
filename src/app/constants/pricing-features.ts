@@ -45,8 +45,8 @@ export const pricingFeatures = [
       'Expiry Notifications',
       'Change Notifications',
       'Domain Change History',
-      'Detailed Statistics',
-      'Advanced Alerts',
+      'Statistics',
+      'Alerts',
     ]
   },
   {
@@ -63,8 +63,6 @@ export const pricingFeatures = [
       'Detailed Statistics',
       'Advanced Alerts',
       'Domain Monitoring',
-      'Custom Branding',
-      'Support',
     ],
     suggested: true,
   },

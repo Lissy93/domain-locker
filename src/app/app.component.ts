@@ -101,7 +101,7 @@ export class AppComponent implements OnInit, OnDestroy {
     private featureService: FeatureService,
     private metaTagsService: MetaTagsService,
     @Inject(PLATFORM_ID) private platformId: Object,
-  ) {}  
+  ) {}
 
   ngOnInit() {
 
@@ -112,7 +112,7 @@ export class AppComponent implements OnInit, OnDestroy {
         const navEndEvent = event as NavigationEnd;
         this.metaTagsService.setRouteMeta(navEndEvent.urlAfterRedirects);
     });
-      
+
     // Check auth state
     if (isPlatformBrowser(this.platformId)) {
       // Listen for route changes (on browser only)
@@ -233,7 +233,7 @@ export class AppComponent implements OnInit, OnDestroy {
           'Documentation has not been enabled on this instance, you can view up-to-date content at domain-locker.com',
         );
         this.router.navigate(['/']);
-  
+
         // Give user option to view on domain-locker.com
         if (docsPath) {
           this.confirmationService.confirm({
@@ -248,7 +248,7 @@ export class AppComponent implements OnInit, OnDestroy {
             accept: () => {
               window.open(`https://domain-locker.com/${docsPath}`, '_blank');
             },
-          }); 
+          });
         }
       }
     }

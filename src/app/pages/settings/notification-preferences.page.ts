@@ -114,8 +114,7 @@ export default class NotificationPreferencesPage implements OnInit {
       name: 'Telegram',
       formControlName: 'telegram',
       requires: [
-        { label: 'Bot Token', name: 'botToken', placeholder: 'Enter bot token' },
-        { label: 'Chat ID', name: 'chatId', placeholder: 'Enter chat ID' }
+        { label: 'Chat ID', name: 'chatId', placeholder: 'Once you\'ve messaged our bot, share the chat ID' }
       ]
     },
     {
@@ -131,6 +130,20 @@ export default class NotificationPreferencesPage implements OnInit {
       requires: [
         { label: 'Homeserver URL', name: 'homeserverUrl', placeholder: 'Enter homeserver URL' },
         { label: 'Access Token', name: 'accessToken', placeholder: 'Enter access token' }
+      ]
+    },
+    {
+      name: 'WhatsApp',
+      formControlName: 'whatsapp',
+      requires: [
+        { label: 'Mobile number', name: 'number', placeholder: 'Enter the mobile number you use on WhatsApp' },
+      ]
+    },
+    {
+      name: 'SMS Texting',
+      formControlName: 'sms',
+      requires: [
+        { label: 'Mobile number', name: 'number', placeholder: 'Enter your mobile number with area code' },
       ]
     }
   ];

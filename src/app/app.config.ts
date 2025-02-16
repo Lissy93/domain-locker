@@ -35,7 +35,10 @@ export const appConfig: ApplicationConfig = {
     // Core Providers
     provideHttpClient(withFetch()),
     provideClientHydration(),
-    provideContent(withMarkdownRenderer(), withShikiHighlighter()),
+    provideContent(
+      withMarkdownRenderer({ loadMermaid: () => import('mermaid') }),
+      withShikiHighlighter(),
+    ),
     provideAnimations(),
     provideFileRouter(
       withInMemoryScrolling({ anchorScrolling: 'enabled' }),

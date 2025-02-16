@@ -170,5 +170,8 @@ export default class MonitorPage {
       count,
     }));
   }
- 
+
+  public isNaN(value: any): boolean {
+    return typeof value === 'number' && isNaN(value);
+  }
 }

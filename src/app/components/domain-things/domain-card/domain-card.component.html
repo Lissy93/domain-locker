@@ -30,8 +30,8 @@
   <!-- Core Info: Registrar and Expiry -->
   <div class="flex justify-between align-items-center {{ (domain.expiry_date && !domain.registrar) ? '!justify-end' : ''}}">
     @if (domain.registrar && isVisible('registrar')) {
-      <a [routerLink]="'/assets/registrars/'+domain.registrar.name" class="text-default no-underline hover:underline">
-        <p class="m-0 truncate max-w-xs" [pTooltip]="'Click to view all domains registered through ' + domain.registrar.name">
+      <a [routerLink]="'/assets/registrars/'+domain.registrar.name" class="text-default no-underline hover:underline flex-1 overflow-hidden">
+        <p class="m-0 truncate" [pTooltip]="'Click to view all domains registered through ' + domain.registrar.name">
           {{ domain.registrar.name }}
         </p>
       </a>
@@ -42,7 +42,7 @@
       [value]="domainUtils.getRemainingDaysText(domain.expiry_date)"
       [severity]="domainUtils.getExpirySeverity(domain.expiry_date)"
       styleClass="ml-2 w-20"
-    ></p-tag>  
+    />
   </div>
 
   <!-- Tags -->

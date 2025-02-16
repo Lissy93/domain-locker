@@ -69,7 +69,6 @@ export default class QuickAddDomain {
         return;
       }
 
-
       // Fetch domain info
       const domainInfoEndpoint = this.envService.getEnvVar('DL_DOMAIN_INFO_API', '/api/domain-info');
       const domainInfo = (await lastValueFrom(
@@ -77,7 +76,8 @@ export default class QuickAddDomain {
       ))?.domainInfo;
 
       if (!domainInfo?.domainName) {
-        throw new Error('Domain information could not be fetched.');
+        this.router.navigate(['/domains/add'], { queryParams: { domain: domainName } });
+        throw new Error('Domain information could not be fetched, we\'ll redirect you to a form where you can enter it manually.');
       }
 
       // Construct and save domain data

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PrimeNgModule } from '~/app/prime-ng.module';
 import { RouterModule } from '@angular/router';
@@ -24,17 +24,21 @@ import { RouterModule } from '@angular/router';
             styleClass="w-full" 
           ></p-button>
         </a>
-        <p-button
-          routerLink="/login"
-          [queryParams]="{ newUser: 'true' }"
-          label="Get Started" 
-          class="min-w-48" 
-          icon="pi pi-arrow-circle-right" 
-          styleClass="w-full" 
-        ></p-button>
+        <a [href]=" isDemo ? 'https://domain-locker.com/login?newUser=true' : '#'">
+          <p-button
+            routerLink="/login"
+            [queryParams]="{ newUser: 'true' }"
+            label="Get Started" 
+            class="min-w-48" 
+            icon="pi pi-arrow-circle-right" 
+            styleClass="w-full" 
+          ></p-button>
+        </a>
       </div>
     </div>
   `,
   styles: []
 })
-export class CtaComponent {}
+export class CtaComponent {
+  @Input() isDemo: boolean = false;
+}

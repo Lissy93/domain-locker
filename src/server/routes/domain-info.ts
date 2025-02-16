@@ -28,11 +28,15 @@ const getParentDomain = (domain: string): string => {
 const getWhoisData = async (domain: string): Promise<any | null> => {
   return new Promise((resolve) => {
     whois(getParentDomain(domain))
-      .then((data: any) => {
-        if (data && typeof data === 'object') {
+      .then(async (data: any) => {
+        // For some domains, like gov.uk, the WHOIS data is just {}
+        if (data && typeof data === 'object' && Object.keys(data).length > 0) {
           resolve(data as Contact);
         } else {
-          console.error('Invalid WHOIS data received:', data);
+          const backupData = await getWhoisBackupData(domain);
+          if (backupData) {
+            return resolve(backupData);
+          }
           resolve(null);
         }
       })
@@ -192,6 +196,10 @@ export default defineEventHandler(async (event) => {
       hostInfo = await safeExecute(() => getHostData(ipv4Addresses[0]), 'Failed to fetch IP information', errors);
     }
 
+    const registrarName = whoisData.registrarName
+      || (typeof whoisData.registrar === 'string') ? whoisData.registrar : whoisData?.registrar?.name
+      || dunno;
+
     const domainInfo: DomainInfo = {
       domainName: whoisData.domainName || dunno,
       status: makeStatusArray(whoisData.domainStatus),
@@ -200,12 +208,12 @@ export default defineEventHandler(async (event) => {
         ipv6: ipv6Addresses || [],
       },
       dates: {
-        expiry_date: whoisData.registrarRegistrationExpirationDate,
-        updated_date: whoisData.updatedDate,
-        creation_date: whoisData.creationDate,
+        expiry_date: whoisData.expiryDate || whoisData.registrarRegistrationExpirationDate || whoisData?.dates?.expiry_date,
+        updated_date: whoisData.lastUpdated || whoisData.updatedDate || whoisData?.dates?.updated_date,
+        creation_date: whoisData.creationDate || whoisData?.dates?.creation_date,
       },
       registrar: {
-        name: whoisData.registrarName || whoisData.registrar || dunno,
+        name: registrarName,
         id: whoisData.registrarIanaId || dunno,
         url: whoisData.registrarUrl || dunno,
         registryDomainId: whoisData.registryDomainId || dunno,
@@ -247,3 +255,59 @@ export default defineEventHandler(async (event) => {
     return { error: 'An unexpected error occurred while processing domain information' };
   }
 });
+
+
+/* This is a backup method, for some domains with funny extensions, which we can't find whois data for */
+const getWhoisBackupData = async (domain: string): Promise<any | null> => {
+  const WHOISXML_API_KEY = import.meta.env['WHOISXML_API_KEY']; 
+  if (!WHOISXML_API_KEY) {
+    console.warn("[WHOISXML] API key not set. Skipping fallback lookup.");
+    return null;
+  }
+
+  const parentDomain = getParentDomain(domain);
+  const apiUrl = `https://www.whoisxmlapi.com/whoisserver/WhoisService?`
+  + `apiKey=${WHOISXML_API_KEY}&outputFormat=json&domainName=${parentDomain}`;
+
+  try {
+    const response = await fetch(apiUrl);
+    if (!response.ok) {
+      console.error(`[WHOISXML] API request failed for ${parentDomain}: ${response.statusText}`);
+      return null;
+    }
+
+    const data = await response.json();
+    if (!data?.WhoisRecord) {
+      console.warn(`[WHOISXML] No valid WhoisRecord found for ${parentDomain}`);
+      return null;
+    }
+
+    const record = data.WhoisRecord;
+    const registryData = record.registryData || {};
+
+    return {
+      domainName: record.domainName || parentDomain,
+      registrar: {
+        name: record.registrarName || registryData.registrarName || "Unknown",
+        id: record.registrarIANAID || "Unknown",
+        url: record.registryData?.whoisServer ? `https://${registryData.whoisServer}` : null,
+      },
+      dates: {
+        creation_date: registryData.createdDateNormalized || "Unknown",
+        expiry_date: registryData.expiresDateNormalized || "Unknown",
+        updated_date: registryData.updatedDateNormalized || "Unknown",
+      },
+      whois: {
+        name: registryData.registrant?.name || null,
+        organization: registryData.registrant?.organization || null,
+        street: registryData.registrant?.street1 || null,
+        city: registryData.registrant?.state || null,
+        country: registryData.registrant?.countryCode || null,
+        postal_code: registryData.registrant?.postalCode || null,
+      },
+    };
+  } catch (error) {
+    console.error(`[WHOISXML] Error fetching data for ${parentDomain}:`, error);
+    return null;
+  }
+};

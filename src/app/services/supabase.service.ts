@@ -124,20 +124,23 @@ export class SupabaseService {
     return user;
   }
 
-  async signUp(email: string, password: string) {
-    const { data, error } = await this.supabase.auth.signUp({ email, password });
+  async signUp(email: string, password: string, captchaToken?: string) {
+    const { data, error } = await this.supabase.auth.signUp(
+      { email, password, options: { captchaToken } },
+    );
     if (error) throw error;
     return data;
   }
 
-  async signIn(email: string, password: string): Promise<{
+  async signIn(email: string, password: string, captchaToken?: string): Promise<{
     requiresMFA: boolean;
     factors: Factor[];
   }> {
     // First verify credentials and reach AAL1
     const { data, error } = await this.supabase.auth.signInWithPassword({
       email,
-      password
+      password,
+      options: { captchaToken },
     });
     
     if (error) throw error;

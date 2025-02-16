@@ -10,12 +10,14 @@ export interface AboutLink {
 export interface AboutPage {
   title: string;
   dirSlug?: string;
+  svgIcon?: string;
   links: AboutLink[];
 }
 
 export const aboutPages: AboutPage[] = [
   {
     title: 'Intro',
+    svgIcon: 'intro',
     links: [
       {
         title: 'Why?',
@@ -32,6 +34,7 @@ export const aboutPages: AboutPage[] = [
   },
   {
     title: 'Articles',
+    svgIcon: 'articles',
     links: [
       { title: 'Useful tools and resources', description: 'Free and/or open source tools, utils and services for managing domains', link: '/about/external-tools', icon: '' },
       { title: 'What is a domain name', description: '', link: '', icon: '' },
@@ -42,6 +45,7 @@ export const aboutPages: AboutPage[] = [
   },
   {
     title: 'Community',
+    svgIcon: 'community',
     links: [
       { title: 'Attributions', description: 'Shout outs to everyone whose made Domain Locker possible', link: '/about/attributions', icon: 'pi pi-heart' },
       { title: 'Support Domain Locker', description: 'Ways you can help us out', link: '/about/we-need-you', icon: 'pi pi-heart' },
@@ -50,6 +54,7 @@ export const aboutPages: AboutPage[] = [
   },
   {
     title: 'Support',
+    svgIcon: 'support',
     links: [
       { title: 'How-Tos', description: 'Short guides to help you mae the most of Domain Locker', link: '/about', icon: '' },
       { title: 'FaQ', description: 'Answers to commonly asked questions', link: '/about/faq', icon: 'pi pi-question-circle' },
@@ -59,6 +64,7 @@ export const aboutPages: AboutPage[] = [
   {
     title: 'Legal',
     dirSlug: 'legal',
+    svgIcon: 'legal',
     links: [
       // These pages are auto-populated from the /src/content/docs/legal/*.md files
       // Files include: accessibility, community-guidelines, cookies, gdpr-statement,
@@ -68,12 +74,12 @@ export const aboutPages: AboutPage[] = [
   {
     title: 'Developing',
     dirSlug: 'developing',
-    links: [
-      
-    ],
+    svgIcon: 'developing',
+    links: [], // Auto-populated from /src/content/docs/developing/*.md files
   },
   {
     title: 'External Links',
+    svgIcon: 'externalLinks',
     links: [
       { title: 'GitHub', description: 'Domain Locker source code', href: 'https://github.com/lissy93/domain-locker', icon: 'pi pi-github' },
       { title: 'DockerHub', description: 'Docker container for self-hosting', href: 'https://hub.docker.com/r/lissy93/domain-locker', icon: '' },

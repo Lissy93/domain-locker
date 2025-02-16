@@ -1,6 +1,11 @@
 <!-- src/app/pages/domains/add.page.html -->
 <div class="card add-domain-wrap">
-  <h2>Add New Domain</h2>
+  <h2>
+    Add New Domain
+    @if (initialDomain) {
+      : {{ initialDomain }}
+    }
+  </h2>
   <p-steps [model]="[{label: 'Domain Name'}, {label: 'Domain Details'}, {label: 'Notifications'}, {label: 'Confirm'}]" [activeIndex]="activeIndex"></p-steps>
 
   <p-message *ngIf="errorMessage" severity="error" [text]="errorMessage"></p-message>
@@ -54,6 +59,12 @@
 
         <!-- Step 2: Domain Details -->
         <div *ngSwitchCase="1" class="space-y-4">
+          <p-message
+            *ngIf="incompleteDomainInfo"
+            severity="warn"
+            text="We were unable to auto-fetch some info. Please complete the registrar and scheduled expiry date manually."
+            styleClass="w-full mb-4"
+          />
           <div class="field">
             <label for="registrar">
               Registrar

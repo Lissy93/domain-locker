@@ -6,13 +6,15 @@ import { SupabaseService } from '~/app/services/supabase.service';
 import { CommonModule } from '@angular/common';
 import { GlobalMessageService } from '~/app/services/messaging.service';
 import { ErrorHandlerService } from '~/app/services/error-handler.service';
+import { FeatureService } from '~/app/services/features.service';
+import { FeatureNotEnabledComponent } from '~/app/components/misc/feature-not-enabled.component';
 
 @Component({
   standalone: true,
   selector: 'app-settings',
   templateUrl: './account.page.html',
   styleUrls: ['./index.page.scss'],
-  imports: [PrimeNgModule, ReactiveFormsModule, CommonModule],
+  imports: [PrimeNgModule, ReactiveFormsModule, CommonModule, FeatureNotEnabledComponent],
   providers: [MessageService, ConfirmationService]
 })
 export default class UserSettingsComponent implements OnInit {
@@ -50,6 +52,8 @@ export default class UserSettingsComponent implements OnInit {
     deleteAccount: false
   };
   
+  isEnabled = true;
+  writePermissions = true;
 
   constructor(
     private fb: FormBuilder,
@@ -58,6 +62,7 @@ export default class UserSettingsComponent implements OnInit {
     private errorHandler: ErrorHandlerService,
     private confirmationService: ConfirmationService,
     private cdr: ChangeDetectorRef,
+    private featureService: FeatureService,
   ) {}
 
   ngOnInit() {
@@ -69,6 +74,10 @@ export default class UserSettingsComponent implements OnInit {
       this.cdr.detectChanges(); // Ensures the UI updates
     });
     this.checkMFAStatus();
+
+    (this.featureService.isFeatureEnabled('writePermissions')).subscribe((isEnabled) => {
+      this.writePermissions = isEnabled;
+    });
   }
 
   initializeForms() {
@@ -143,6 +152,10 @@ export default class UserSettingsComponent implements OnInit {
   }
 
   async updateProfile() {
+    if (!this.writePermissions) {
+      this.messageService.showWarn('Feature not enabled', 'You do not have permission to update your profile');
+      return;
+    }
     if (this.profileForm.valid) {
       this.loading.profile = true;
       try {
@@ -157,6 +170,10 @@ export default class UserSettingsComponent implements OnInit {
   }
 
   async updateEmail() {
+    if (!this.writePermissions) {
+      this.messageService.showWarn('Feature not enabled', 'You do not have permission to update your email');
+      return;
+    }
     if (this.emailForm.valid) {
       this.loading.email = true;
       try {
@@ -171,6 +188,10 @@ export default class UserSettingsComponent implements OnInit {
   }
 
   async updatePassword() {
+    if (!this.writePermissions) {
+      this.messageService.showWarn('Feature not enabled', 'You do not have permission to update your password');
+      return;
+    }
     if (this.passwordForm.valid) {
       this.loading.password = true;
       try {
@@ -209,6 +230,10 @@ export default class UserSettingsComponent implements OnInit {
   }
 
   async startEnableMFA(): Promise<void> {
+    if (!this.writePermissions) {
+      this.messageService.showWarn('Feature not enabled', 'You do not have permission to enable MFA');
+      return;
+    }
     this.loading.mfa = true;
     try {
       const { qrCode, secret, factorId, challengeId } = await this.supabaseService.enableMFA();
@@ -229,6 +254,10 @@ export default class UserSettingsComponent implements OnInit {
   
 
   async enableMFA(): Promise<void> {
+    if (!this.writePermissions) {
+      this.messageService.showWarn('Feature not enabled', 'You do not have permission to enable MFA');
+      return;
+    }
     this.loading.mfa = true;
     try {
       const { qrCode } = await this.supabaseService.enableMFA();
@@ -260,6 +289,10 @@ export default class UserSettingsComponent implements OnInit {
   }  
 
   async disableMFA(): Promise<void> {
+    if (!this.writePermissions) {
+      this.messageService.showWarn('Feature not enabled', 'You do not have permission to disable MFA');
+      return;
+    }
     this.loading.mfa = true;
     try {
       await this.supabaseService.disableMFA();
@@ -316,14 +349,6 @@ export default class UserSettingsComponent implements OnInit {
       this.loading.session = true;
       this.errorHandler.handleError({ message: 'Method not yet implemented', location: 'settings/account', showToast: true });
       this.loading.session = false;
-      // try {
-      //   await this.supabaseService.updateSessionTimeout(this.sessionForm.get('sessionTimeout')!.value);
-      //   this.messageService.showSuccess('Session timeout updated', '');
-      // } catch (error) {
-      //   this.errorHandler.handleError({ error, message: 'Failed to update session timeoue', location: 'settings/account', showToast: true });
-      // } finally {
-      //   this.loading.session = false;
-      // }
     }
   }
 
@@ -341,6 +366,10 @@ export default class UserSettingsComponent implements OnInit {
   }
 
   confirmDeleteAccount() {
+    if (!this.writePermissions) {
+      this.messageService.showWarn('Feature not enabled', 'You do not have permission to delete your account');
+      return;
+    }
     this.confirmationService.confirm({
       message: 'Are you sure you want to delete your account? This action cannot be undone.',
       accept: () => {

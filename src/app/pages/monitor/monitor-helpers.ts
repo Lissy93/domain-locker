@@ -9,6 +9,7 @@ export interface UptimeData {
 }
 
 export function getUptimeColor(percentage: number, prefix: string = 'text-'): string {
+  if (isNaN(percentage)) return `${prefix}bluegray-400`;
   if (percentage > 99) return `${prefix}green-400`;
   if (percentage > 95) return `${prefix}yellow-400`;
   if (percentage > 90) return `${prefix}orange-400`;
@@ -17,6 +18,7 @@ export function getUptimeColor(percentage: number, prefix: string = 'text-'): st
 }
 
 export function getResponseCodeColor(code: number): string {
+  if (isNaN(code)) return 'var(--bluegray-400)';
   if (code >= 200 && code < 300) return 'var(--green-400)';
   if (code >= 300 && code < 400) return 'var(--blue-400)';
   if (code >= 400 && code < 500) return 'var(--yellow-400)';
@@ -47,7 +49,9 @@ export function getPerformanceColor(
   }
 
   // Determine the color based on the value
-  if (value <= typeThresholds.green) {
+  if (isNaN(value)) {
+    return `${prefix}bluegray${postfix}`;
+  } else if (value <= typeThresholds.green) {
     return `${prefix}green${postfix}`;
   } else if (value <= typeThresholds.yellow) {
     return `${prefix}yellow${postfix}`;

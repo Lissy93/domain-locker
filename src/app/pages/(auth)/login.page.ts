@@ -1,8 +1,8 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, PLATFORM_ID, Inject, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, AbstractControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SupabaseService } from '~/app/services/supabase.service';
-import { CommonModule } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PrimeNgModule } from '~/app/prime-ng.module';
 import { Subscription } from 'rxjs';
@@ -11,6 +11,7 @@ import { ErrorHandlerService } from '~/app/services/error-handler.service';
 import { FeatureService } from '~/app/services/features.service';
 import { EnvService } from '~/app/services/environment.service';
 import { LogoComponent} from '~/app/components/home-things/logo/logo.component';
+import { NgxTurnstileModule, NgxTurnstileComponent } from 'ngx-turnstile';
 
 @Component({
   standalone: true,
@@ -20,6 +21,7 @@ import { LogoComponent} from '~/app/components/home-things/logo/logo.component';
     FormsModule,
     PrimeNgModule,
     LogoComponent,
+    NgxTurnstileModule,
   ],
   templateUrl: './login.page.html',
   styles: [`
@@ -53,6 +55,10 @@ export default class LoginPageComponent implements OnInit {
   partialSession: any;
   isDemoInstance = false;
 
+  @ViewChild(NgxTurnstileComponent) turnstile!: NgxTurnstileComponent;
+  turnstileResponse?: string;
+  turnstileSiteKey = '';
+
   private subscriptions: Subscription = new Subscription();
 
   disabledSocialLogin$ = this.featureService.isFeatureEnabled('disableSocialLogin');
@@ -67,6 +73,7 @@ export default class LoginPageComponent implements OnInit {
     private errorHandlerService: ErrorHandlerService,
     private featureService: FeatureService,
     private environmentService: EnvService,
+    @Inject(PLATFORM_ID) private platformId: Object,
   ) {
     this.form = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -75,6 +82,8 @@ export default class LoginPageComponent implements OnInit {
       mfaCode: ['', [Validators.pattern(/^\d{6}$/)]],
       acceptTerms: [false]
     });
+
+    this.turnstileSiteKey = this.environmentService.getEnvVar('DL_TURNSTILE_KEY', undefined);
   }
 
   ngOnInit() {
@@ -121,6 +130,10 @@ export default class LoginPageComponent implements OnInit {
   
   ngOnDestroy() {
     this.subscriptions.unsubscribe();
+  }
+
+  sendCaptchaResponse(captchaResponse: string | null) {
+    this.turnstileResponse = captchaResponse || undefined;
   }
 
   async checkAuthStatus() {
@@ -244,6 +257,7 @@ export default class LoginPageComponent implements OnInit {
       }
     } catch (error) {
       this.handleError(error);
+      this.turnstile.reset();
     } finally {
       this.showLoader = false;
     }
@@ -277,7 +291,8 @@ export default class LoginPageComponent implements OnInit {
   }): Promise<void> {
     const { requiresMFA, factors } = await this.supabaseService.signIn(
       credentials.email,
-      credentials.password
+      credentials.password,
+      this.turnstileResponse,
     );
 
     if (requiresMFA && factors.length > 0) {
@@ -308,7 +323,8 @@ export default class LoginPageComponent implements OnInit {
     const delayTimeout = 15000;
     const authPromise = this.supabaseService.signUp(
       credentials.email,
-      credentials.password
+      credentials.password,
+      this.turnstileResponse,
     );
     const timeoutPromise = this.createTimeout(delayTimeout);
     

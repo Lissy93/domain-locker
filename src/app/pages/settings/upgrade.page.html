@@ -1,4 +1,26 @@
 
+      
+<p-messages severity="success" *ngIf="status === 'success'">
+  <ng-template pTemplate>
+    <div class="flex items-center">
+      <i class="pi pi-check-circle mr-2"></i>
+      <span>
+        Subscription updated successfully.
+        You may need to refresh this page for changes to take effect.
+      </span>
+    </div>
+  </ng-template>
+</p-messages>
+
+<p-messages severity="error" *ngIf="status === 'failed'">
+  <ng-template pTemplate>
+    <div class="flex items-center">
+      <i class="pi pi-exclamation-triangle mr-2"></i>
+      <span>Failed to process payment, please try again or contact support.</span>
+    </div>
+  </ng-template>
+</p-messages>
+
 <div class="flex justify-between items-center mb-2">
   <h2>Upgrade</h2>
   <!-- <a routerLink="/about/pricing">
@@ -21,19 +43,44 @@
 
 <div class="w-full p-3 p-card">
   <h3>Current Plan</h3>
-  <div class="flex justify-between items-center">
-    <p *ngIf="currentPlan$ | async as currentPlan; else loading">
+  <div class="flex justify-between items-center flex-wrap">
+    <div>
+    <p *ngIf="currentPlan$ | async as currentPlan; else loading" class="my-1">
       You are currently on the <strong>{{ currentPlan | titlecase }}</strong> plan.
     </p>
     <ng-template #loading>
-      <p>Loading billing details...
-      </p>
+      <p>Loading billing details...</p>
     </ng-template>
-    <p-button
-      *ngIf="(currentPlan$ | async) !== 'pro'"
-      label="Upgrade to Pro"
-      routerLink="/settings/subscription"
-      severity="success" />
+      <p *ngIf="billingInfo && billingInfo.next_payment_due" class="opacity-70 my-1 text-sm">
+        Renews on {{ billingInfo.next_payment_due | date: 'mediumDate' }}
+      </p>
+    </div>
+    <div class="flex gap-3 flex-wrap">
+      <p-button
+        *ngIf="(currentPlan$ | async) !== 'pro'"
+        label="Upgrade to Pro"
+        (click)="handleUpgrade('pro')"
+        severity="success"
+        icon="pi pi-star-fill"
+        size="small"
+      />
+      <a *ngIf="billingInfo && billingInfo?.meta?.invoice_pdf" [href]="billingInfo.meta.invoice_pdf">
+        <p-button
+          label="Download Invoice"
+          severity="info"
+          icon="pi pi-file-pdf"
+          size="small"
+        />
+      </a>
+      <p-button
+        *ngIf="(currentPlan$ | async) !== 'free'"
+        label="Cancel Plan"
+        severity="danger"
+        icon="pi pi-times-circle"
+        size="small"
+        (click)="cancelSubscription()"
+      />
+    </div>
   </div>
 </div>
 
@@ -62,10 +109,11 @@
       </ul>
     </div>  
     <button pButton
-      *ngIf="(currentPlan$ | async) !== plan.planId && plan.planId !== 'free'"
+      *ngIf="(currentPlan$ | async) === 'free' && plan.planId !== 'free'"
       routerLink="/settings/upgrade"
       label="Upgrade"
       [severity]="plan.suggested ? 'success' : 'secondary'"
+      (click)="handleUpgrade(plan.planId)"
       class="mx-4 p-button-primary {{ plan.suggested ? '' : 'p-button-outlined' }}"></button>
   </div>
 </div>

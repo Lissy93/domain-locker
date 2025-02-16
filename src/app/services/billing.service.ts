@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, catchError, from, map, Observable, throwError } from 'rxjs';
 import { SupabaseService } from '~/app/services/supabase.service';
 import { EnvService } from '~/app/services/environment.service';
 import { ErrorHandlerService } from '~/app/services//error-handler.service';
+import { HttpClient } from '@angular/common/http';
 
 /**
  * Environment Types
@@ -23,6 +24,7 @@ export class BillingService {
     private supabaseService: SupabaseService,
     private envService: EnvService,
     private errorHandler: ErrorHandlerService,
+    private http: HttpClient,
   ) {
     this.environmentType = this.envService.getEnvironmentType();
   }
@@ -81,39 +83,81 @@ export class BillingService {
     return this.userPlan$.asObservable();
   }
 
-  /**
-   * All the special plans (like sponsor, complimentary, etc.) are mapped
-   * to the corresponding billing plan, used for feature availability checks.
-   * @param plan
-   * @returns
-   */
-  private mapSpecialPlanToBillingPlan(plan: UserType): BillingPlans {
-    if (['free', 'hobby', 'pro', 'enterprise'].includes(plan)) {
-      return plan as BillingPlans;
-    }
-    const planMap: Record<SpecialPlans, BillingPlans> = {
-      sponsor: 'hobby',
-      complimentary: 'hobby',
-      tester: 'pro',
-      demo: 'pro',
-      super: 'enterprise',
-    };
-    return planMap[plan as SpecialPlans] || 'free';
+  /** Returns an Observable that emits the user's billing row or throws an error. */
+  getBillingData(): Observable<any> {
+    return from(
+      this.supabaseService.supabase
+        .from('billing')
+        .select('*')
+        .single()
+    ).pipe(
+      map(({ data, error }) => {
+        if (error) {
+          throw error;
+        }
+        return data;
+      }),
+      catchError((err) => throwError(() => err))
+    );
   }
 
-    /**
-   * Creates a Stripe checkout session for the selected plan.
-   * @param planId Plan identifier
-   */
-    async createCheckoutSession(planId: string): Promise<{ url: string }> {
-      // const { data, error } = await this.supabaseService.callFunction('create_checkout_session', { plan_id: planId });
-      // if (error) {
-      //   console.error('Failed to create checkout session:', error);
-      //   throw error;
-      // }
-      // return data;
-      return { url: 'https://dummy-url.com' }; // TODO: Replace with actual implementation
+  async cancelSubscription(subscriptionId: string): Promise<any> {
+    const userId = (await this.supabaseService.getCurrentUser())?.id;
+    const endpoint = this.envService.getEnvVar('DL_STRIPE_CANCEL_URL', '/api/stripe/cancel-subscription');
+    try {
+      const body = { userId, subscriptionId };
+      const res = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+      const data = await res.json();
+      console.log(data)
+      if (!res.ok) {
+        throw new Error(data?.error || 'Failed to cancel subscription');
+      }
+      if (data.error) {
+        throw new Error(data.error);
+      }
+      return data;
+    } catch (error) {
+      throw error;
     }
+  }
 
+
+  async createCheckoutSession(productId: string): Promise<string> {
+    const userId = (await this.supabaseService.getCurrentUser())?.id;
+    const endpoint = this.envService.getEnvVar('DL_STRIPE_CHECKOUT_URL', null, true);
+    const host = this.envService.getEnvVar('DL_BASE_URL', 'https://domain-locker.com');
+    const callbackUrl = host ? `${host}/settings/upgrade` : window.location.href;
+    try {
+      const body = { userId, productId, callbackUrl };
+      const res = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+      const data = await res.json();
+      if (!res.ok || !data?.url) {
+        throw new Error(data?.error || 'Failed to create checkout session');
+      }
+      return data.url;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  verifyStripeSession(sessionId: string) {
+    this.http.post('/api/verify-checkout', { sessionId })
+      .subscribe((res: any) => {
+        if (res && res.status === 'paid') {
+          // Payment is confirmed, plan is 'pro' or 'hobby', etc.
+          // Now you can either refresh the user plan from DB or fallback if webhooks fail
+        } else {
+          // Payment not actually successful
+        }
+      });
+  }
 
 }

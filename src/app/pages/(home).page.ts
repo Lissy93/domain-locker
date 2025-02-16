@@ -25,6 +25,7 @@ import { PricingCardsComponent } from '~/app/components/home-things/pricing-card
 import { CtaComponent } from '~/app/components/home-things/cta/cta.component';
 import { HeroComponent } from '~/app/components/home-things/hero/hero.component';
 import { DemoComponent } from '~/app/components/home-things/demo/demo.component';
+import { DemoWelcomeComponent } from '~/app/components/home-things/demo-welcome/demo.welcome.component';
 
 import { TranslateModule } from '@ngx-translate/core';
 import { ErrorHandlerService } from '~/app/services/error-handler.service';
@@ -55,6 +56,7 @@ import { Router } from '@angular/router';
     CtaComponent,
     HeroComponent,
     DemoComponent,
+    DemoWelcomeComponent,
   ],
   templateUrl: './home.page.html',
   styles: [`
@@ -66,6 +68,7 @@ export default class HomePageComponent implements OnInit {
   domains: DbDomain[] = [];
   loading: boolean = true;
   isAuthenticated: boolean = false;
+  isDemoInstance: boolean = false;
   showInsights: boolean = false;
 
   private subscriptions: Subscription = new Subscription();
@@ -127,10 +130,13 @@ export default class HomePageComponent implements OnInit {
 
   // If running demo instance, and user not authenticated, redirect to login page
   demoInstanceLoginRedirect() {
-    if (this.environmentService.getEnvironmentType() === 'demo' && !this.isAuthenticated) {
-      this.router.navigate(['/login']).then(() => {
-        this.loading = false;
-      });
+    if (this.environmentService.getEnvironmentType() === 'demo') {
+      this.isDemoInstance = true;
+      if (!this.isAuthenticated) {
+        this.router.navigate(['/login']).then(() => {
+          this.loading = false;
+        });
+      }
     }
   }
 }

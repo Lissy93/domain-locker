@@ -19,3 +19,5 @@ If you deploy the code as-is, you must not charge users for access to your insta
 ## Prerequisites
 Domain Locker is intended to be run as a Docker stack. You will need to have Docker and Docker Compose installed on your server.
 You may also need a domain name and a valid SSL certificate for that domain.
+
+<img src="https://i.ibb.co/Kj3Z11D9/self-hosted-setup-bg.png" width="400" text-align="center" alt="Self-Hosted Setup">

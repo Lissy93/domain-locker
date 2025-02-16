@@ -2,40 +2,39 @@
 
 @if (!isAuthenticated) {
 
+  <div class="flex flex-col gap-2">
 
-<div class="flex flex-col gap-2">
+    <app-hero />
 
-  <app-hero />
+    <p-divider />
 
-  <p-divider />
+    <h3 class="mt-2 mb-0 text-3xl">Features</h3>
+    <p class="m-0 italic opacity-80 text-lg">
+      Domain Locker is the ultimate all-in-one platform to manage, monitor, and
+      optimize your domain portfolio effortlessly, with smart alerts, detailed
+      analytics, and powerful tools to keep you organized, secure, and always in control.
+    </p>
+    <app-feature-grid class="my-4" />
 
-  <h3 class="mt-2 mb-0 text-3xl">Features</h3>
-  <p class="m-0 italic opacity-80 text-lg">
-    Domain Locker is the ultimate all-in-one platform to manage, monitor, and
-    optimize your domain portfolio effortlessly, with smart alerts, detailed
-    analytics, and powerful tools to keep you organized, secure, and always in control.
-  </p>
-  <app-feature-grid class="my-4" />
+    <p-divider />
 
-  <p-divider />
+    <h3 class="mt-2 mb-0 text-3xl">Pricing</h3>
 
-  <h3 class="mt-2 mb-0 text-3xl">Pricing</h3>
+    <app-pricing-cards class="w-full" />
 
-  <app-pricing-cards class="w-full" />
+    <p-divider />
 
-  <p-divider />
+    <h3 class="mt-2 mb-0 text-3xl">Demo</h3>
 
-  <h3 class="mt-2 mb-0 text-3xl">Demo</h3>
+    <app-demo />
 
-  <app-demo />
+    <app-feature-carousel class="mt-3"/>
 
-  <app-feature-carousel class="mt-3"/>
+    <p-divider />
 
-  <p-divider />
+    <app-cta />
 
-  <app-cta />
-
-</div>
+  </div>
 
 }
 
@@ -43,6 +42,11 @@
       
 
 @if (isAuthenticated) {
+
+  @if (isDemoInstance) {
+    <app-demo-welcome />
+  }
+
   @if (loading) {
     <loading loadingTitle="Loading" loadingDescription="Fetching your domains, and calculating stats" />
   }
@@ -128,6 +132,12 @@
       <a class="text-primary opacity-70" routerLink="/assets">View All Assets</a><br>
     </p>
   }
+
+  @if (isDemoInstance) {
+    <p-divider />
+    <app-cta [isDemo]="true" />
+  }
+
   <p-divider />
   <app-sponsor-message />
 }

@@ -1,6 +1,12 @@
 <h2>User Settings</h2>
 
-<div class="p-4 grid grid-cols-1 xl:grid-cols-2 gap-4 grid-flow-dense auto-rows-auto user-settings-container">
+<app-feature-not-enabled *ngIf="!writePermissions" feature="writePermissions" />
+  
+<div class="p-4 grid grid-cols-1 xl:grid-cols-2 gap-4 grid-flow-dense auto-rows-auto user-settings-container relative">
+  <div *ngIf="!writePermissions"
+    class="absolute h-full w-full z-10 opacity-25 cursor-not-allowed"
+    title="Access disabled on this instance."></div>
+  
   <!-- Profile Settings Panel -->
   <p-card header="Profile" styleClass="h-full">
     <form [formGroup]="profileForm" (ngSubmit)="updateProfile()" class="h-full flex flex-col justify-between pb-2">

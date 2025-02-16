@@ -128,9 +128,11 @@ export class NavbarComponent implements OnInit, AfterViewInit {
 
   // Fetch number of unread notifications for the notification badge
   loadUnreadNotificationCount() {
-    this.databaseService.instance.notificationQueries.getUnreadNotificationCount().subscribe(
-      (count: number) => this.unreadNotificationsCount = count,
-    );
+    if (this.isAuthenticated) {
+      this.databaseService.instance.notificationQueries.getUnreadNotificationCount().subscribe(
+        (count: number) => this.unreadNotificationsCount = count,
+      );
+    }
   }
 
   async checkAuthStatus() {

@@ -34,7 +34,7 @@ const defaultWriteMethods = new Set([
   'deleteLinks',
   // Notification Editing
   'saveNotifications',
-  'updateNotificationChannels',
+  // 'updateNotificationChannels',
   'updateBulkNotificationPreferences',
   'markAllNotificationsRead',
   'addNotification',
@@ -45,11 +45,15 @@ const defaultWriteMethods = new Set([
   'updateDomainCostings',
 ]);
 
+const environmentType =  import.meta.env['DL_ENV_TYPE'];
+const disableWriteEnvVar = import.meta.env['DL_DISABLE_WRITE_METHODS'];
+const writeMethods = (environmentType === 'demo' || disableWriteEnvVar) ? defaultWriteMethods :  new Set<string>();
+
 export function createDbProxy<T extends object>(
   realService: T,
   featureService: FeatureService,
   globalMsg: GlobalMessageService,
-  writeMethodNames: Set<string> = defaultWriteMethods,
+  writeMethodNames: Set<string> = writeMethods,
 ): T {
   return new Proxy(realService, {
     get(target, property, receiver) {
@@ -63,6 +67,11 @@ export function createDbProxy<T extends object>(
       if (!writeMethodNames.has(property as string)) {
         return original;
       }
+
+      // If write permissions are enabled, just return the original method.
+      // if (await featureService.isFeatureEnabledPromise('writePermissions')) {
+      //   return original;
+      // }
 
       // It's a "write" method => wrap it so we do the check before the actual DB call.
       return function(...args: any[]): Observable<any> {

@@ -113,6 +113,16 @@
                     text="You must agree to the terms and conditions"></p-message>
         </div>
 
+        <!--  Captcha -->
+        <ngx-turnstile
+          *ngIf="turnstileSiteKey"
+          class="text-center mb-4"
+          [siteKey]="turnstileSiteKey"
+          (resolved)="sendCaptchaResponse($event)"
+          theme="auto"
+          [tabIndex]="0"
+        />
+
         <p-button type="submit" [label]="isLogin ? 'Login' : 'Sign Up'" styleClass="w-full"
                   [disabled]="form.invalid || disabled" [loading]="showLoader"></p-button>
       </form>

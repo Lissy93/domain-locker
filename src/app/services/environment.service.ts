@@ -13,6 +13,7 @@ type EnvVar =
 | 'DL_GLITCHTIP_DSN'    // GlitchTip DSN, for error tracking
 | 'DL_PLAUSIBLE_URL'    // URL to Plausible instance, for hit counting
 | 'DL_PLAUSIBLE_SITE'   // Plausible site ID /  URL, for hit counting
+| 'DL_TURNSTILE_KEY'    // Cloudflare public site key for Turnstile captcha
 | 'DL_PG_HOST'          // Postgres host
 | 'DL_PG_PORT'          // Postgres port
 | 'DL_PG_NAME'          // Postgres DB name
@@ -22,6 +23,8 @@ type EnvVar =
 | 'DL_DEMO_PASS'        // Demo user password (for auto-filling on demo instance)
 | 'DL_DOMAIN_INFO_API'  // API endpoint for /api/domain-info
 | 'DL_DOMAIN_SUBS_API'  // API endpoint for /api/domain-subs
+| 'DL_STRIPE_CHECKOUT_URL'  // Endpoint for creating a Stripe Checkout session
+| 'DL_STRIPE_CANCEL_URL'    // Endpoint for cancelling subscription, + refunding via Stripe
 ;
 
 @Injectable({

@@ -66,6 +66,7 @@ export interface DocAttributes {
       border-color: var(--surface-50);
       margin-bottom: 2rem;
     }
+    img { border-radius: 4px; display: flex; margin: 0 auto; max-width: 100%; }
     .sticky-nav { transition: top 0.3s ease; }
   `]
 })

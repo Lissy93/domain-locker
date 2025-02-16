@@ -1,4 +1,4 @@
-import { SupabaseClient, User } from '@supabase/supabase-js';
+  import { SupabaseClient, User } from '@supabase/supabase-js';
 import { catchError, concatMap, forkJoin, from, map, Observable, switchMap } from 'rxjs';
 import { Tag } from '~/app/../types/Database';
 
@@ -100,7 +100,6 @@ export class TagQueries {
     }
   }
 
-  
   getTagsWithDomainCounts(): Observable<any[]> {
     return from(
       this.supabase
@@ -117,15 +116,22 @@ export class TagQueries {
         `)
     ).pipe(
       map(({ data, error }) => {
-        if (error) throw error;
-        return data.map(tag => ({
+        if (error) {
+          throw error;
+        }
+        return (data || []).map(tag => ({
           ...tag,
           domain_count: tag.domain_tags.length,
         }));
       }),
-      catchError(error => this.handleError(error))
+      catchError((err) => {
+        // handleError can either throw or return a throwError observable
+        // e.g., return throwError(() => err)
+        return this.handleError(err);
+      })
     );
   }
+  
 
   // Method to update tags
   async updateTags(domainId: string, tags: string[]): Promise<void> {
