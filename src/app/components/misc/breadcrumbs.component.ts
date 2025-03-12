@@ -4,6 +4,7 @@ import { PrimeNgModule } from '~/app/prime-ng.module';
 import { MenuItem } from 'primeng/api';
 import { DomainFaviconComponent } from '~/app/components/misc/favicon.component';
 import { DlIconComponent } from '~/app/components/misc/svg-icon.component';
+import { MetaTagsService } from '~/app/services/meta-tags.service';
 import {
   statsLinks,
   settingsLinks,
@@ -60,15 +61,32 @@ export class BreadcrumbsComponent implements OnInit, OnChanges {
   public shouldShowBreadcrumbs: boolean = true;
   private navLinksMap: { [key: string]: ExtendedMenuItem } = {};
 
+  constructor(private metaTagsService: MetaTagsService) {}
+
   ngOnInit(): void {
     this.flattenNavLinks();
     this.updateBreadcrumbs();
+    this.generateBreadcrumbSchema();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['pagePath'] && !changes['pagePath'].firstChange) {
       this.updateBreadcrumbs();
+      this.generateBreadcrumbSchema();
     }
+  }
+
+  private generateBreadcrumbSchema() {
+    if (!this.breadcrumbs || this.breadcrumbs.length === 0) return;
+
+    const structuredData = this.breadcrumbs.map((breadcrumb, index) => ({
+      "@type": "ListItem",
+      "position": index + 1,
+      "name": breadcrumb.label,
+      "item": `https://domain-locker.com${breadcrumb['route']}`
+    }));
+
+    this.metaTagsService.addStructuredData('breadcrumb', structuredData);
   }
 
   public isDomainPage(path: string): boolean {
@@ -100,7 +118,7 @@ export class BreadcrumbsComponent implements OnInit, OnChanges {
 
   private determineIfBreadcrumbsShouldBeShown(): boolean {
     if (!this.breadcrumbs && !this.pagePath) return false;
-    const hideOnPages = ['/'];
+    const hideOnPages = ['/', '/about'];
     if (this.pagePath && !hideOnPages.includes(this.pagePath.split('?')[0])) return true;
     return false;
   }
@@ -125,6 +143,12 @@ export class BreadcrumbsComponent implements OnInit, OnChanges {
       'alternatives': 'th-large',
       'domain-management': 'star-fill',
       'attributions': 'heart-fill',
+      'database-connection': 'database',
+      'error': 'exclamation-circle',
+      'delete-data': 'trash',
+      'demo': 'desktop',
+      'support': 'headphones',
+      'self-hosted-support': 'server',
     };
     const iconName = icons[path];
     if (!iconName) return;
@@ -148,6 +172,7 @@ export class BreadcrumbsComponent implements OnInit, OnChanges {
       'edit-events': 'Edit Events',
       'external-tools': 'External Tools',
       'faq': 'Frequently Asked Questions',
+      'about': 'Docs',
     };
     const formatLabel = (str: string) =>
       str.includes('.') ? str

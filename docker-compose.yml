@@ -1,0 +1,53 @@
+  
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: domain-locker-db
+    restart: unless-stopped
+
+    # Env vars for initial DB
+    environment:
+      POSTGRES_DB: ${DL_PG_NAME:-domain_locker}
+      POSTGRES_USER: ${DL_PG_USER:-postgres}
+      POSTGRES_PASSWORD: ${DL_PG_PASSWORD:-changeme2420}
+
+    ports:
+      - "${DL_PG_PORT:-5432}:5432"
+
+    # Mount volume and init scripts
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./db/setup-postgres.sh:/docker-entrypoint-initdb.d/00-setup-postgres.sh:ro
+      - ./db/schema.sql:/docker-entrypoint-initdb.d/schema.sql:ro
+
+    networks:
+      - domain_locker_network
+
+  app:
+    image: lissy93/domain-locker:latest
+    container_name: domain-locker-app
+    restart: unless-stopped
+    depends_on:
+      - postgres
+
+    environment:
+      DL_ENV_TYPE: ${DL_ENV_TYPE:-selfHosted}
+
+      # DB Connection Settings
+      DL_PG_HOST: postgres
+      DL_PG_PORT: 5432
+      DL_PG_USER: ${DL_PG_USER:-postgres}
+      DL_PG_PASSWORD: ${DL_PG_PASSWORD:-changeme2420}
+      DL_PG_NAME: ${DL_PG_NAME:-domain_locker}
+
+    ports:
+      - "3000:3000"
+    networks:
+      - domain_locker_network
+
+volumes:
+  postgres_data:
+
+networks:
+  domain_locker_network:
+    driver: bridge

@@ -1,3 +1,15 @@
+
+
+<ul class="grid md:hidden grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 list-none p-0 my-4">
+  <li *ngFor="let link of settingsLinks">
+    <a [routerLink]="link.routerLink"
+      class="p-card flex p-3 no-underline transition ease-in duration-300 border-transparent border-3 hover:border-primary-300 h-full">
+      <i [class]="link.icon + ' mr-3'"></i>
+      <h4 class="m-0">{{ link.label }}</h4>
+    </a>
+  </li>
+</ul>
+
 <h3>Account Checkup</h3>
 <app-account-issues />
 

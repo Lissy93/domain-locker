@@ -2,7 +2,7 @@ import { Component, OnInit, ChangeDetectorRef, PLATFORM_ID, Inject, ViewChild } 
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, AbstractControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SupabaseService } from '~/app/services/supabase.service';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PrimeNgModule } from '~/app/prime-ng.module';
 import { Subscription } from 'rxjs';
@@ -176,8 +176,12 @@ export default class LoginPageComponent implements OnInit {
   }
 
   checkIfDemoInstance() {
-    if (this.environmentService.getEnvironmentType() === 'demo') {
+    const environmentType = this.environmentService.getEnvironmentType();
+    if (environmentType === 'demo') {
       this.isDemoInstance = true;
+    }
+    if (environmentType === 'demo' || environmentType === 'dev') {
+      // Pre-fill demo/dev credentials if they exist
       const demoUser = this.environmentService.getEnvVar('DL_DEMO_USER') || '';
       const demoPass = this.environmentService.getEnvVar('DL_DEMO_PASS') || '';
       this.form.get('email')?.setValue(demoUser);

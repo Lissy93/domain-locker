@@ -10,7 +10,8 @@ import { RouterModule } from '@angular/router';
   template: `
     <div class="p-card py-3 px-4 my-4">
       <h3 class="my-1 font-semmibold">Ready to get started?</h3>
-      <p class="my-2">
+      <p class="m-0 mt-2 text-xl italic opacity-60">If you own a domain name, you need Domain Locker!</p>
+      <p class="mt-2 mb-0">
         Domain Locker is easy to use, and our free plan will get you up and running in no time.
         Alternatively, check out our GitHub repo to run on your own infrastructure.
       </p>

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { SupabaseService } from '~/app/services/supabase.service';
 import { DatabaseService, DbDomain, IpAddress, SaveDomainData, DomainExpiration } from '~/app/../types/Database';
-import { catchError, from, map, Observable, throwError, retry, switchMap } from 'rxjs';
+import { catchError, from, map, Observable, throwError, retry, switchMap, toArray, of, concatMap } from 'rxjs';
 import { makeEppArrayFromLabels } from '~/app/constants/security-categories';
 import { ErrorHandlerService } from '~/app/services/error-handler.service';
 import { GlobalMessageService } from '~/app/services/messaging.service';
@@ -198,30 +198,54 @@ export default class MainDatabaseService extends DatabaseService {
     return !!data;
   }
 
-  // saveDomain(data: SaveDomainData): Observable<DbDomain> {
-  //   return this.featureService.isFeatureEnabled('writePermissions').pipe(
-  //     map(isEnabled => {
-  //       if (!isEnabled) {
-  //         this.globalMessagingService.showWarn('Write permissions are disabled', 'Skipping save operation');
-  //         throw new Error('Write permissions disabled');
-  //       }
-  //       return isEnabled;
-  //     }),
-  //     switchMap(() => from(this.saveDomainInternal(data))),
-  //     catchError(error => this.handleError(error))
-  //   );
-  // }
-
   saveDomain(data: SaveDomainData): Observable<DbDomain> {
-    if (!this.featureService.isFeatureEnabled('writePermissions')) {
-      return throwError(() => new Error('Write permissions disabled'));
-    }
     return from(this.saveDomainInternal(data)).pipe(
       catchError(error => this.handleError(error))
     );
   }
+  
+  // saveDomain(data: SaveDomainData): Observable<DbDomain> {
+  //   if (!this.featureService.isFeatureEnabled('writePermissions')) {
+  //     return throwError(() => new Error('Write permissions disabled'));
+  //   }
+  
+  //   // Fetch the current domain list => check plan’s domainLimit => duplicates
+  //   return this.listDomainNames().pipe(
+  //     switchMap((existingDomains) => {
+  //       // Check if domain is already in the list
+  //       const newDomain = data.domain.domain_name.toLowerCase().trim();
+  //       if (existingDomains.includes(newDomain)) {
+  //         return throwError(() => new Error(`Domain "${newDomain}" already exists.`));
+  //       }
+  
+  //       // Get domainLimit from featureService
+  //       return this.featureService.getFeatureValue<number>('domainLimit').pipe(
+  //         switchMap((limit) => {
+  //           // If limit is not a number or 0 => fallback to big number
+  //           const domainLimit = typeof limit === 'number' ? limit : 10000;
+  
+  //           // If user already has domainLimit or more => throw
+  //           if (existingDomains.length >= domainLimit) {
+  //             return throwError(() => new Error(`You have reached your limit of ${domainLimit} domains. Please upgrade.`));
+  //           }
+  
+  //           // Save the domain
+  //           return from(this.saveDomainInternal(data));
+  //         })
+  //       );
+  //     }),
+  //     catchError(error => this.handleError(error))
+  //   );
+  // }
+  
 
   private async saveDomainInternal(data: SaveDomainData): Promise<DbDomain> {
+
+    const isWriteEnabled = await this.featureService.isFeatureEnabledPromise('writePermissions');
+    if (!isWriteEnabled) {
+      throw new Error('Write permissions disabled');
+    }
+
     const {
       domain,
       ipAddresses,
@@ -673,5 +697,69 @@ export default class MainDatabaseService extends DatabaseService {
         timeframe: timeframe,
       });
     }
+
+    
+  checkAllTables(): Observable<{table: string; count: number | string; success: string;}[]> {
+    const allTables = [
+      'dns_records',
+      'domain_costings',
+      'domain_hosts',
+      'domain_links',
+      'domain_statuses',
+      'domain_tags',
+      'domain_updates',
+      'ip_addresses',
+      'notification_preferences',
+      'ssl_certificates',
+      'sub_domains',
+      'uptime',
+      'whois_info',
+      'billing',
+      'notifications',
+      'hosts',
+      'registrars',
+      'tags',
+      'user_info',
+      'domains',
+    ];
+
+    const idColName = (tableName: string) => {
+      if (tableName === 'domain_tags') return 'tag_id';
+      if (tableName === 'domain_hosts') return 'host_id';
+      return 'id';
+    }
+
+    return from(allTables).pipe(
+      concatMap((tableName) => {
+        return from(
+          this.supabase.supabase
+            .from(tableName)
+            .select(idColName(tableName), { count: 'exact' })
+        ).pipe(
+          map((resp) => {
+            if (resp.status >= 200 && resp.status < 300) {
+              const count = resp.count ?? 0;
+              return { table: tableName, count, success: '✅' };
+            }
+            return { table: tableName, count: resp.count || 'zilch', success: '❌' };
+          }),
+          catchError((err) => {
+            this.errorHandler.handleError({
+              error: err,
+              message: `Failed to read table "${tableName}"`,
+              location: 'DbDiagnosticsService.checkAllTables',
+              showToast: true,
+            });
+            return of({ table: tableName, count: 'zilch', success: '❌' });
+          })
+        );
+      }),
+      toArray()
+    );
+  }
+
+  async deleteAllData(userId: string, tables?: string[]) {
+    this.supabase.deleteAllData(userId, tables);
+  }
 
 }

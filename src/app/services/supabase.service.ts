@@ -6,6 +6,7 @@ import { BehaviorSubject } from 'rxjs';
 import { EnvService } from '~/app/services/environment.service';
 import { ErrorHandlerService } from '~/app/services/error-handler.service';
 import { features } from '~/app/constants/feature-options';
+import { GlobalMessageService } from './messaging.service';
 
 @Injectable({
   providedIn: 'root',
@@ -23,12 +24,12 @@ export class SupabaseService {
     @Inject(PLATFORM_ID) private platformId: Object,
     private envService: EnvService,
     private errorHandler: ErrorHandlerService,
+    private messagingService: GlobalMessageService,
   ) {
     
     try {
 
-      if (this.envService.getEnvironmentType() === 'selfHosted') {
-        console.warn('Supabase is disabled in selfHosted mode.');
+      if (!this.envService.isSupabaseEnabled()) {
         return;
       }
 
@@ -390,12 +391,124 @@ export class SupabaseService {
     throw new Error('Data export not implemented');
   }
 
+  /**
+   * User doesn't like us. They want to delete all their data.
+   * This method is required to be called before deleteAccount().
+   * They be prompted to confirm and recommended to export before this is called
+   * @param userId 
+   */
+  async deleteAllData(userId: string, tables?: string[]) {
+    // Acquire all domain IDs for this user
+    const { data: domainRows, error: domainErr } = await this.supabase
+      .from('domains')
+      .select('id')
+      .eq('user_id', userId);
+  
+    if (domainErr) {
+      throw domainErr;
+    }
+    const domainIds = domainRows?.map((d: any) => d.id) || [];
+  
+    // Domain-based tables use domain_id
+    const domainBasedTablesAll = [
+      'dns_records',
+      'domain_costings',
+      'domain_hosts',
+      'domain_links',
+      'domain_statuses',
+      'domain_tags',
+      'domain_updates',
+      'ip_addresses',
+      'notification_preferences',
+      'ssl_certificates',
+      'sub_domains',
+      'uptime',
+      'whois_info',
+    ];
+  
+    // User-based tables use user_id
+    const userBasedTablesAll = [
+      'billing',
+      'domain_updates',
+      'notifications',
+      'hosts',
+      'registrars',
+      'tags',
+      'user_info',
+    ];
+  
+    // Determine which tables to remove from, if list is specified
+    const domainBasedTables = tables
+      ? domainBasedTablesAll.filter((t) => tables.includes(t))
+      : domainBasedTablesAll;
+  
+    const userBasedTables = tables
+      ? userBasedTablesAll.filter((t) => tables.includes(t))
+      : userBasedTablesAll;
+  
+    const mustDeleteDomains = !tables || tables.includes('domains');
+  
+    // Remove domain-based records
+    for (const table of domainBasedTables) {
+      await this.supabase
+        .from(table)
+        .delete()
+        .in('domain_id', domainIds);
+    }
+  
+    // Remove user-based records
+    for (const table of userBasedTables) {
+      await this.supabase
+        .from(table)
+        .delete()
+        .eq('user_id', userId);
+    }
+  
+    // Finally, remove domains themselves
+    if (mustDeleteDomains) {
+      await this.supabase
+        .from('domains')
+        .delete()
+        .eq('user_id', userId);
+    }
+  }
+
   async deleteAccount(): Promise<void> {
-    // TODO: Implement account deletion logic
+
+    // Get the user ID and token, and check
     const currentUser = await this.getCurrentUser();
-    if (currentUser) {
-      const { error } = await this.supabase.auth.admin.deleteUser(currentUser.id);
-      if (error) throw error;
+    const token = this.token || await this.getToken();
+    if (!currentUser) throw new Error('Not authenticated');
+
+    // Delete everything the user added (required before we can remove their account). Bye bye data.
+    try {
+      await this.deleteAllData(currentUser.id);
+      this.messagingService.showSuccess(
+        'Data Removed',
+        'We\'ve removed all of your data from our systems, and will not proceed to delete your account.'
+      );
+    } catch (err: any) {
+      this.errorHandler.handleError({
+        error: err,
+        message: 'Failed to delete user data',
+        location: 'SupabaseService.deleteAccount',
+        showToast: true,
+      });
+    }
+
+  
+    const edgeUrl = 'https://domain-locker.supabase.co/functions/v1/delete-account';
+  
+    // Make a POST request to backend to remove everything the user owns and loves
+    const res = await fetch(edgeUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+      body: JSON.stringify({ userId: currentUser.id }),
+    });
+  
+    if (!res.ok) { // Computer says no.
+      const data = await res.json().catch(() => ({}));
+      throw new Error(data.error || 'Account deletion failed');
     }
   }
   
@@ -579,6 +692,14 @@ export class SupabaseService {
             action: { label: 'Upgrade Plan', route: '/settings/upgrade' },
           });
         }
+      }
+
+      if (this.envService.getEnvironmentType() === 'demo') {
+        issues.push({
+          type: 'info',
+          message: 'You are using the demo environment. Data stored here will be reset periodically.',
+          action: { label: 'Sign Up', route: '/about/pricing' },
+        });
       }
     } catch (error) {
       this.errorHandler.handleError({ error, message: 'Failed to fetch account issues', location: 'SupabaseService.getAccountIssues' });

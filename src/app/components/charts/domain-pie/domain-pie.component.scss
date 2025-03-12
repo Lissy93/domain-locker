@@ -11,6 +11,7 @@
   .p-element.p-tabview-nav-link {
     padding: 0.5rem 0.75rem;
     font-weight: 400;
+    color: var(--text-default);
     &[aria-selected="true"] {
       font-weight: bold;
     }

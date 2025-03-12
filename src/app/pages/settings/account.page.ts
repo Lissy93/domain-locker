@@ -371,7 +371,14 @@ export default class UserSettingsComponent implements OnInit {
       return;
     }
     this.confirmationService.confirm({
-      message: 'Are you sure you want to delete your account? This action cannot be undone.',
+      message: 'Are you sure you want to delete your account and all associated?'
+        +'<br><span class="text-red-400 font-bold">This action cannot be undone.</span>',
+      header: 'Account Deletion',
+      icon: 'pi pi-exclamation-triangle',
+      acceptButtonStyleClass: 'p-button-danger p-button-sm',
+      rejectButtonStyleClass: 'p-button-secondary p-button-sm',
+      acceptIcon:'pi pi-check-circle mr-2',
+      rejectIcon:'pi pi-times-circle mr-2',
       accept: () => {
         this.deleteAccount();
       }
@@ -383,7 +390,8 @@ export default class UserSettingsComponent implements OnInit {
     try {
       await this.supabaseService.deleteAccount();
       this.messageService.showSuccess('Account Deleted', 'Your account has been permanently deleted, and all data wiped');
-      // Implement logout and redirect logic
+      this.supabaseService.signOut();
+      window.location.href = '/';
     } catch (error) {
       this.errorHandler.handleError({ error, message: 'Failed to delete account', location: 'settings/account', showToast: true });
     } finally {

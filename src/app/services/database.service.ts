@@ -8,13 +8,15 @@ import { GlobalMessageService } from '~/app/services/messaging.service';
 import { PgApiUtilService } from '~/app/utils/pg-api.util';
 import { type DatabaseService as IDatabaseService } from '~/app/../types/Database';
 import { FeatureService } from '~/app/services/features.service';
+import { Router } from '@angular/router';
 
 
 @Injectable({
   providedIn: 'root',
 })
 export default class DatabaseService {
-  private service: IDatabaseService;
+  private service!: IDatabaseService; 
+  public serviceType: 'supabase' | 'postgres' | 'none' | 'error' = 'none';
 
   constructor(
     private envService: EnvService,
@@ -23,18 +25,45 @@ export default class DatabaseService {
     private globalMessagingService: GlobalMessageService,
     private pgApiUtil: PgApiUtilService,
     private featureService: FeatureService,
+    private router: Router,
   ) {
-    // Create the real sub-service
-    if (this.envService.isSupabaseEnabled()) {
-      this.service = new SbDatabaseService(
-        this.supabaseService,
-        this.errorHandler,
-        this.globalMessagingService,
-        this.featureService,
-      ) as unknown as IDatabaseService;
-    } else {
+    // If Postgres creds are present, use Postgres as DB
+    if (this.envService.isPostgresEnabled()){
       this.service = new PgDatabaseService(this.pgApiUtil) as unknown as IDatabaseService;
+      this.serviceType = 'postgres';
     }
+    // If Supabase is enabled, use Supabase as DB
+    else if (this.envService.isSupabaseEnabled()) {
+      try { // Try to establish connection to Supabase
+        this.serviceType = 'supabase';
+        this.service = new SbDatabaseService(
+          this.supabaseService,
+          this.errorHandler,
+          this.globalMessagingService,
+          this.featureService,
+        ) as unknown as IDatabaseService;
+        
+      } catch (e) {
+        this.errorHappened('Failed to establish connection to Supabase', e as Error)
+      }
+    } else {
+      this.errorHappened('No database service is enabled')
+    }
+  }
+
+  public errorHappened(errorMessage: string, error?: Error) {
+    this.errorHandler.handleError({
+      message: errorMessage,
+      showToast: true,
+      error,
+      location: 'DatabaseService.constructor',
+    });
+    this.serviceType = 'error';
+    this.service = {} as unknown as IDatabaseService;
+    this.router.navigate(
+      ['/advanced/error'],
+      { queryParams: { errorMessage } }
+    );
   }
 
   // Expose the proxied service to the rest of the app

@@ -21,11 +21,65 @@
   },
   
   "HOME": {
+    "FEATURES": "Features",
+    "DESCRIPTION": "Domain Locker is the ultimate all-in-one platform to manage, monitor, and optimize your domain portfolio effortlessly, with smart alerts, detailed analytics, and powerful tools to keep you organized, secure, and always in control.",
+    "PRICING": "Pricing",
+    "DEMO_TITLE": "Demo",
+    "LOADING_TITLE": "Loading",
+    "LOADING_DESCRIPTION": "Fetching your domains, and calculating stats",
     "SUBHEADINGS": {
       "DASHBOARD": "Dashboard",
       "DOMAINS": "Domains",
       "CATEGORIES": "Categories",
       "ASSETS": "Assets"
+    },
+    "UPCOMING_EXPIRATIONS": "Upcoming Expirations",
+    "DOMAIN_PROVIDERS": "Domain Providers",
+    "SECURITY_PROFILE": "Security Profile",
+    "HOST_GEOGRAPHY": "Host Geography",
+    "TAGS": "Tags",
+    "REGISTRATION_TIMELINE": "Registration Timeline",
+    "SHOW_MORE_INSIGHTS": "Show more insights",
+    "EXPAND_STATS": "Expand Stats",
+    "HIDE_STATS": "Hide Stats",
+    "VIEW_ALL_ASSETS": "View All Assets",
+    "DEMO": {
+      "LIVE_DEMO_TITLE": "Live Demo",
+      "LIVE_DEMO_DESC": "A live demo is deployed to",
+      "DEMO_DOMAIN": "demo.domain-locker.com",
+      "CREDENTIALS": "Credentials",
+      "USERNAME": "Username: demo@domain-locker.com",
+      "PASSWORD": "Password: domainlocker",
+      "VISIT_DEMO": "Visit Demo",
+      "VIDEO_DEMO_TITLE": "Video Demo",
+      "VIDEO_DEMO_DESC": "TODO",
+      "WATCH_VIDEO": "Watch Video"
+    },
+    "HERO": {
+      "BRAND": "Domain Locker:",
+      "HEADLINE": "The Central Hub for all your Domain Names",
+      "SUBHEADLINE": "Smart, simple and secure domain management",
+      "FEATURES": {
+        "TRACK_DOMAINS": "Track all your domains across registrars from one simple dashboard",
+        "DETAILED_METRICS": "Detailed metrics and live data visualizations for each domain",
+        "ALERTS": "Get alerted of upcoming domain expirations or configuration updates",
+        "MONITORING": "Performance, security and configuration monitoring for each domain",
+        "MORE": "And so much more!"
+      },
+      "BUTTON": {
+        "VIEW_GITHUB": "View on GitHub",
+        "GET_STARTED": "Get Started"
+      }
+    },
+    "WELCOME": {
+      "TITLE": "Welcome to Domain Locker",
+      "DESCRIPTION": "Here you'll be able to securely keep track of all your domain names in one place. Whether you've got 1 or 1,000 domains, we've got you covered - with security insights, change and expiry notifications, domain stats and more.",
+      "GET_STARTED_TITLE": "Let's get you started!",
+      "GET_STARTED_DESCRIPTION": "Begin by setting up your first domain name, all you need is the URL.\nYou'll always be able to edit it, as well as add more later.",
+      "BUTTON": {
+        "GET_STARTED": "Get Started"
+      },
+      "TIP": "Tip: You can switch language, theme and display mode by clicking the <i class=\"pi pi-palette text-primary mx-1\"></i> in the top-right."
     }
   },
 
@@ -87,10 +141,134 @@
     },
     "BUTTONS": {
       "ADD_DOMAIN": "Add Domain"
+    },
+    "DOMAIN_COLLECTION": {
+      "NO_DOMAINS_FOUND": "No Domains Found",
+      "NO_DOMAINS_TEXT_1": "You don't yet have any domains in this collection. Get started by ",
+      "ADD_FIRST_DOMAIN": "adding your first domain",
+      "VIEWING": "Viewing",
+      "OF": "of",
+      "DOMAINS": "domains",
+      "MATCHING_SEARCH": "matching search term",
+      "WITH": "with",
+      "FIELDS_VISIBLE_IN": "fields visible in",
+      "GRID_VIEW": "grid",
+      "LIST_VIEW": "list",
+      "RESET_FILTERS": "Reset Filters",
+      "OR": "or",
+      "VIEW_ALL": "View All",
+      "INSTRUCTIONS": "Click a domain name to view full details and change history,<br>or click a tag/registrar/host/cert to see associated domains.<br>Adjust the filters to show/hide fields, change layout or search.<br>Right-click any domain to edit, delete, view, or see more actions.",
+      "COLUMN": {
+        "DOMAIN_NAME": "Domain",
+        "REGISTRAR": "Registrar",
+        "EXPIRY_DATE": "Expiry",
+        "TAGS": "Tags",
+        "NOTES": "Notes",
+        "SECURITY_STATUSES": "Security Statuses",
+        "IP_ADDRESSES": "IP Addresses",
+        "RENEWAL_COST": "Renewal Cost",
+        "SSL": "SSL",
+        "WHOIS": "WHOIS",
+        "HOST_INFO": "Host Info",
+        "DNS_RECORDS": "DNS Records",
+        "SUB_DOMAINS": "Sub-Domains"
+      },
+      "LIST": {
+        "IPV6": "IPv6",
+        "IPV4": "IPv4",
+        "VALID_UNTIL": "Valid until:",
+        "NS_LABEL": "NS:"
+      },
+      "GRID": {
+        "CLICK_VIEW_REGISTRAR": "Click to view all domains registered through {{registrar}}",
+        "EXPIRES_ON": "Expires on {{date}}",
+        "UNKNOWN_EXPIRY": "Unknown Expiry Date",
+        "SUB_DOMAINS": "Sub Domains",
+        "SECURITY_FEATURES": "Security Features",
+        "IP_ADDRESSES": "IP Addresses",
+        "COSTINGS": "Costings",
+        "PAYMENT_DUE": "Payment of {{amount}} is due on {{date}}",
+        "AUTO_RENEW": "Auto-Renew",
+        "AUTO_RENEW_ENABLED": "Enabled",
+        "AUTO_RENEW_DISABLED": "Not Enabled",
+        "PROFIT_LOSS": "Profit/Loss:",
+        "PURCHASE_PRICE": "Purchase Price:",
+        "CURRENT_VALUE": "Current Value",
+        "SSL_CERTIFICATE": "SSL Certificate",
+        "SSL_ISSUER": "Issuer",
+        "SSL_ISSUER_COUNTRY": "Issuer Country",
+        "SSL_SUBJECT": "Subject",
+        "SSL_VALID_FROM": "Valid From",
+        "SSL_VALID_TO": "Valid To",
+        "SSL_KEY_SIZE": "Key Size",
+        "SSL_SIGNATURE_ALGORITHM": "Signature Algorithm",
+        "SSL_FINGERPRINT": "Fingerprint",
+        "WHOIS_RECORDS": "WHOIS Records",
+        "WHOIS_NAME": "Name",
+        "WHOIS_ORGANIZATION": "Organization",
+        "WHOIS_ADDRESS": "Address",
+        "WHOIS_COUNTRY": "Country",
+        "HOSTS": "Hosts",
+        "HOST_ISP": "ISP",
+        "HOST_ORG": "Org",
+        "HOST_AS_REF": "AS Ref",
+        "HOST_ADDRESS": "Address",
+        "DNS_RECORDS": "DNS Records",
+        "DNS_DNSSEC": "DNSSEC",
+        "DNS_NAME_SERVERS": "Name Servers",
+        "DNS_MX_RECORDS": "MX Records",
+        "DNS_TXT_RECORDS": "TXT Records",
+        "IPV6": "IPv6",
+        "IPV4": "IPv4",
+        "CONTEXT_MENU": {
+          "VIEW": "View",
+          "EDIT": "Edit",
+          "DELETE": "Delete",
+          "COPY_URL": "Copy URL",
+          "VISIT_URL": "Visit URL",
+          "DELETE_HEADER": "Destructive Action",
+          "DELETE_MESSAGE": "Are you sure you want to delete this domain?",
+          "DELETE_SUCCESS_SUMMARY": "Success",
+          "DELETE_SUCCESS_DETAIL": "Domain deleted successfully",
+          "DELETE_ERROR_SUMMARY": "Error",
+          "DELETE_ERROR_DETAIL": "Failed to delete domain",
+          "COPY_SUCCESS_SUMMARY": "Success",
+          "COPY_SUCCESS_DETAIL": "Domain URL copied to clipboard",
+          "COPY_ERROR": "Failed to copy URL to clipboard"
+        }
+      }
     }
   },
 
   "ASSETS": {
+    "TAG_GRID": {
+      "ERROR": "Error",
+      "LOAD_ERROR": "Failed to load tags with domain counts",
+      "CONTEXT_MENU": {
+        "VIEW_TAG": "View Tag",
+        "EDIT": "Edit",
+        "MOVE_DOMAINS": "Move Domains",
+        "DELETE_TAG": "Delete Tag",
+        "ADD_NEW_TAG": "Add New Tag"
+      },
+      "DELETE_CONFIRM_MESSAGE": "Are you sure you want to delete the \"{{tag}}\" tag?<br><b class=\"text-red-500\">This action cannot be undone.</b><br><p class=\"text-surface-400 text-sm\">Note that this will not affect the domains associated with this tag,<br>but they will lose their association.</p>",
+      "DELETE_CONFIRM_HEADER": "Tag Deletion Confirmation: {{tag}}",
+      "DELETE_SUCCESS_SUMMARY": "Success",
+      "DELETE_SUCCESS_DETAIL": "Tag \"{{tag}}\" deleted successfully.",
+      "DELETE_ERROR_DETAIL": "Failed to delete the tag",
+      "SHOWING_TAGS": "Showing {{count}} tags",
+      "VIEW_ALL_TAGS": "View All Tags",
+      "RIGHT_CLICK_INSTRUCTIONS": "Right-click on a tag to view options",
+      "NO_TAGS_CREATED": "No tags created yet",
+      "NO_TAGS_INSTRUCTIONS": "Attach a tag to a new or existing domain, or",
+      "CREATE_NEW_TAG": "Create new Tag",
+      "TOOLTIP": {
+        "CONTAINS_DOMAINS": "Contains {{count}} domains",
+        "NO_DOMAINS": "No domains attached",
+        "TIP_ADD_DETAILS": "Tip: You can add color, icon and description to tags",
+        "RIGHT_CLICK_OPTIONS": "Right-click for options"
+      }
+    },
     "CARDS": {
       "REGISTRARS": {
         "SINGLE": "Registrar",
@@ -121,7 +299,50 @@
         "SINGLE": "Tag",
         "PLURAL": "Tags",
         "COUNT": "{count} Tags"
+      },
+      "SUBDOMAINS": {
+        "SINGLE": "Subdomain",
+        "PLURAL": "Subdomains",
+        "COUNT": "{count} Subdomains"
+      },
+      "LINKS": {
+        "SINGLE": "Link",
+        "PLURAL": "Links",
+        "COUNT": "{count} Links"
+      },
+      "STATUSES": {
+        "SINGLE": "Status",
+        "PLURAL": "Statuses",
+        "COUNT": "{count} Statuses"
       }
+    }
+  },
+
+  "DOMAIN_STATS": {
+    "EXPIRATION_BAR": {
+      "NO_DATA": "No data available",
+      "TIMELINE_SHOW": "Show Timeline",
+      "TIMELINE_HIDE": "Hide Timeline",
+      "NEXT_EXPIRING": "The next domain to expire will be",
+      "NO_DOMAINS": "No domains"
+    },
+    "PROVIDERS": {
+      "REGISTRARS": "Registrars",
+      "SSL_ISSUERS": "SSL Issuers",
+      "HOSTS": "Hosts",
+      "VIEW_ALL_REGISTRARS": "View all Registrars",
+      "VIEW_ALL_CERT_PROVIDERS": "View all Cert Providers",
+      "VIEW_ALL_HOSTS": "View all Hosts"
+    },
+    "EPP_STATUSES": {
+      "VIEW_ALL_STATUSES": "View all Statuses"
+    },
+    "HOSTS_MAP": {
+      "VIEW_ALL_HOSTS": "View all Hosts"
+    },
+    "TAG_CLOUD": {
+      "VIEW_ALL_TAGS": "View all Tags",
+      "NO_TAGS_FOUND": "No tags found"
     }
   },
 
@@ -131,6 +352,17 @@
     "OK": "OK",
     "SAVE": "Save",
     "DELETE": "Delete",
-    "CONFIRM": "Are you sure?"
+    "CONFIRM": "Are you sure?",
+    "LOADING": {
+      "INITIALIZING": "Initializing",
+      "DEFAULT_DESCRIPTION": "We're just getting everything ready for you.\nThis shouldn't take a moment...",
+      "ERROR_SHORT": "It shouldn't be taking this long...",
+      "ERROR_LONG": "Something might have gone wrong",
+      "BUTTON": {
+        "HOME": "Home",
+        "RELOAD": "Reload",
+        "DEBUG": "Debug Info"
+      }
+    }
   }
 }

@@ -4,6 +4,7 @@ import DatabaseService from '~/app/services/database.service';
 import { NgIf, isPlatformBrowser } from '@angular/common';
 import { PrimeNgModule } from '~/app/prime-ng.module';
 import { getByEppCode } from '~/app/constants/security-categories';
+import { TranslateModule } from '@ngx-translate/core';
 
 export type ChartOptions = {
   series: ApexNonAxisChartSeries;
@@ -20,12 +21,12 @@ export type ChartOptions = {
   selector: 'app-epp-status-chart',
   templateUrl: './domain-epp-status.component.html',
   styleUrls: ['./domain-epp-status.component.scss'],
-  imports: [NgApexchartsModule, NgIf, PrimeNgModule],
+  imports: [NgApexchartsModule, NgIf, PrimeNgModule, TranslateModule],
 })
 export class EppStatusChartComponent implements OnInit {
   @ViewChild('epp-chart') chart: ChartComponent | undefined;
   public chartOptions: Partial<ChartOptions> | undefined;
-  private totalDomainsWithEpp: number = 0; // Updated: Track domains with EPP status
+  private totalDomainsWithEpp: number = 0;
   private percentages: number[] = [];
   private counts: Record<string, number> = {};
   public loading: boolean = true;

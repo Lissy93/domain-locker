@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { DatabaseService, DbDomain, DomainExpiration, SaveDomainData } from '~/app/../types/Database';
-import { catchError, from, map, Observable, retry, throwError } from 'rxjs';
+import { catchError, concatMap, from, map, Observable, of, retry, throwError, toArray } from 'rxjs';
 import { makeEppArrayFromLabels } from '~/app/constants/security-categories';
 
 // Database queries grouped by functionality into sub-services
@@ -1057,5 +1057,129 @@ SELECT domains.*, registrars.name AS registrar_name, tags.name AS tag_name, host
       catchError(error => this.handleError(error))
     );
   }
+
+  checkAllTables(): Observable<{ table: string; count: number | string; success: string }[]> {
+    const allTables = [
+      'dns_records',
+      'domain_costings',
+      'domain_hosts',
+      'domain_links',
+      'domain_statuses',
+      'domain_tags',
+      'domain_updates',
+      'ip_addresses',
+      'notification_preferences',
+      'ssl_certificates',
+      'sub_domains',
+      'uptime',
+      'whois_info',
+      'billing',
+      'notifications',
+      'hosts',
+      'registrars',
+      'tags',
+      'user_info',
+      'domains',
+    ];
+  
+    const idColName = (tableName: string) => {
+      if (tableName === 'domain_tags') return 'tag_id';
+      if (tableName === 'domain_hosts') return 'host_id';
+      return 'id';
+    };
+  
+    return from(allTables).pipe(
+      concatMap((tableName) => {
+        const query = `SELECT COUNT(${idColName(tableName)}) AS count FROM ${tableName}`;
+        return from(this.pgApiUtil.postToPgExecutor(query)).pipe(
+          map(({ data }) => {
+            if (data.length > 0) {
+              const count = (data[0] as { count: number }).count ?? 0;
+              return { table: tableName, count, success: '✅' };
+            }
+            return { table: tableName, count: 'zilch', success: '❌' };
+          }),
+          catchError((err) => {
+            this.handleError({
+              error: err,
+              message: `Failed to read table "${tableName}"`,
+              location: 'DbDiagnosticsService.checkAllTables',
+              showToast: true,
+            });
+            return of({ table: tableName, count: 'zilch', success: '❌' });
+          })
+        );
+      }),
+      toArray()
+    );
+  }
+
+  async deleteAllData(userId: string, tables?: string[]): Promise<void> {
+    // Fetch all domain IDs belonging to the user
+    const fetchDomainsQuery = `SELECT id FROM domains WHERE user_id = $1`;
+    const result = await this.pgApiUtil.postToPgExecutor(fetchDomainsQuery, [userId]).toPromise();
+    const domainRows = result?.data || [];
+    const domainIds = domainRows.map((d: any) => d.id);
+  
+    // Tables categorized by deletion method
+    const domainBasedTablesAll = [
+      'dns_records',
+      'domain_costings',
+      'domain_hosts',
+      'domain_links',
+      'domain_statuses',
+      'domain_tags',
+      'domain_updates',
+      'ip_addresses',
+      'notification_preferences',
+      'ssl_certificates',
+      'sub_domains',
+      'uptime',
+      'whois_info',
+    ];
+  
+    const userBasedTablesAll = [
+      'billing',
+      'domain_updates',
+      'notifications',
+      'hosts',
+      'registrars',
+      'tags',
+      'user_info',
+    ];
+  
+    // Determine which tables to target if specific tables are provided
+    const domainBasedTables = tables
+      ? domainBasedTablesAll.filter((t) => tables.includes(t))
+      : domainBasedTablesAll;
+  
+    const userBasedTables = tables
+      ? userBasedTablesAll.filter((t) => tables.includes(t))
+      : userBasedTablesAll;
+  
+    const mustDeleteDomains = !tables || tables.includes('domains');
+  
+    // Delete domain-based records
+    for (const table of domainBasedTables) {
+      if (domainIds.length > 0) {
+        const deleteDomainRecordsQuery = `DELETE FROM ${table} WHERE domain_id = ANY($1)`;
+        await this.pgApiUtil.postToPgExecutor(deleteDomainRecordsQuery, [domainIds]).toPromise();
+      }
+    }
+  
+    // Delete user-based records
+    for (const table of userBasedTables) {
+      const deleteUserRecordsQuery = `DELETE FROM ${table} WHERE user_id = $1`;
+      await this.pgApiUtil.postToPgExecutor(deleteUserRecordsQuery, [userId]).toPromise();
+    }
+  
+    // Delete domains themselves
+    if (mustDeleteDomains) {
+      const deleteDomainsQuery = `DELETE FROM domains WHERE user_id = $1`;
+      await this.pgApiUtil.postToPgExecutor(deleteDomainsQuery, [userId]).toPromise();
+    }
+  }
+  
+  
   
 }

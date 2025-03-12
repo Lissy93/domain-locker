@@ -9,6 +9,7 @@ import { TranslationService } from '~/app/services/translation.service';
 import DatabaseService from '~/app/services/database.service';
 import { Observable, of, from } from 'rxjs';
 import { User } from '@supabase/supabase-js';
+import { settingsLinks } from '~/app/constants/navigation-links';
 
 @Component({
   selector: 'app-settings',
@@ -26,6 +27,7 @@ export default class SettingsPage {
 
   showAccountInfo = false;
   isAccountInfoLoading = false;
+  settingsLinks = settingsLinks;
 
   constructor(
     private billingService: BillingService,

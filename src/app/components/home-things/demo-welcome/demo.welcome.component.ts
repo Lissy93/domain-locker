@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PrimeNgModule } from '~/app/prime-ng.module';
 
@@ -7,7 +7,7 @@ import { PrimeNgModule } from '~/app/prime-ng.module';
   template: `
   <p-messages severity="info" *ngIf="!isHidden">
     <ng-template pTemplate>
-      <div class="relative">
+      <div *ngIf="isDemoInstance" class="relative w-full">
         <h3 class="m-0">
           Demo Instance
         </h3>
@@ -37,6 +37,36 @@ import { PrimeNgModule } from '~/app/prime-ng.module';
           size="small"
           class="p-button-info float-right md:mt-[-2rem]"></button>
       </div>
+      <div *ngIf="isDevInstance" class="relative w-full">
+        <h3 class="m-0">
+          Dev Instance
+        </h3>
+        <p class="m-0 mt-2">
+          Congratulations for getting Domain Locker up and running in dev mode! 🎉
+        </p>
+        <p class="m-0 mt-2">
+          You are connected to our Supabase dev server.
+          <b>Note that any data stored here is periodically reset, so it is not suitable for production use.</b>
+        </p>
+        <p class="mt-2">
+          It's recommended to create your own user account here for testing- no email verification is needed 🙂
+          <br>
+          (If you're using the public <code>dev&#64;domain-locker.com</code> account, please avoid adding/editing/deleting data)
+        </p>
+        <p class="m-0 mt-2">
+          If you need any help, check out our <a href="https://domain-locker.com/about/developing">Dev Docs</a>
+          and <a href="https://github.com/lissy93/domain-locker">GitHub</a>.
+          <br>
+          Have fun 🩷🚀
+        </p>
+        <button pButton
+          (click)="hideDemoWelcome()"
+          type="button"
+          icon="pi pi-times"
+          label="Dismiss"
+          size="small"
+          class="p-button-info float-right md:mt-[-2rem]"></button>
+      </div>
     </ng-template>
   </p-messages>
 `,
@@ -45,11 +75,16 @@ import { PrimeNgModule } from '~/app/prime-ng.module';
 })
 export class DemoWelcomeComponent  {
   isHidden: boolean = false;
+  @Input() isDemoInstance: boolean = false;
+  @Input() isDevInstance: boolean = false;
 
   ngOnInit(): void {
     if (this.isBrowser() && localStorage.getItem('hideDemoWelcome') === 'true') {
       this.isHidden = true;
       return;
+    }
+    if (!this.isDemoInstance && !this.isDevInstance) {
+      this.isDemoInstance = true;
     }
   }
 

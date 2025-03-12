@@ -10,6 +10,7 @@ interface ErrorParams {
   message?: string; // Friendly message to show to user (if needed)
   location?: string; // Location in code where error occurred
   showToast?: boolean; // Whether to show a toast to the user
+  date?: Date; // Date of error (if not now)
 }
 
 /**
@@ -109,6 +110,14 @@ export class ErrorHandlerService {
       });
   }
 
+  private saveToLocalStorage(message: string, location: string, error: any): void {
+    if (!isPlatformBrowser(this.platformId) || !localStorage) return;
+    const key = 'DL_error_log';
+    const lsErrorLog = JSON.parse(localStorage.getItem(key) || '[]');
+    lsErrorLog.push({ message, location, error, date: new Date().toISOString() });
+    localStorage.setItem(key, JSON.stringify(lsErrorLog));
+  }
+
   /* Entry point for error handler, takes appropriate logging action */
   public handleError(params: ErrorParams): void {
     const { error, message, location, showToast } = params;
@@ -132,5 +141,12 @@ export class ErrorHandlerService {
     if (this.glitchTipEnabled && error) {
       this.logToGlitchTip(message || 'mystery error', location || '-', error);
     }
+
+    // Save to recent error log in localstorage
+    this.saveToLocalStorage(message || 'mystery error', location || '-', error);
+  }
+
+  public getRecentErrorLog(): any[] {
+    return JSON.parse(localStorage.getItem('DL_error_log') || '[]').reverse();
   }
 }

@@ -5,6 +5,8 @@ import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { LogoComponent} from '~/app/components/home-things/logo/logo.component';
 
+declare const __APP_VERSION__: string;
+
 @Component({
   standalone: true,
   selector: 'app-footer',
@@ -16,7 +18,7 @@ import { LogoComponent} from '~/app/components/home-things/logo/logo.component';
 export class FooterComponent {
   @Input() public big: boolean = false;
   public year: number = new Date().getFullYear();
-
+  public appVersion = typeof __APP_VERSION__ !== 'undefined' ? __APP_VERSION__ : '0.0.0';
   public fc: any = {};
 
   constructor(private router: Router, private translate: TranslateService) {

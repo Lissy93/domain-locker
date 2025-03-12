@@ -1,5 +1,5 @@
 <p-splitter 
-  [panelSizes]="[25, 75]"
+  [panelSizes]="hideSideBar ? [1,99] : [25, 75]"
   styleClass="h-full min-h-[85vh] px-1 py-2 bg-transparent border-none">
     <ng-template pTemplate>
       <nav #sidebarNav class="border-surface-50 border-2 w-full rounded-l p-1 !border-r-0 bg-surface-25 relative">
@@ -16,7 +16,7 @@
               [pTooltip]="item['description']"
               showDelay="350"  
             >
-              <a routerLink="{{ item['routerLink'] }}" class="flex gap-2 align-items-center no-underline text-inherit text-md">
+              <a routerLink="{{ item['routerLink'] }}" class="flex gap-2 align-items-center no-underline text-inherit text-md text-default">
                 <i class="{{ item.icon }} opacity-70"></i>
                 <span *ngIf="!hideTextLabels">{{ item.label }}</span>
               </a>
@@ -35,7 +35,7 @@
     </ng-template>
     <ng-template pTemplate>
       <div class="py-2 px-4 pb-4 w-full border-2 !border-l-0 border-surface-50 rounded-r overflow-y-visible">
-        @if (settingsEnabled$ | async) {
+        @if ((settingsEnabled$ | async) && databaseServiceType === 'supabase') {
           <router-outlet></router-outlet>
         } @else {
           <app-feature-not-enabled feature="accountSettings" />

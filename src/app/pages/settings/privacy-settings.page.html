@@ -111,7 +111,7 @@
     </p>
     <p-button
       label="Clear Local Storage"
-      severity="danger"
+      severity="warning"
       icon="pi pi-trash"
       styleClass="mt-4"
       (click)="clearLocalStorage()"></p-button>
@@ -129,13 +129,36 @@
       and/or <a routerLink="/settings/delete-account">delete your account</a>
       (and all associated data) at any time.
     </p>
-    <a routerLink="/about/legal/privacy-policy">
-      <p-button
-        label="View Privacy Policy"
-        severity="success"
-        icon="pi pi-file-o"
-        styleClass="mt-4"
-      />
-    </a>
+    <details>
+      <summary class="text-sm text-gray-500 mt-2 cursor-pointer">Data Options</summary>
+    
+      <div class="flex gap-2">
+        <a routerLink="/about/legal/privacy-policy">
+          <p-button
+            label="View Privacy Policy"
+            severity="success"
+            icon="pi pi-file-o"
+            styleClass="mt-4"
+          />
+        </a>
+        <a routerLink="/domains/export">
+          <p-button
+            label="Export Data"
+            severity="info"
+            icon="pi pi-download"
+            styleClass="mt-4"
+          />
+        </a>
+        <a routerLink="/settings/delete-account">
+          <p-button
+            label="Data Deletion Tools"
+            severity="danger"
+            icon="pi pi-exclamation-triangle"
+            styleClass="mt-4"
+          />
+        </a>
+      </div>
+
+    </details>
   </div>
 </div>

@@ -42,6 +42,7 @@ testem.log
 # System files
 .DS_Store
 Thumbs.db
+*.:Zone.Identifier
 
 # Angular Analog specific
 .analog/

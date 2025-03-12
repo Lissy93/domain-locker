@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
 import DatabaseService from '~/app/services/database.service';
 import { Subscription } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
+import { TranslateModule } from '@ngx-translate/core';
 
 interface CloudWord {
   text: string;
@@ -20,7 +21,7 @@ interface CloudWord {
 @Component({
   standalone: true,
   selector: 'app-tag-cloud',
-  imports: [CommonModule, PrimeNgModule],
+  imports: [CommonModule, PrimeNgModule, TranslateModule],
   templateUrl: './tag-cloud.component.html',
   styles: [`
     ::ng-deep svg g text {

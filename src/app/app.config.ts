@@ -1,11 +1,11 @@
 import {
   ApplicationConfig, importProvidersFrom,
-  APP_INITIALIZER, PLATFORM_ID } from '@angular/core';
+  APP_INITIALIZER, PLATFORM_ID, 
+  APP_ID} from '@angular/core';
 // Importing providers
-import { HTTP_INTERCEPTORS, provideHttpClient, withFetch, withInterceptors, withInterceptorsFromDi } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, provideHttpClient, withFetch, withInterceptorsFromDi } from '@angular/common/http';
 import { provideClientHydration } from '@angular/platform-browser';
 import { provideFileRouter } from '@analogjs/router';
-import { withPrismHighlighter } from '@analogjs/content/prism-highlighter';
 import { withShikiHighlighter } from '@analogjs/content/shiki-highlighter'
 import { provideContent, withMarkdownRenderer } from '@analogjs/content';
 import { provideAnimations } from '@angular/platform-browser/animations';
@@ -29,9 +29,19 @@ import {
 } from '~/app/utils/translation-loader.factory';
 
 import { AuthInterceptor } from '~/app/utils/auth.interceptor';
+import { EnvLoaderService } from './utils/env.loader';
 
 export const appConfig: ApplicationConfig = {
   providers: [
+    { provide: APP_ID, useValue: 'domain-locker' },
+    
+    // Transfer relevant env vars on self-hosted version
+    {
+      provide: APP_INITIALIZER,
+      useFactory: (envLoader: EnvLoaderService) => () => envLoader.loadEnv(),
+      deps: [EnvLoaderService],
+      multi: true,
+    },
     // Core Providers
     provideHttpClient(withFetch()),
     provideClientHydration(),
@@ -42,7 +52,7 @@ export const appConfig: ApplicationConfig = {
     provideAnimations(),
     provideFileRouter(
       withInMemoryScrolling({ anchorScrolling: 'enabled' }),
-      withEnabledBlockingInitialNavigation()
+      withEnabledBlockingInitialNavigation(),
     ),
     // HTTP Interceptors
     provideHttpClient(
@@ -54,7 +64,7 @@ export const appConfig: ApplicationConfig = {
     // PrimeNG Services
     ConfirmationService,
     MessageService,
-    
+
     // Translation Module, and language initialization
     {
       provide: APP_INITIALIZER,

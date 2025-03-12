@@ -59,7 +59,6 @@ export class FeatureService {
     return features;
   }
 
-
   /**
    * Get the resolved value for a specific feature.
    */
@@ -82,12 +81,20 @@ export class FeatureService {
     );
   }
 
-
   /**
    * Check if a specific feature is enabled (boolean features) and return as a promise.
    */
   public isFeatureEnabledPromise(feature: keyof FeatureDefinitions): Promise<boolean> {
     return firstValueFrom(this.isFeatureEnabled(feature));
+  }
+
+  public async featureReportForDebug(): Promise<{ feature: string; enabled: boolean; }[]> {
+    const features = this.activeFeatures$.getValue();
+    const featurePromises = Object.keys(features).map(async (feature) => ({
+      feature,
+      enabled: Boolean(await firstValueFrom(this.getFeatureValue(feature as keyof FeatureDefinitions))),
+    }));
+    return await Promise.all(featurePromises);
   }
   
 }

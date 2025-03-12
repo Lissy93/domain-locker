@@ -10,7 +10,12 @@ export interface DocAttributes {
   title: string;
   slug: string;
   description: string;
-  coverImage: string;
+  coverImage?: string;
+  author?: string;
+  publishedDate?: string;
+  modifiedDate?: string;
+  category?: string;
+  noShowInContents?: boolean;
 }
 
 @Component({
@@ -18,9 +23,9 @@ export interface DocAttributes {
   selector: 'app-docs-viewer',
   imports: [CommonModule, NgIf, MarkdownComponent, PrimeNgModule],
   template: `
-  <section class="flex flex-row-reverse items-start gap-4 h-full mx-auto my-4 flex-wrap md:flex-nowrap">
+  <section class="flex flex-row-reverse items-start gap-4 h-full mx-auto my-4 flex-wrap md:flex-nowrap min-h-[105vh]">
     <article *ngIf="doc" class="p-card p-4 flex-1 h-full min-h-64 max-w-[60rem] w-2">
-      <h1 class="text-3xl">{{ doc.attributes.title }}</h1>
+      <h2 class="text-3xl text-default opacity-100">{{ doc.attributes.title }}</h2>
       <analog-markdown class="block max-w-[59rem]" [content]="doc.content"></analog-markdown>
     </article>
 
@@ -32,6 +37,7 @@ export interface DocAttributes {
         <ul class="list-none p-0 mx-0 mt-4 flex flex-col">
           <li *ngFor="let file of allDocs; index as index" class="border-x-0 border-b-0 border-t-2 border-solid border-surface-200">
             <a
+              *ngIf="!file.attributes.noShowInContents"
               [routerLink]="['/about', categoryName, file.slug]"
               pTooltip="{{ file.attributes.description }}"
               showDelay="300"
@@ -90,11 +96,24 @@ export class DocsViewerComponent {
     this.doc$.subscribe(doc => {
       // Set current doc when it resolves
       this.doc = doc;
-
-      // Then set meta tags, from doc attributes
+      // If doc has attributes, then get them for meta and JSON-LD content
       if (doc?.attributes) {
-        const { title, description } = doc.attributes;
-        this.metaTagsService.setCustomMeta(title, description);
+        const { title, description, coverImage, author, publishedDate, modifiedDate, slug } = doc.attributes;
+
+        // Set meta tags
+        this.metaTagsService.setCustomMeta(title, description, undefined, coverImage || this.getFallbackImage(title));
+        
+        // Set JSON-LD structured data
+        this.metaTagsService.addStructuredData('article', {
+          title: title,
+          description: description,
+          coverImage: coverImage || this.getFallbackImage(title),
+          author: author || 'Domain Locker Team',
+          publishedDate: publishedDate || new Date().toISOString(),
+          modifiedDate: modifiedDate || publishedDate || new Date().toISOString(),
+          slug: slug,
+          category: this.categoryName,
+        });
       }
     });
   }
@@ -105,5 +124,12 @@ export class DocsViewerComponent {
     const scrollY = window.scrollY;
     const sevenRemInPx = 112; // approx 7rem if root font-size = 16px
     this.navTop = scrollY > sevenRemInPx ? '1rem' : '9rem';
+  }
+
+  getFallbackImage(title: string) {
+    const encodedTitle = encodeURIComponent(title);
+    return `https://dynamic-og-image-generator.vercel.app/api/generate?title=${encodedTitle}`
+    + ' &author=Domain+Locker&websiteUrl=domain-locker.com&avatar=https%3A%2F%2Fdomain-locker'
+    + '.com%2Ficons%2Fandroid-chrome-maskable-192x192.png&theme=dracula';
   }
 }

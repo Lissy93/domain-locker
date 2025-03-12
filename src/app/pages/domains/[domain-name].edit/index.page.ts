@@ -189,8 +189,8 @@ export default class EditDomainComponent implements OnInit {
     return this.fb.group({
       link_name: [name, [Validators.required, Validators.maxLength(255)]],
       link_url: [
-        url,
-        [Validators.required, Validators.pattern(/^(https?:\/\/)?([\w.-]+)+(:\d+)?(\/([\w/_.]*)?)?$/)],
+      url,
+      [Validators.required, Validators.pattern(/^(https?:\/\/)?([\w.-]+)+(:\d+)?(\/[\w/_.-]*)*\/?$/)],
       ],
       link_description: [description, [Validators.maxLength(255)]],
     });

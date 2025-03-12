@@ -46,21 +46,23 @@ import { MetaTagsService } from '~/app/services/meta-tags.service';
   template: `
     <!-- Navbar -->
     <app-navbar />
-    <!-- Main content container -->
-    <div class="content-container" [ngClass]="{ 'full': isFullWidth }">
-      <!-- While initializing, show loading spinner -->
-      <loading *ngIf="loading" />
-      <!-- Create router outlet -->
-      <breadcrumbs *ngIf="!loading && pagePath" [pagePath]="pagePath" />
-      <!-- Router outlet for main content -->
-      <router-outlet *ngIf="!loading" />
-      <!-- Global components -->
-      <p-scrollTop />
-      <p-toast />
-      <p-confirmDialog />
+    <div class="main-container">
+      <!-- Main content container -->
+      <div class="content-container" [ngClass]="{ 'full': isFullWidth }">
+        <!-- While initializing, show loading spinner -->
+        <loading *ngIf="loading" />
+        <!-- Create router outlet -->
+        <breadcrumbs *ngIf="!loading && pagePath" [pagePath]="pagePath" />
+        <!-- Router outlet for main content -->
+        <router-outlet *ngIf="!loading" />
+        <!-- Global components -->
+        <p-scrollTop />
+        <p-toast />
+        <p-confirmDialog />
+      </div>
+      <!-- Footer -->
+      <app-footer [big]="isBigFooter" />
     </div>
-    <!-- Footer -->
-    <app-footer [big]="isBigFooter" />
   `,
   styles: [`
     :host {
@@ -68,11 +70,7 @@ import { MetaTagsService } from '~/app/services/meta-tags.service';
       flex-direction: column;
       min-height: 100vh;
     }
-    ::ng-deep app-root {
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
+
   `],
 })
 export class AppComponent implements OnInit, OnDestroy {
@@ -95,7 +93,6 @@ export class AppComponent implements OnInit, OnDestroy {
     private errorHandler: ErrorHandlerService,
     public _themeService: ThemeService,
     public _hitCountingService: HitCountingService,
-    private _translationService: TranslationService,
     private accessibilityService: AccessibilityService,
     private environmentService: EnvService,
     private featureService: FeatureService,
@@ -224,32 +221,32 @@ export class AppComponent implements OnInit, OnDestroy {
     });
   }
 
-    /* Check if documentation enabled before navigating to any /about page */
-    private async checkIfDocsDisabled(docsPath?: string): Promise<void> {
-      if (await this.featureService.isFeatureEnabledPromise('disableDocs')) {
-        // Docs disabled, show warning and navigate back to home
-        this.globalMessageService.showWarn(
-          'Docs Disabled',
-          'Documentation has not been enabled on this instance, you can view up-to-date content at domain-locker.com',
-        );
-        this.router.navigate(['/']);
+  /* Check if documentation enabled before navigating to any /about page */
+  private async checkIfDocsDisabled(docsPath?: string): Promise<void> {
+    if (await this.featureService.isFeatureEnabledPromise('disableDocs')) {
+      // Docs disabled, show warning and navigate back to home
+      this.globalMessageService.showWarn(
+        'Docs Disabled',
+        'Documentation has not been enabled on this instance, you can view up-to-date content at domain-locker.com',
+      );
+      this.router.navigate(['/']);
 
-        // Give user option to view on domain-locker.com
-        if (docsPath) {
-          this.confirmationService.confirm({
-            header: 'Documentation not Enabled',
-            message: 'Would you want to view this page on the Domain Locker website?',
-            icon: 'pi pi-book',
-            acceptIcon:'pi pi-reply mr-2',
-            rejectIcon:'pi pi-arrow-left mr-2',
-            acceptButtonStyleClass:'p-button-sm p-button-primary p-button-text',
-            rejectButtonStyleClass:'p-button-sm p-button-secondary p-button-text p-button-text',
-            closeOnEscape: true,
-            accept: () => {
-              window.open(`https://domain-locker.com/${docsPath}`, '_blank');
-            },
-          });
-        }
+      // Give user option to view on domain-locker.com
+      if (docsPath) {
+        this.confirmationService.confirm({
+          header: 'Documentation not Enabled',
+          message: 'Would you want to view this page on the Domain Locker website?',
+          icon: 'pi pi-book',
+          acceptIcon:'pi pi-reply mr-2',
+          rejectIcon:'pi pi-arrow-left mr-2',
+          acceptButtonStyleClass:'p-button-sm p-button-primary p-button-text',
+          rejectButtonStyleClass:'p-button-sm p-button-secondary p-button-text p-button-text',
+          closeOnEscape: true,
+          accept: () => {
+            window.open(`https://domain-locker.com/${docsPath}`, '_blank');
+          },
+        });
       }
     }
+  }
 }

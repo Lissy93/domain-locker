@@ -1,19 +1,26 @@
 {
-  "name": "domain-box",
-  "version": "0.0.0",
+  "name": "domain-locker",
+  "version": "0.0.2",
   "type": "module",
   "engines": {
     "node": ">=18.19.1"
   },
+  "author": "Alicia Sykes",
+  "license": "MIT",
   "scripts": {
     "ng": "ng",
     "dev": "ng serve",
-    "start": "npm run dev",
+    "start": "node dist/analog/server/index.mjs",
+    "start:deno": "deno run --unstable --allow-net --allow-read --allow-env .output/server/index.ts",
+    
     "build": "ng build",
     "build:vercel": "NITRO_PRESET=vercel ng build --configuration production",
+    "build:deno": "NITRO_PRESET=deno ng build --configuration production",
     "build:netlify": "NITRO_PRESET=netlify NODE_OPTIONS=--max-old-space-size=8096  ng build --configuration production",
+    
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "lint": "ng lint"
   },
   "private": true,
   "dependencies": {

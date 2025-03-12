@@ -53,6 +53,8 @@ export class NavbarComponent implements OnInit, AfterViewInit {
   disabledSignUp$ = this.featureService.isFeatureEnabled('disableSignUp');
   private subscriptions: Subscription = new Subscription();
 
+  public isSupabaseEnabled = this.databaseService.serviceType === 'supabase';
+
   constructor(
     public supabaseService: SupabaseService,
     private databaseService: DatabaseService,

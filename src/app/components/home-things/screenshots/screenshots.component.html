@@ -1,0 +1,49 @@
+<div class="p-card p-4">
+  <h3>Screenshots</h3>
+
+  <p-galleria
+    #galleria
+    [value]="screenshots"
+    [(activeIndex)]="activeIndex"
+    [numVisible]="10"
+    [showThumbnails]="showThumbnails"
+    [showItemNavigators]="true"
+    [showItemNavigatorsOnHover]="true"
+    [circular]="true"
+    [autoPlay]="true"
+    [transitionInterval]="3000"
+    [responsiveOptions]="responsiveOptions"
+    [containerClass]="galleriaClass()"
+    styleClass="p-card"
+  >
+    <!-- Main item template -->
+    <ng-template pTemplate="item" let-item>
+      <img
+        [src]="item.screenshot"
+        [alt]="item.title"
+        [ngStyle]="{
+          width: !fullscreen ? '100%' : '',
+          display: !fullscreen ? 'block' : ''
+        }"
+      />
+    </ng-template>
+
+    <!-- Thumbnail template -->
+    <ng-template pTemplate="thumbnail" let-item>
+      <div class="grid grid-nogutter justify-content-center">
+        <img [src]="item.screenshot" [alt]="item.title" />
+      </div>
+    </ng-template>
+
+    <!-- Footer template -->
+    <ng-template pTemplate="footer" let-item>
+      <div class="custom-galleria-footer bg-highlight rounded-b-sm py-2">
+        <!-- <button type="button" pButton icon="pi pi-list" (click)="onThumbnailButtonClick()"></button> --> 
+        <span *ngIf="screenshots.length" class="title-container px-2">
+          <span class="title font-bold mr-2">{{ screenshots[activeIndex]?.title }}:</span>
+          <span class="italic">{{ screenshots[activeIndex]?.description }}</span>
+        </span>
+      </div>
+    </ng-template>
+  </p-galleria>
+</div>

@@ -3,12 +3,14 @@ import { CommonModule } from '@angular/common';
 import { PrimeNgModule } from '~/app/prime-ng.module';
 import { DemoComponent } from '~/app/components/home-things/demo/demo.component';
 import { CtaComponent } from '~/app/components/home-things/cta/cta.component';
+import { ScreenshotsComponent } from '~/app/components/home-things/screenshots/screenshots.component';
+import { screenshots } from '~/app/pages/about/data/feature-comparison';
 
 @Component({
   selector: 'app-demo-page',
   template: `
     <h1 class="my-4 text-2xl">Domain Locker Demos</h1>
-    <app-demo />
+    <app-demo [standAlone]="true" />
     <p-card styleClass="mt-4 mx-2 mb-0">
       <h3>About the Demo</h3>
       <p class="m-0">
@@ -21,11 +23,14 @@ import { CtaComponent } from '~/app/components/home-things/cta/cta.component';
       </p>
     </p-card>
     <p-divider />
+    <app-screenshots [screenshots]="screenshots" />
+    <p-divider />
     <app-cta />
   `,
   standalone: true,
-  imports: [CommonModule, PrimeNgModule, DemoComponent, CtaComponent ]
+  imports: [CommonModule, PrimeNgModule, DemoComponent, CtaComponent, ScreenshotsComponent ]
 })
 export default class DemoPage {
+  public screenshots = screenshots;
   // Your component logic here
 }

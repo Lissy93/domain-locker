@@ -192,11 +192,11 @@ export class TagQueries {
         .from('tags')
         .update({
           name: tag.name,
-          color: tag.color || null, 
+          color: tag.color || null,
           description: tag.description || null,
           icon: tag.icon || null
         })
-        .eq('name', tag.name)
+        .eq(tag.id ? 'id' : 'name', tag.id || tag.name)
     ).pipe(
       map(({ error }) => {
         if (error) {

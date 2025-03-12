@@ -17,7 +17,7 @@
       @if (tag.icon) {
         <div class="tag-icon larger-larger" style="mask-image: url('https://api.iconify.design/{{tag.icon}}.svg');"></div>
       }
-      <div class="flex flex-col flex-1">
+      <div class="flex flex-col flex-1 overflow-hidden">
         <div class="flex items-center justify-between gap-1">
           <h2 class="capitalize text-lg m-0 truncate">{{ tag.name }}</h2>
           <strong>{{ tag.domain_count }}</strong>
@@ -29,31 +29,37 @@
       <ng-template #tooltipContent>
         <div class="flex flex-col">
           <span>
-            <b>{{tag.name}}</b>
+            <b>{{ tag.name }}</b>
             @if (tag.domain_count > 0) {
-              <p class="m-0">Contains {{tag.domain_count}} domains</p>
+              <p class="m-0">{{ 'ASSETS.TAG_GRID.TOOLTIP.CONTAINS_DOMAINS' | translate:{ count: tag.domain_count } }}</p>
             } @else {
-              <p class="m-0">No domains attached</p>
+              <p class="m-0">{{ 'ASSETS.TAG_GRID.TOOLTIP.NO_DOMAINS' | translate }}</p>
             }
           </span>
-          <p class="m-0 text-{{tag.color || 'gray'}}-400">{{tag.description}}</p>
+          <p class="m-0 text-{{tag.color || 'gray'}}-400">{{ tag.description }}</p>
           @if (!tag.description && !tag.icon && !tag.color) {
-            <p class="m-0 mt-2 text-xs text-blue-400">Tip: You can add color, icon and description to tags</p>
+            <p class="m-0 mt-2 text-xs text-blue-400">{{ 'ASSETS.TAG_GRID.TOOLTIP.TIP_ADD_DETAILS' | translate }}</p>
           }
-          <p class="m-0 text-xs opacity-70">Right-click for options</p>
+          <p class="m-0 text-xs opacity-70">{{ 'ASSETS.TAG_GRID.TOOLTIP.RIGHT_CLICK_OPTIONS' | translate }}</p>
         </div>
       </ng-template>
     </a>
   </div>
 
   <p class="mx-0 mt-4 mb-2 float-right text-xs text-surface-300">
-    Showing {{ tags.length }} tags - <a class="text-primary opacity-70" routerLink="/assets/tags">View All Tags</a><br>
-    Right-click on a tag to view options.
+    {{ 'ASSETS.TAG_GRID.SHOWING_TAGS' | translate:{ count: tags.length } }} - 
+    <a class="text-primary opacity-70" routerLink="/assets/tags">
+      {{ 'ASSETS.TAG_GRID.VIEW_ALL_TAGS' | translate }}
+    </a><br>
+    {{ 'ASSETS.TAG_GRID.RIGHT_CLICK_INSTRUCTIONS' | translate }}
   </p>
 } @else {
-  <p class="text-center text-2xl text-surface-300 italic">No tags created yet</p>
+  <p class="text-center text-2xl text-surface-300 italic">{{ 'ASSETS.TAG_GRID.NO_TAGS_CREATED' | translate }}</p>
   <p class="text-center text-surface-300 mt-0 mb-8">
-    Attach a tag to a new or existing domain, or <a class="text-primary opacity-70" routerLink="/assets/tags/new">Create new Tag</a>.
+    {{ 'ASSETS.TAG_GRID.NO_TAGS_INSTRUCTIONS' | translate }} 
+    <a class="text-primary opacity-70" routerLink="/assets/tags/new">
+      {{ 'ASSETS.TAG_GRID.CREATE_NEW_TAG' | translate }}
+    </a>.
   </p>
 }
 

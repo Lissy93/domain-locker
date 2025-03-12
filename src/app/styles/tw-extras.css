@@ -124,7 +124,7 @@
   color: var(--text-secondary-color);
 }
 .text-default {
-  color: var(--text-color);
+  color: var(--text-color) !important;
 }
 
 .text-surface-0 {

@@ -135,6 +135,7 @@ export const settingsLinks = [
   { label: 'Manage Plan', icon: 'pi pi-shop', routerLink: '/settings/upgrade' },
   { label: 'Developer Options', icon: 'pi pi-code', routerLink: '/settings/developer-options' },
   { label: 'Danger Zone', icon: 'pi pi-exclamation-triangle', routerLink: '/settings/delete-account' },
+  { label: 'Advanced', icon: 'pi pi-microchip', routerLink: '/settings/advanced' },
 ];
 
 export const aboutLinks = [
@@ -206,7 +207,7 @@ export const authenticatedNavLinks = [
           {
             label: 'Data Deletion',
             icon: 'pi pi pi-trash',
-            routerLink: '/settings/data-deletion',
+            routerLink: '/settings/delete-account',
           },
         ],
       },
@@ -268,7 +269,7 @@ export const authenticatedNavLinks = [
     label: 'Statistics',
     icon: 'pi pi-fw pi-sparkles',
     routerLink: '/stats',
-    items: statsLinks,
+    // items: statsLinks,
   },
 ];
 
@@ -277,43 +278,43 @@ export const unauthenticatedNavLinks = [
     label: 'Docs',
     icon: 'pi pi-fw pi-book',
     routerLink: '/about',
-    items: [
-      {
-        label: 'Helpful Articles',
-        routerLink: '/about/articles',
-        icon: 'pi pi-folder-open',
-      },
-      {
-        label: 'External Links',
-        routerLink: '/about/external-links',
-        icon: 'pi pi-paperclip',
-      },
-      {
-        label: 'Support',
-        routerLink: '/about/support',
-        icon: 'pi pi-question-circle',
-      },
-      {
-        label: 'Legal Documents',
-        routerLink: '/about/legal',
-        icon: 'pi pi-hammer',
-      },
-      {
-        label: 'Self-Hosting',
-        routerLink: '/about/self-hosting',
-        icon: 'pi pi-server',
-      },
-      {
-        label: 'Community',
-        routerLink: '/about/community',
-        icon: 'pi pi-users',
-      },
-      {
-        label: 'Developer Guides',
-        routerLink: '/about/developing',
-        icon: 'pi pi-code',
-      },
-    ],
+    // items: [
+    //   {
+    //     label: 'Helpful Articles',
+    //     routerLink: '/about/articles',
+    //     icon: 'pi pi-folder-open',
+    //   },
+    //   {
+    //     label: 'External Links',
+    //     routerLink: '/about/external-links',
+    //     icon: 'pi pi-paperclip',
+    //   },
+    //   {
+    //     label: 'Support',
+    //     routerLink: '/about/support',
+    //     icon: 'pi pi-question-circle',
+    //   },
+    //   {
+    //     label: 'Legal Documents',
+    //     routerLink: '/about/legal',
+    //     icon: 'pi pi-hammer',
+    //   },
+    //   {
+    //     label: 'Self-Hosting',
+    //     routerLink: '/about/self-hosting',
+    //     icon: 'pi pi-server',
+    //   },
+    //   {
+    //     label: 'Community',
+    //     routerLink: '/about/community',
+    //     icon: 'pi pi-users',
+    //   },
+    //   {
+    //     label: 'Developer Guides',
+    //     routerLink: '/about/developing',
+    //     icon: 'pi pi-code',
+    //   },
+    // ],
   },
   {
     label: 'Features',

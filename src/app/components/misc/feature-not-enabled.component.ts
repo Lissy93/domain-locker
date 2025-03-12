@@ -11,7 +11,7 @@ import { BillingService } from '~/app/services/billing.service';
   standalone: true,
   imports: [CommonModule, PrimeNgModule],
   template: `
-    <p-messages severity="warn" styleClass="">
+    <p-messages severity="warn">
       <ng-template pTemplate>
         <div class="flex justify-between items-center w-full">
           <span>
@@ -39,7 +39,7 @@ import { BillingService } from '~/app/services/billing.service';
 })
 export class FeatureNotEnabledComponent {
   @Input() feature!: keyof FeatureDefinitions;
-  featureName?: string;
+  @Input() featureName?: string;
   featureDescription?: string;
 
   environment: EnvironmentType;
@@ -55,7 +55,7 @@ export class FeatureNotEnabledComponent {
 
   ngOnInit(): void {
     this.billingService.fetchUserPlan();
-    this.featureName = featureDescriptions[this.feature]?.label;
+    this.featureName = this.featureName || featureDescriptions[this.feature]?.label;
     this.featureDescription = featureDescriptions[this.feature]?.description;
   }
 

@@ -24,7 +24,8 @@ import { CommonModule, NgOptimizedImage } from '@angular/common';
     :host {
       display: inline-block;
       width: var(--favicon-size, 24px);
-      height: var(--favicon-size, 24px);
+      height: auto;
+      max-height: var(--favicon-size, 24px);
       line-height: 0;
     }
     i, img {
@@ -46,7 +47,13 @@ export class DomainFaviconComponent implements OnInit, OnDestroy {
 
   // https://icons.duckduckgo.com/ip4/gov.uk.ico
 
-  sanitizedDomain: string = '';
+  private _sanitizedDomain: string = '';
+  public get sanitizedDomain(): string {
+    return this._sanitizedDomain;
+  }
+  public set sanitizedDomain(value: string) {
+    this._sanitizedDomain = value;
+  }
   faviconLoaded: boolean | undefined;
   isSpinning: boolean = true;
   private timeoutId: any;
@@ -85,7 +92,7 @@ export class DomainFaviconComponent implements OnInit, OnDestroy {
 
   private getSanitizedDomain(domain: string): string {
     try {
-      let sanitizedDomain = domain.replace(/^(https?:\/\/)?(www\.)?/, '');
+      let sanitizedDomain = (domain || '').replace(/^(https?:\/\/)?(www\.)?/, '');
       sanitizedDomain = sanitizedDomain.split('/')[0];
       return sanitizedDomain.toLowerCase();
     } catch (e) {

@@ -4,10 +4,11 @@
   "description": "Track, monitor, and manage your domains effortlessly with Domain Locker.",
   "theme_color": "#a78bfa",
   "background_color": "#111827",
-  "display": "standalone",
+  "display_override": ["fullscreen", "standalone", "minimal-ui"],
   "orientation": "portrait",
-  "start_url": "/?source=pwa",
+  "start_url": "/",
   "scope": "/",
+  "scope_extensions": [ "https://demo.domain-locker.com/", "https://domain-locker.as93.net" ],
   "icons": [
     {
       "src": "/icons/android-chrome-192x192.png",
@@ -30,21 +31,36 @@
   ],
   "categories": ["utilities", "productivity", "business"],
   "lang": "en",
-  "dir": "ltr",
+  "dir": "auto",
   "permissions": [
     "notifications",
     "push"
   ],
   "screenshots": [
     {
-      "src": "/screenshots/screenshot1.png",
+      "src": "/screenshots/homepage.png",
       "type": "image/png",
-      "sizes": "1080x1920"
+      "sizes": "1832x1231"
     },
     {
-      "src": "/screenshots/screenshot2.png",
+      "src": "/screenshots/stats.png",
       "type": "image/png",
-      "sizes": "1080x1920"
+      "sizes": "1832x1231"
+    },
+    {
+      "src": "/screenshots/monitor.png",
+      "type": "image/png",
+      "sizes": "1832x1231"
+    },
+    {
+      "src": "/screenshots/expirations.png",
+      "type": "image/png",
+      "sizes": "1832x1231"
+    },
+    {
+      "src": "/screenshots/assets.png",
+      "type": "image/png",
+      "sizes": "1832x1231"
     }
   ],
   "prefer_related_applications": false, 
@@ -57,9 +73,12 @@
     }
   },
   "features": {
-    "offline": true,
+    "offline_mode": true,
     "push_notifications": true,
-    "light_dark_mode": true
+    "light_dark_mode": true,
+    "background_sync": true,
+    "installable": true,
+    "updates": "auto"
   },
   "author": "Alicia Sykes <as93.com>",
   "version": "1.0.0"

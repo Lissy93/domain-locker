@@ -114,6 +114,9 @@ export interface SaveDomainData {
 }
 
 export abstract class DatabaseService {
+
+  serviceType: 'supabase' | 'postgres' | 'none' | 'error' = 'none';
+
   notificationQueries!: SbNotificationQueries | PgNotificationQueries;
   linkQueries!: SbLinkQueries | PgLinkQueries;
   tagQueries!: SbTagQueries | PgTagQueries;
@@ -144,4 +147,6 @@ export abstract class DatabaseService {
   abstract getDomainById(id: string): Promise<DbDomain>;
   abstract getDomain(domainName: string): Observable<DbDomain>;
   abstract updateDomain(domainId: string, domainData: SaveDomainData): Observable<DbDomain>;
+  abstract checkAllTables(): Observable<{table: string; count: number | string; success: string;}[]>;
+  abstract deleteAllData(userId: string, tables?: string[]): Promise<void>;
 }

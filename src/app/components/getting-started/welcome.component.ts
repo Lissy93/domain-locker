@@ -2,11 +2,12 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PrimeNgModule } from '~/app/prime-ng.module';
 import { trigger, style, animate, transition, query, stagger, group } from '@angular/animations';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   standalone: true,
   selector: 'welcome',
-  imports: [CommonModule, PrimeNgModule],
+  imports: [CommonModule, PrimeNgModule, TranslateModule],
   templateUrl: './welcome.component.html',
   animations: [
     trigger('fadeInSequence', [

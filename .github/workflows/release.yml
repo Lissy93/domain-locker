@@ -1,0 +1,30 @@
+name: 🥏 Create GitHub Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repo with bot token
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.BOT_TOKEN }}
+
+      - name: Generate Changelog
+        id: changelog
+        run: |
+          echo "### Changelog" > RELEASE.md
+          git log --oneline $(git describe --tags --abbrev=0 @^)..@ >> RELEASE.md
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: "Release ${{ github.ref_name }}"
+          body_path: RELEASE.md
+          token: ${{ secrets.BOT_TOKEN }}

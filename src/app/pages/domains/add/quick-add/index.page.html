@@ -1,4 +1,4 @@
-<div class="{{ isInModal ? '' : 'p-card p-3' }} max-w-96 mx-auto my-4">
+<div class="{{ isInModal ? '' : 'p-card p-3' }} max-w-96 mx-auto my-0">
   <h2 *ngIf="!isInModal" class="text-2xl font-semibold">Add New Domain</h2>
   <p class="m-0">Enter the domain name you'd like to track, and we'll fetch the details automatically.</p>
 
@@ -6,6 +6,7 @@
     <div class="field flex flex-col gap-1 mt-4">
       <p-floatLabel>
         <input pInputText
+          (blur)="onDomainNameBlur()"
           id="domainName"
           type="text"
           formControlName="domainName"
@@ -28,6 +29,16 @@
       [disabled]="domainForm.invalid || isLoading"
       [loading]="isLoading"
       class="w-full"
+    ></button>
+    <button
+      pButton
+      label="Add Extra Details"
+      [outlined]="true"
+      severity="secondary"
+      (click)="navigateToDetailedAdd()"
+      size="small"
+      styleClass="border-0 font-normal"
+      class="border-0 mt-4 mb-0 font-normal w-full"
     ></button>
   </form>
 </div>

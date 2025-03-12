@@ -1,10 +1,367 @@
 {
+  "NAV": {
+    "DOMAINS": "Domains",
+    "INVENTORY": "Inventar",
+    "VALUATION": "Bewertung",
+    "CHANGE_HISTORY": "Änderungsverlauf",
+    "CATEGORIES": "Kategorien",
+    "ADD_DOMAIN": "Domain hinzufügen",
+    "MOVE_DATA": "Daten verschieben",
+    "BULK_IMPORT": "Massenimport",
+    "BULK_EXPORT": "Massenexport",
+    "ASSETS": "Assets",
+    "STATISTICS": "Statistiken",
+    "REGISTRARS": "Registrare",
+    "HOSTS": "Hosts",
+    "CERTIFICATES": "Zertifikate",
+    "IPS": "IPs",
+    "DNS": "DNS",
+    "TAGS": "Tags",
+    "SECURITY": "Sicherheit"
+  },
+  
   "HOME": {
+    "FEATURES": "Funktionen",
+    "DESCRIPTION": "Domain Locker ist die ultimative All-in-One-Plattform, um Ihr Domain-Portfolio mühelos zu verwalten, zu überwachen und zu optimieren – mit intelligenten Benachrichtigungen, detaillierten Analysen und leistungsstarken Tools, die Sie organisiert, sicher und stets unter Kontrolle halten.",
+    "PRICING": "Preise",
+    "DEMO_TITLE": "Demo",
+    "LOADING_TITLE": "Laden",
+    "LOADING_DESCRIPTION": "Lade Ihre Domains und berechne Statistiken",
     "SUBHEADINGS": {
-      "DASHBOARD": "Zher Dashboard",
-      "DOMAINS": "Das Domains",
-      
-      "ASSETS": "Ja Assets"
+      "DASHBOARD": "Dashboard",
+      "DOMAINS": "Domains",
+      "CATEGORIES": "Kategorien",
+      "ASSETS": "Assets"
+    },
+    "UPCOMING_EXPIRATIONS": "Bevorstehende Abläufe",
+    "DOMAIN_PROVIDERS": "Domain-Anbieter",
+    "SECURITY_PROFILE": "Sicherheitsprofil",
+    "HOST_GEOGRAPHY": "Host-Geografie",
+    "TAGS": "Tags",
+    "REGISTRATION_TIMELINE": "Registrierungszeitplan",
+    "SHOW_MORE_INSIGHTS": "Mehr Einblicke anzeigen",
+    "EXPAND_STATS": "Statistiken erweitern",
+    "HIDE_STATS": "Statistiken ausblenden",
+    "VIEW_ALL_ASSETS": "Alle Assets anzeigen",
+    "DEMO": {
+      "LIVE_DEMO_TITLE": "Live-Demo",
+      "LIVE_DEMO_DESC": "Eine Live-Demo wird bereitgestellt unter",
+      "DEMO_DOMAIN": "demo.domain-locker.com",
+      "CREDENTIALS": "Zugangsdaten",
+      "USERNAME": "Benutzername: demo@domain-locker.com",
+      "PASSWORD": "Passwort: domainlocker",
+      "VISIT_DEMO": "Demo besuchen",
+      "VIDEO_DEMO_TITLE": "Video-Demo",
+      "VIDEO_DEMO_DESC": "TODO",
+      "WATCH_VIDEO": "Video ansehen"
+    },
+    "HERO": {
+      "BRAND": "Domain Locker:",
+      "HEADLINE": "Das zentrale Portal für all Ihre Domainnamen",
+      "SUBHEADLINE": "Intelligente, einfache und sichere Domainverwaltung",
+      "FEATURES": {
+        "TRACK_DOMAINS": "Verfolgen Sie alle Ihre Domains über verschiedene Registrar-Anbieter von einem einfachen Dashboard aus",
+        "DETAILED_METRICS": "Detaillierte Kennzahlen und Live-Datenvisualisierungen für jede Domain",
+        "ALERTS": "Erhalten Sie Benachrichtigungen über bevorstehende Domainabläufe oder Konfigurationsupdates",
+        "MONITORING": "Leistungs-, Sicherheits- und Konfigurationsüberwachung für jede Domain",
+        "MORE": "Und vieles mehr!"
+      },
+      "BUTTON": {
+        "VIEW_GITHUB": "Auf GitHub ansehen",
+        "GET_STARTED": "Loslegen"
+      }
+    },
+    "WELCOME": {
+      "TITLE": "Willkommen bei Domain Locker",
+      "DESCRIPTION": "Hier können Sie alle Ihre Domainnamen sicher an einem Ort verwalten. Egal, ob Sie 1 oder 1.000 Domains besitzen, wir haben alles, was Sie brauchen – mit Sicherheitsanalysen, Änderungs- und Ablaufbenachrichtigungen, Domainstatistiken und mehr.",
+      "GET_STARTED_TITLE": "Lassen Sie uns beginnen!",
+      "GET_STARTED_DESCRIPTION": "Beginnen Sie damit, Ihre erste Domain einzurichten – Sie brauchen lediglich die URL.\nSie können sie jederzeit bearbeiten und später weitere hinzufügen.",
+      "BUTTON": {
+        "GET_STARTED": "Loslegen"
+      },
+      "TIP": "Tipp: Sie können Sprache, Design und Anzeigeeinstellungen wechseln, indem Sie auf das <i class=\"pi pi-palette text-primary mx-1\"></i> in der oberen rechten Ecke klicken."
+    }
+  },
+
+  "STATS": {
+    "BUTTONS": {
+      "SHOW_STATS": "Statistiken anzeigen",
+      "HIDE_STATS": "Statistiken ausblenden",
+      "SHOW_MORE_INSIGHTS": "Mehr Einblicke anzeigen"
+    },
+    "CHARTS": {
+      "DOMAIN_PROVIDERS": "Domain-Anbieter",
+      "SECURITY_PROFILE": "Sicherheitsprofil",
+      "HOST_GEOGRAPHY": "Host-Geografie",
+      "TAGS": "Tags",
+      "REGISTRATION_TIMELINE": "Registrierungszeitplan",
+      "UPCOMING_EXPIRATIONS": "Bevorstehende Abläufe"
+    }
+  },
+  "FOOTER": {
+    "NAME": "Domain Locker",
+    "DESCRIPTION": "Das All-in-One-Tool zur Domainverwaltung",
+    "CTAS": {
+      "SIGN_UP": "Registrieren",
+      "GET_CODE": "Code abrufen"
+    },
+    "LINKS": {
+      "LEFT": {
+        "FEATURES": "Funktionen",
+        "PRICING": "Preise",
+        "SELF_HOSTING": "Eigenhosting",
+        "ALTERNATIVES": "Alternativen"
+      },
+      "MIDDLE": {
+        "GITHUB": "GitHub",
+        "MORE_APPS": "Weitere Apps...",
+        "SUPPORT": "Support",
+        "ATTRIBUTIONS": "Quellenangaben"
+      },
+      "RIGHT": {
+        "LICENSE": "Lizenz",
+        "SECURITY": "Sicherheit",
+        "PRIVACY_POLICY": "Datenschutzerklärung",
+        "TERMS_OF_SERVICE": "Nutzungsbedingungen"
+      }
+    }
+  },
+  "TAGS": {
+    "SUMMARY": "Zeige {count} Tags –",
+    "VIEW_ALL_TAGS": "Alle Tags anzeigen",
+    "RIGHT_CLICK_INFO": "Rechtsklicken Sie auf einen Tag, um Optionen anzuzeigen."
+  },
+
+  "DOMAINS": {
+    "FILTER_FORM": {
+      "FILTER": "Filtern",
+      "FIELDS": "Felder",
+      "SORT": "Sortieren",
+      "LAYOUT": "Layout"
+    },
+    "BUTTONS": {
+      "ADD_DOMAIN": "Domain hinzufügen"
+    },
+    "DOMAIN_COLLECTION": {
+      "NO_DOMAINS_FOUND": "Keine Domains gefunden",
+      "NO_DOMAINS_TEXT_1": "Sie haben noch keine Domains in dieser Sammlung. Beginnen Sie mit dem ",
+      "ADD_FIRST_DOMAIN": "Hinzufügen Ihrer ersten Domain",
+      "VIEWING": "Zeige",
+      "OF": "von",
+      "DOMAINS": "Domains",
+      "MATCHING_SEARCH": "passend zum Suchbegriff",
+      "WITH": "mit",
+      "FIELDS_VISIBLE_IN": "sichtbaren Feldern in",
+      "GRID_VIEW": "Rasteransicht",
+      "LIST_VIEW": "Listenansicht",
+      "RESET_FILTERS": "Filter zurücksetzen",
+      "OR": "oder",
+      "VIEW_ALL": "Alle anzeigen",
+      "INSTRUCTIONS": "Klicken Sie auf einen Domainnamen, um vollständige Details und den Änderungsverlauf anzuzeigen,<br>oder klicken Sie auf einen Tag/Registrar/Host/Certificate, um zugehörige Domains zu sehen.<br>Passen Sie die Filter an, um Felder anzuzeigen/auszublenden, das Layout zu ändern oder zu suchen.<br>Rechtsklicken Sie auf eine Domain, um zu bearbeiten, zu löschen, anzuzeigen oder weitere Aktionen auszuführen.",
+      "COLUMN": {
+        "DOMAIN_NAME": "Domain",
+        "REGISTRAR": "Registrar",
+        "EXPIRY_DATE": "Ablauf",
+        "TAGS": "Tags",
+        "NOTES": "Notizen",
+        "SECURITY_STATUSES": "Sicherheitsstatus",
+        "IP_ADDRESSES": "IP-Adressen",
+        "RENEWAL_COST": "Erneuerungskosten",
+        "SSL": "SSL",
+        "WHOIS": "WHOIS",
+        "HOST_INFO": "Host-Info",
+        "DNS_RECORDS": "DNS-Einträge",
+        "SUB_DOMAINS": "Subdomains"
+      },
+      "LIST": {
+        "IPV6": "IPv6",
+        "IPV4": "IPv4",
+        "VALID_UNTIL": "Gültig bis:",
+        "NS_LABEL": "NS:"
+      },
+      "GRID": {
+        "CLICK_VIEW_REGISTRAR": "Klicken Sie, um alle Domains anzuzeigen, die über {{registrar}} registriert wurden",
+        "EXPIRES_ON": "Läuft ab am {{date}}",
+        "UNKNOWN_EXPIRY": "Unbekanntes Ablaufdatum",
+        "SUB_DOMAINS": "Subdomains",
+        "SECURITY_FEATURES": "Sicherheitsfunktionen",
+        "IP_ADDRESSES": "IP-Adressen",
+        "COSTINGS": "Kosten",
+        "PAYMENT_DUE": "Zahlung von {{amount}} ist fällig am {{date}}",
+        "AUTO_RENEW": "Automatische Verlängerung",
+        "AUTO_RENEW_ENABLED": "Aktiviert",
+        "AUTO_RENEW_DISABLED": "Deaktiviert",
+        "PROFIT_LOSS": "Gewinn/Verlust:",
+        "PURCHASE_PRICE": "Kaufpreis:",
+        "CURRENT_VALUE": "Aktueller Wert",
+        "SSL_CERTIFICATE": "SSL-Zertifikat",
+        "SSL_ISSUER": "Aussteller",
+        "SSL_ISSUER_COUNTRY": "Ausstellerland",
+        "SSL_SUBJECT": "Betreff",
+        "SSL_VALID_FROM": "Gültig von",
+        "SSL_VALID_TO": "Gültig bis",
+        "SSL_KEY_SIZE": "Schlüsselgröße",
+        "SSL_SIGNATURE_ALGORITHM": "Signaturalgorithmus",
+        "SSL_FINGERPRINT": "Fingerabdruck",
+        "WHOIS_RECORDS": "WHOIS-Einträge",
+        "WHOIS_NAME": "Name",
+        "WHOIS_ORGANIZATION": "Organisation",
+        "WHOIS_ADDRESS": "Adresse",
+        "WHOIS_COUNTRY": "Land",
+        "HOSTS": "Hosts",
+        "HOST_ISP": "ISP",
+        "HOST_ORG": "Organisation",
+        "HOST_AS_REF": "AS-Referenz",
+        "HOST_ADDRESS": "Adresse",
+        "DNS_RECORDS": "DNS-Einträge",
+        "DNS_DNSSEC": "DNSSEC",
+        "DNS_NAME_SERVERS": "Nameserver",
+        "DNS_MX_RECORDS": "MX-Einträge",
+        "DNS_TXT_RECORDS": "TXT-Einträge",
+        "IPV6": "IPv6",
+        "IPV4": "IPv4",
+        "CONTEXT_MENU": {
+          "VIEW": "Anzeigen",
+          "EDIT": "Bearbeiten",
+          "DELETE": "Löschen",
+          "COPY_URL": "URL kopieren",
+          "VISIT_URL": "URL besuchen",
+          "DELETE_HEADER": "Zerstörerische Aktion",
+          "DELETE_MESSAGE": "Sind Sie sicher, dass Sie diese Domain löschen möchten?",
+          "DELETE_SUCCESS_SUMMARY": "Erfolg",
+          "DELETE_SUCCESS_DETAIL": "Domain erfolgreich gelöscht",
+          "DELETE_ERROR_SUMMARY": "Fehler",
+          "DELETE_ERROR_DETAIL": "Domain konnte nicht gelöscht werden",
+          "COPY_SUCCESS_SUMMARY": "Erfolg",
+          "COPY_SUCCESS_DETAIL": "Domain-URL wurde in die Zwischenablage kopiert",
+          "COPY_ERROR": "URL konnte nicht kopiert werden"
+        }
+      }
+    }
+  },
+
+  "ASSETS": {
+    "TAG_GRID": {
+      "ERROR": "Fehler",
+      "LOAD_ERROR": "Tags mit Domain-Zählungen konnten nicht geladen werden",
+      "CONTEXT_MENU": {
+        "VIEW_TAG": "Tag anzeigen",
+        "EDIT": "Bearbeiten",
+        "MOVE_DOMAINS": "Domains verschieben",
+        "DELETE_TAG": "Tag löschen",
+        "ADD_NEW_TAG": "Neuen Tag hinzufügen"
+      },
+      "DELETE_CONFIRM_MESSAGE": "Sind Sie sicher, dass Sie den \"{{tag}}\"-Tag löschen möchten?<br><b class=\"text-red-500\">Diese Aktion kann nicht rückgängig gemacht werden.</b><br><p class=\"text-surface-400 text-sm\">Beachten Sie, dass dies die mit diesem Tag verknüpften Domains nicht beeinflusst,<br>sie verlieren lediglich ihre Zuordnung.</p>",
+      "DELETE_CONFIRM_HEADER": "Löschbestätigung für Tag: {{tag}}",
+      "DELETE_SUCCESS_SUMMARY": "Erfolg",
+      "DELETE_SUCCESS_DETAIL": "Tag \"{{tag}}\" wurde erfolgreich gelöscht.",
+      "DELETE_ERROR_DETAIL": "Tag konnte nicht gelöscht werden",
+      "SHOWING_TAGS": "Zeige {{count}} Tags",
+      "VIEW_ALL_TAGS": "Alle Tags anzeigen",
+      "RIGHT_CLICK_INSTRUCTIONS": "Rechtsklicken Sie auf einen Tag, um Optionen anzuzeigen",
+      "NO_TAGS_CREATED": "Keine Tags erstellt",
+      "NO_TAGS_INSTRUCTIONS": "Weisen Sie einer neuen oder bestehenden Domain einen Tag zu, oder",
+      "CREATE_NEW_TAG": "Neuen Tag erstellen",
+      "TOOLTIP": {
+        "CONTAINS_DOMAINS": "Enthält {{count}} Domains",
+        "NO_DOMAINS": "Keine Domains zugeordnet",
+        "TIP_ADD_DETAILS": "Tipp: Sie können Tags Farbe, Symbol und Beschreibung hinzufügen",
+        "RIGHT_CLICK_OPTIONS": "Rechtsklick für Optionen"
+      }
+    },
+    "CARDS": {
+      "REGISTRARS": {
+        "SINGLE": "Registrar",
+        "PLURAL": "Registrare",
+        "COUNT": "{count} Registrare"
+      },
+      "IP_ADDRESSES": {
+        "SINGLE": "IP-Adresse",
+        "PLURAL": "IP-Adressen",
+        "COUNT": "{count} IP-Adressen"
+      },
+      "SSL_CERTIFICATES": {
+        "SINGLE": "SSL-Zertifikat",
+        "PLURAL": "SSL-Zertifikate",
+        "COUNT": "{count} SSL-Zertifikate"
+      },
+      "HOSTS": {
+        "SINGLE": "Host",
+        "PLURAL": "Hosts",
+        "COUNT": "{count} Hosts"
+      },
+      "DNS_RECORDS": {
+        "SINGLE": "DNS-Eintrag",
+        "PLURAL": "DNS-Einträge",
+        "COUNT": "{count} DNS-Einträge"
+      },
+      "TAGS": {
+        "SINGLE": "Tag",
+        "PLURAL": "Tags",
+        "COUNT": "{count} Tags"
+      },
+      "SUBDOMAINS": {
+        "SINGLE": "Subdomain",
+        "PLURAL": "Subdomains",
+        "COUNT": "{count} Subdomains"
+      },
+      "LINKS": {
+        "SINGLE": "Link",
+        "PLURAL": "Links",
+        "COUNT": "{count} Links"
+      },
+      "STATUSES": {
+        "SINGLE": "Status",
+        "PLURAL": "Statuses",
+        "COUNT": "{count} Statuses"
+      }
+    }
+  },
+
+  "DOMAIN_STATS": {
+    "EXPIRATION_BAR": {
+      "NO_DATA": "Keine Daten verfügbar",
+      "TIMELINE_SHOW": "Zeitachse anzeigen",
+      "TIMELINE_HIDE": "Zeitachse ausblenden",
+      "NEXT_EXPIRING": "Die nächste Domain, die abläuft, ist",
+      "NO_DOMAINS": "Keine Domains"
+    },
+    "PROVIDERS": {
+      "REGISTRARS": "Registrare",
+      "SSL_ISSUERS": "SSL-Aussteller",
+      "HOSTS": "Hosts",
+      "VIEW_ALL_REGISTRARS": "Alle Registrare anzeigen",
+      "VIEW_ALL_CERT_PROVIDERS": "Alle Zertifikatsanbieter anzeigen",
+      "VIEW_ALL_HOSTS": "Alle Hosts anzeigen"
+    },
+    "EPP_STATUSES": {
+      "VIEW_ALL_STATUSES": "Alle Status anzeigen"
+    },
+    "HOSTS_MAP": {
+      "VIEW_ALL_HOSTS": "Alle Hosts anzeigen"
+    },
+    "TAG_CLOUD": {
+      "VIEW_ALL_TAGS": "Alle Tags anzeigen",
+      "NO_TAGS_FOUND": "Keine Tags gefunden"
+    }
+  },
+
+  "GLOBAL": {
+    "COPY": "Kopieren",
+    "CANCEL": "Abbrechen",
+    "OK": "OK",
+    "SAVE": "Speichern",
+    "DELETE": "Löschen",
+    "CONFIRM": "Sind Sie sicher?",
+    "LOADING": {
+      "INITIALIZING": "Initialisiere",
+      "DEFAULT_DESCRIPTION": "Wir bereiten gerade alles für Sie vor.\nDies sollte nicht lange dauern...",
+      "ERROR_SHORT": "Es sollte nicht so lange dauern...",
+      "ERROR_LONG": "Etwas könnte schiefgelaufen sein",
+      "BUTTON": {
+        "HOME": "Startseite",
+        "RELOAD": "Neu laden"
+      }
     }
   }
 }

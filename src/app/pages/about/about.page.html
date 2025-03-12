@@ -1,5 +1,38 @@
 
-<h1 class="my-4">Documentation</h1>
+<div class="mt-2 mb-4 mx-auto text-center">
+  <p class="m-0 text-lg font-bold text-primary opacity-90 flex items-center gap-2 justify-center">
+    <img width="24" src="/icons/favicon-32x32.png" />
+    Domain Locker
+  </p>
+  <h1 class="m-0">Documentation</h1>
+</div>
+
+<div class="p-card p-4 mb-4 relative">
+  <dl-icon
+    icon="docs"
+    class="flex w-[4rem] absolute right-2 top-2"
+    classNames="w-full h-full"
+    color="var(--surface-200)"
+  />
+  <ul class="p-0 m-0 list-none">
+    <li *ngFor="let section of sections" class="">
+      <a [routerLink]="makeId(section.title)" class="flex flex-wrap gap-2 items-center no-underline text-default">
+      <dl-icon *ngIf="section.svgIcon"
+        [icon]="section.svgIcon"
+        class="flex w-[1.25rem]"
+        classNames="w-full h-full"
+        color="var(--primary-color)"
+      />
+      <span class="text-lg font-semibold text-primary hover:underline">
+        {{section.title}}
+      </span>
+      <span class="opacity-70 italic cursor-default">
+        {{section.description}}
+      </span>
+    </a>
+    </li>
+  </ul>
+</div>
 
 <div class="masonry sm:masonry-sm md:masonry-sm lg:masonry-md xl:masonry-md 2xl:masonry-lg">
   <!-- Each section of docs links -->

@@ -1,4 +1,4 @@
-<ng-container *ngIf="!loading &&  meterValues.length > 0; noData">
+<ng-container *ngIf="!loading && meterValues.length > 0; noData">
   <p-meterGroup 
     [value]="meterValues" 
     [min]="0"
@@ -18,7 +18,7 @@
   <div *ngIf="!showFull" class="float-right">
     <p-button
       (click)="toggleTimeline()"
-      [label]="showTimeline ? 'Hide Timeline' : 'Show Timeline'"
+      [label]="showTimeline ? ('DOMAIN_STATS.EXPIRATION_BAR.TIMELINE_HIDE' | translate) : ('DOMAIN_STATS.EXPIRATION_BAR.TIMELINE_SHOW' | translate)"
       severity="secondary"
       size="small"
       icon="pi pi-calendar"
@@ -27,20 +27,24 @@
   </div>
 
   <ng-container *ngIf="upcomingDomains.length > 0; else nextExpiring">
-    <p class="mt-2 mb-0 text-sm text-red-400">{{getUpcomingDomainsMessage()}}</p>
+    <p class="mt-2 mb-0 text-sm text-red-400">{{ getUpcomingDomainsMessage() }}</p>
   </ng-container>
 
   <ng-template #nextExpiring>
     <ng-container *ngIf="nextExpiringDomain">
-      <p class="mt-2 mb-0 text-sm text-surface-400">The next domain to expire will be {{ formatExpirationMessage(nextExpiringDomain) }}</p>
+      <p class="mt-2 mb-0 text-sm text-surface-400">
+        {{ 'DOMAIN_STATS.EXPIRATION_BAR.NEXT_EXPIRING' | translate }} {{ formatExpirationMessage(nextExpiringDomain) }}
+      </p>
     </ng-container>
   </ng-template>
 
   <div [@slideInOut]="showTimeline || showFull ? 'in' : 'out'" class="overflow-hidden domain-timeline-thing">
     <p-timeline [value]="timelineEvents" align="left" styleClass="mt-4" *ngIf="showTimeline || showFull">
       <ng-template pTemplate="content" let-event>
-        <small class="p-text-secondary">{{event.date | date:'mediumDate'}}</small>
-        <a [routerLink]="'/domains/'+event.domain" class="text-default no-underline"><h5 class="mb-1">{{event.domain}}</h5></a>
+        <small class="p-text-secondary">{{ event.date | date:'mediumDate' }}</small>
+        <a [routerLink]="'/domains/'+event.domain" class="text-default no-underline">
+          <h5 class="mb-1">{{ event.domain }}</h5>
+        </a>
       </ng-template>
       <ng-template pTemplate="opposite" let-event>
         <i [class]="event.icon" [style.color]="event.color"></i>
@@ -50,5 +54,5 @@
 </ng-container>
 
 <ng-template #noData>
-  <p class="text-center text-surface-500">No data available</p>
+  <p class="text-center text-surface-500">{{ 'DOMAIN_STATS.EXPIRATION_BAR.NO_DATA' | translate }}</p>
 </ng-template>

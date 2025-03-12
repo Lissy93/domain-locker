@@ -7,7 +7,9 @@ coverImage:
 
 
 
-### Installing Postgres
+## Installing Postgres
+
+### Option 1: System
 
 First, install Postgres for your OS if you haven't already done so.
 
@@ -15,42 +17,44 @@ On Debian/Ubuntu/WSL you can run `apt install postgresql`, for other distros or 
 
 You should now have access to the `psql` CLI tool, and you can verify that the postgresql service is running with `systemctl status postgresql`.
 
-
-### Enable Password Authentication
-
-Edit the `pg_hba.conf` file to use `md5` authentication
+### Option 2: Docker
+You can also run Postgres in a Docker container, instead of directly on your host system
 
 ```bash
-sudo nano /etc/postgresql/<version>/main/pg_hba.conf
-```
-	
-And make the following edit:
-
-```diff
-- local   all             postgres                                peer
-+ local   all             postgres                                md5
-```
-
-Also, don't forget to ensure `md5` is set for any `host` entries:
-
-```
-host    all             all             127.0.0.1/32            md5
-host    all             all             ::1/128                 md5
+docker run -d \
+  --name domain-locker-db \
+  -e POSTGRES_USER=postgres \
+  -e POSTGRES_PASSWORD=your-password \
+  -e POSTGRES_DB=domain_locker \
+  -p 5432:5432 \
+  postgres:15
 ```
 
-Then restart Postgres
+Where `POSTGRES_USER` is the username (e.g. `postgres`), `POSTGRES_PASSWORD` is your preferred password, `POSTGRES_DB` is the default database name that will be created, and `postgres:15` is the Docker image (version 15).
+
+You can then connect to the database from Domain Locker by setting your env vars (in `.env` or wherever):
 
 ```bash
-sudo systemctl restart postgresql
+DL_PG_HOST=localhost
+DL_PG_PORT=5432
+DL_PG_NAME=domain_locker
+DL_PG_USER=postgres
+DL_PG_PASSWORD=your-password
 ```
 
-And finally, set a (secure) password for the postgres user
+### Option 3: Managed
 
-```
-sudo -u postgres psql -c "\password postgres"
-```
+If you prefer cloud-managed solutions, popular providers include:
+- Amazon RDS
+- Google Cloud SQL
+- Azure Database for PostgreSQL
+- Neon
 
-### Configuring the Schema
+In each case, you’d retrieve the connection details (hostname, port, credentials) from the provider’s console and set your Domain Locker environment variables accordingly.
+
+---
+
+## Configuring the Schema
 
 We've got a Bash script in [`./db/setup-postgres.sh`](https://github.com/Lissy93/domain-locker/blob/main/db/setup-postgres.sh) which will take care of creating your database and applying the Domain Locker schema.
 
@@ -294,3 +298,81 @@ classDiagram
   domains --> notification_preferences : domain_id
   domains --> sub_domains : domain_id
 ```
+
+---
+
+## Advanced
+
+### Secure External Connections
+
+If your database is exposed to the internet, look into:
+- **Firewall Rules**: Limit which IPs can connect on port 5432.
+- **SSL/TLS**: Configure Postgres to only accept encrypted connections.
+
+### Performance Tuning
+
+For heavy usage, consider tuning:
+- **`shared_buffers`**,
+- **`work_mem`**,
+- **`checkpoint_segments`**,  
+and other parameters in `postgresql.conf`.
+
+### Backup and Restore
+
+To create a backup:
+
+```bash
+pg_dump -U postgres -h localhost -F c -b -v -f domain_locker_backup.sql
+```
+
+Restore it with:
+
+```bash
+pg_restore -U postgres -h localhost -d domain_locker -v domain_locker_backup.sql
+```
+
+---
+
+## Enable Password Authentication
+
+During development, on locally running Postgres instance, you will likely want to use password authentication setup.
+
+Edit the `pg_hba.conf` file to use `md5` authentication
+
+```bash
+sudo nano /etc/postgresql/<version>/main/pg_hba.conf
+```
+	
+And make the following edit:
+
+```diff
+- local   all             postgres                                peer
++ local   all             postgres                                md5
+```
+
+Also, don't forget to ensure `md5` is set for any `host` entries:
+
+```
+host    all             all             127.0.0.1/32            md5
+host    all             all             ::1/128                 md5
+```
+
+Then restart Postgres
+
+```bash
+sudo systemctl restart postgresql
+```
+
+And finally, set a (secure) password for the postgres user
+
+```
+sudo -u postgres psql -c "\password postgres"
+```
+
+---
+
+## Troubleshooting
+
+- **Check logs** in `/var/log/postgresql/` (for Debian-based systems).
+- **Verify running processes**: `sudo systemctl status postgresql`
+- **Connection errors**: Confirm your env vars are correct (host, port, user, password).

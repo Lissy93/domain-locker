@@ -159,7 +159,7 @@ export default defineEventHandler(async (event) => {
   }
 
   const query = getQuery(event);
-  const domain = query['domain'] as string;
+  const domain = (query['domain'] as string || '').replaceAll('www.', '').trim();
 
   if (!domain) {
     return { error: 'Domain name is required' };
