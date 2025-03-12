@@ -1,5 +1,6 @@
+<app-feature-not-enabled *ngIf="(disableBilling$ | async)" feature="disableBilling" />
 
-      
+@if (!(disableBilling$ | async)) {
 <p-messages severity="success" *ngIf="status === 'success'">
   <ng-template pTemplate>
     <div class="flex items-center">
@@ -117,4 +118,4 @@
       class="mx-4 p-button-primary {{ plan.suggested ? '' : 'p-button-outlined' }}"></button>
   </div>
 </div>
-
+}

@@ -46,17 +46,18 @@
     </div>
   </footer>
 } @else {
-  <footer class="w-full bg-highlight py-1 opacity-70">  
-    <div class="w-full flex justify-between align-center px-4">
-      <p class="m-0 text-highlight">
-        &copy; <a href="#" class="text-primary">Domain Locker</a> {{ year }},
-        licensed under MIT
+  <footer class="w-full bg-highlight py-1 opacity-60">  
+    <div class="w-full flex items-center align-center px-4 flex-wrap justify-center md:justify-between">
+      <p class="m-0 text-xs opacity-90">
+        <a href="#" class="text-default hover:text-primary">Domain Locker</a> V.{{appVersion}},
+        is licensed under <a class="text-default hover:text-primary" href="https://github.com/Lissy93/domain-locker/blob/main/LICENSE">MIT</a> &copy;
+        <a href="https://aliciasykes.com" class="text-default hover:text-primary">Alicia Sykes</a> {{ year }}
       </p>
-      <p class="m-0 text-highlight">
-        <a class="text-primary" href="https://github.com/lissy93/domain-locker">GitHub</a> |
-        <a class="text-primary" routerLink="/about">Docs</a> |
-        <a class="text-primary" routerLink="/about/legal">Legal</a> |
-        <a class="text-primary" href="https://as93.net">More Apps →</a>
+      <p class="m-0 text-xs opacity-90">
+        <a class="text-default hover:text-primary" href="https://github.com/lissy93/domain-locker">GitHub</a> |
+        <a class="text-default hover:text-primary" routerLink="/about">Docs</a> |
+        <a class="text-default hover:text-primary" routerLink="/about/legal">Legal</a> |
+        <a class="text-default hover:text-primary" href="https://as93.net">More Apps →</a>
       </p>
     </div>
   </footer>

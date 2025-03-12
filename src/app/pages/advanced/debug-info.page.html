@@ -1,0 +1,147 @@
+<div class="my-4 max-w-4xl mx-auto">
+  <h1>Debug Data for {{appName}} V.{{appVersion}}</h1>
+  <p-messages severity="info">
+    <ng-template pTemplate>
+      <div class="flex flex-col gap-2">
+        <div>
+          <i class="pi pi-info-circle mr-2"></i>
+          <b>This page is for debugging purposes only.</b><br>
+          If you're facing technical issues with Domain Locker, please include the below data in your bug report.
+          This data will never be seen by anyone unless you share it yourself.
+          Be sure to redact any sensitive information before sending.<br>
+          <b>Need help?</b> View our <a class="text-primary" routerLink="/about/support">Support Pages</a>
+        </div>
+        <div class="flex w-full justify-end">
+          <p-button severity="info" label="Copy all to Clipboard" icon="pi pi-copy" (click)="copyAllToClipboard()" />
+        </div>
+      </div>
+    </ng-template>
+  </p-messages>
+</div>
+
+<div class="p-card p-4 max-w-4xl mx-auto">
+  <h2>Environment Info</h2>
+
+<pre class="p-2 bg-bluegray-900 text-bluegray-100 rounded-sm text-xs overflow-x-hidden" id="debug_environmentInfo">
+===================================
+APP INFO
+===================================
+Version:    {{ appVersion }}
+Env Type:   {{ environmentType }}
+Database:   {{ !enabledDb.postgres && !enabledDb.supabase ? '⚠️ None' : '' }}{{ enabledDb.supabase ? 'Supabase' : '' }} {{ enabledDb.postgres ? 'Postgres' : '' }}
+App ID:     {{ appId }}
+Platform ID {{ platformId }}
+
+===================================
+HOST INFO
+===================================
+Protocol:   {{ domainInfo?.protocol }}
+Host:       {{ domainInfo?.host }}
+Origin:     {{ domainInfo?.origin }}
+
+===================================
+BROWSER INFO
+===================================
+Language:   {{ navigatorLanguage ?? 'None' }} {{ navigatorLanguages ? '(plus ' + navigatorLanguages.join(', ') + ')' : ''}}
+DNT:        {{ doNotTrack || 'Unset' }}
+Cookies:    {{ cookiesEnabled ? 'Enabled' : 'Disabled' }}
+JavaScript: Enabled
+UserAgent:  {{ userAgent }}
+UA Data:    {{ userAgentData || 'Unset' }}
+
+===================================
+SYSTEM INFO
+===================================
+Platform:   {{ platform }}
+Public IP:  {{ ipAddress }}
+Hardware:   {{ hardwareConcurrency }} cores, {{ deviceMemory }}GB memory
+Screen:     {{ screenInfo?.width }}x{{ screenInfo?.height }} ({{ screenInfo?.devicePixelRatio }} dpr)
+Online:     {{ isOnline ? 'Yes' : 'No' }}
+Timezone:   {{ timeZone }}
+Orientat:   {{ orientation }}
+
+</pre>
+
+</div>
+
+<p-divider class="max-w-4xl mx-auto flex my-2" />
+
+  <div class="p-card p-4 max-w-4xl mx-auto max-h-96"> 
+  <h2>Error Log</h2>
+<pre class="p-2 bg-bluegray-900 text-bluegray-100 rounded-sm text-xs overflow-auto min-h-28"  id="debug_errorLogs">
+===================================
+ERROR LOGS
+===================================@for (error of errorLog; track error.date) {
+[{{error.date | date: 'short'}}] {{error.message}} ({{error.location}}) } </pre>
+<a class="text-sm opacity-70 underline m-0 float-right cursor-pointer" (click)="triggerDummyError()">Trigger Test Error</a>
+</div>
+
+<p-divider class="max-w-4xl mx-auto flex my-2" />
+    
+<div class="p-card p-4 max-w-4xl mx-auto">
+    <h2>Diagnostics</h2>
+
+<pre class="p-2 bg-bluegray-900 text-bluegray-100 rounded-sm text-xs overflow-auto" id="debug_diagnostics">
+===================================
+DATABASE TABLE CHECKS
+===================================
+<div *ngIf="loadingTableChecks">Loading...</div><div *ngIf="!loadingTableChecks"><div *ngFor="let table of tableChecks">{{table.success}} {{table.table}} ({{table.count}} records)</div></div>
+===================================
+FEATURE AVAILABILITY
+=================================== @for (feature of featureChecks; track feature.feature) {
+{{feature.enabled ? '✅' : '❌'}} {{feature.feature}}}
+
+===================================
+ENVIRONMENT VARIABLES
+=================================== @for (env of setEnvVars; track env.envName) {
+{{env.hasValue ? '✅' : '❌'}} {{env.envName}} }
+</pre>
+</div>
+
+<p-divider class="max-w-4xl mx-auto flex my-2" />
+
+<div class="p-card p-4 max-w-4xl mx-auto">
+    <h2>User Info</h2>
+
+<pre class="p-2 bg-bluegray-900 text-bluegray-100 rounded-sm text-xs overflow-auto" id="debug_userInfo">
+===================================
+APP PREFERENCES
+===================================
+Language:   {{ language || 'en' }}
+Theme:      {{ displayOptions?.theme || 'Unset' }}
+Dark:       {{ displayOptions?.darkMode ? 'Enabled' : 'Disabled' }}
+Font:       {{ displayOptions?.font || 'Unset' }}
+Scale:      {{ displayOptions?.scale || 'Unset' }}
+
+===================================
+ACCESSIBILITY SETTINGS
+===================================
+Reduced Motion  {{ accessibilityOptions?.reducedMotion ? '✔️ Yes' : '✖️ No' }}
+Touch Targets   {{ accessibilityOptions?.touchTargetExpand ? '✔️ Yes' : '✖️ No' }}
+High Contrast   {{ accessibilityOptions?.highContrast ? '✔️ Yes' : '✖️ No' }}
+Large Text      {{ accessibilityOptions?.largeText ? '✔️ Yes' : '✖️ No' }}
+Icon Removal    {{ accessibilityOptions?.removeIcons ? '✔️ Yes' : '✖️ No' }}
+Grayscale       {{ accessibilityOptions?.grayscale ? '✔️ Yes' : '✖️ No' }}
+Night Shift     {{ accessibilityOptions?.nightShift ? '✔️ Yes' : '✖️ No' }}
+
+===================================
+LOCAL STORAGE
+===================================
+{{ localStorageKeys || 'No data stored' }}
+
+===================================
+COOKIES
+===================================
+{{ cookies || 'No cookies stored' }}
+
+===================================
+USER INFO
+===================================
+ID        {{ userInfo?.id || 'N/A'}}
+Role      {{ userInfo?.role || 'N/A' }}
+Email     {{ userInfo?.email || 'N/A' }}
+Created   {{ userInfo?.created_at || 'N/A' }}
+Last Seen {{ userInfo?.last_sign_in_at || 'N/A' }}
+
+</pre>
+</div>

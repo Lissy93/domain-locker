@@ -1,0 +1,31 @@
+
+# Disallow crawling of authenticated routes
+User-agent: *
+Disallow: /domains
+Disallow: /assets
+Disallow: /settings
+Disallow: /advanced
+Disallow: /monitor
+Disallow: /notifications
+Disallow: /stats
+Disallow: /value
+
+# Allow search engines to index homepage, about pages, and login
+Allow: /
+Allow: /about
+Allow: /about/
+Allow: /about/*
+Allow: /login
+
+# Allow AI bots to index about pages and docs
+User-agent: GPTBot
+User-agent: Google-Extended
+User-agent: ClaudeBot
+User-agent: PerplexityBot
+Allow: /about
+Allow: /about/
+Allow: /about/*
+
+# Sitemap for better SEO
+Sitemap: https://domain-locker.com/sitemap.xml
+

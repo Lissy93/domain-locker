@@ -2,7 +2,6 @@ import { Component, ElementRef, Input, OnInit } from '@angular/core';
 import { MenuItem } from 'primeng/api';
 import { Router } from '@angular/router';
 import { ConfirmationService, MessageService } from 'primeng/api';
-
 import { DbDomain } from '~/app/../types/Database';
 import { PrimeNgModule } from '~/app/prime-ng.module';
 import { NgFor, DatePipe, CommonModule } from '@angular/common';
@@ -13,13 +12,14 @@ import DatabaseService from '~/app/services/database.service';
 import { GlobalMessageService } from '~/app/services/messaging.service';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { ErrorHandlerService } from '~/app/services/error-handler.service';
+import { TranslateService, TranslateModule } from '@ngx-translate/core';
 
 @Component({
   standalone: true,
   selector: 'app-domain-card',
   templateUrl: './domain-card.component.html',
   styleUrls: ['./domain-card.component.scss'],
-  imports: [PrimeNgModule, NgFor, DatePipe, CommonModule, DomainFaviconComponent ],
+  imports: [PrimeNgModule, NgFor, DatePipe, CommonModule, DomainFaviconComponent, TranslateModule],
   providers: [ConfirmationService, MessageService],
   animations: [
     trigger('cardAnimation', [
@@ -48,7 +48,8 @@ export class DomainCardComponent implements OnInit {
     private databaseService: DatabaseService,
     private globalMessageService: GlobalMessageService,
     private elRef: ElementRef,
-    private errorHandler: ErrorHandlerService
+    private errorHandler: ErrorHandlerService,
+    private translate: TranslateService
   ) {}
 
   isVisible(field: string): boolean {
@@ -58,30 +59,30 @@ export class DomainCardComponent implements OnInit {
   ngOnInit() {
     this.contextMenuItems = [
       { 
-        label: 'View', 
+        label: this.translate.instant('DOMAINS.DOMAIN_COLLECTION.GRID.CONTEXT_MENU.VIEW'),
         icon: 'pi pi-reply',
         command: () => this.viewDomain()
-      },  
+      },
       { 
-        label: 'Edit', 
+        label: this.translate.instant('DOMAINS.DOMAIN_COLLECTION.GRID.CONTEXT_MENU.EDIT'),
         icon: 'pi pi-pencil',
         command: () => this.editDomain()
       },
       { 
-        label: 'Delete', 
+        label: this.translate.instant('DOMAINS.DOMAIN_COLLECTION.GRID.CONTEXT_MENU.DELETE'),
         icon: 'pi pi-trash',
         command: (event) => this.deleteDomain(event)
       },
       { 
-        label: 'Copy URL', 
+        label: this.translate.instant('DOMAINS.DOMAIN_COLLECTION.GRID.CONTEXT_MENU.COPY_URL'),
         icon: 'pi pi-copy',
         command: () => this.copyDomainUrl()
       },
       { 
-        label: 'Visit URL', 
+        label: this.translate.instant('DOMAINS.DOMAIN_COLLECTION.GRID.CONTEXT_MENU.VISIT_URL'),
         icon: 'pi pi-external-link',
         command: () => this.visitDomainUrl()
-      },
+      }
     ];
   }
 
@@ -96,8 +97,8 @@ export class DomainCardComponent implements OnInit {
   deleteDomain(event: any) {
     this.confirmationService.confirm({
       target: event.originalEvent.target as EventTarget,
-      header: 'Destructive Action',
-      message: 'Are you sure you want to delete this domain?',
+      header: this.translate.instant('DOMAINS.DOMAIN_COLLECTION.GRID.CONTEXT_MENU.DELETE_HEADER'),
+      message: this.translate.instant('DOMAINS.DOMAIN_COLLECTION.GRID.CONTEXT_MENU.DELETE_MESSAGE'),
       icon: 'pi pi-exclamation-triangle',
       rejectButtonStyleClass:"p-button-text", 
       accept: () => {
@@ -105,8 +106,8 @@ export class DomainCardComponent implements OnInit {
           next: () => {
             this.globalMessageService.showMessage({
               severity: 'success',
-              summary: 'Success',
-              detail: 'Domain deleted successfully'
+              summary: this.translate.instant('DOMAINS.DOMAIN_COLLECTION.GRID.CONTEXT_MENU.DELETE_SUCCESS_SUMMARY'),
+              detail: this.translate.instant('DOMAINS.DOMAIN_COLLECTION.GRID.CONTEXT_MENU.DELETE_SUCCESS_DETAIL')
             });
             this.cardVisible = false;
           },
@@ -114,8 +115,8 @@ export class DomainCardComponent implements OnInit {
             console.error('Error deleting domain:', err);
             this.globalMessageService.showMessage({
               severity: 'error',
-              summary: 'Error',
-              detail: err.message || 'Failed to delete domain'
+              summary: this.translate.instant('DOMAINS.DOMAIN_COLLECTION.GRID.CONTEXT_MENU.DELETE_ERROR_SUMMARY'),
+              detail: err.message || this.translate.instant('DOMAINS.DOMAIN_COLLECTION.GRID.CONTEXT_MENU.DELETE_ERROR_DETAIL')
             });
           }
         });
@@ -127,7 +128,7 @@ export class DomainCardComponent implements OnInit {
     const url = `https://${this.domain.domain_name}`;
     const clipboardCopyFailed = (e: Error | unknown) => {
       this.errorHandler.handleError(
-        { error: e, message: 'Failed to copy URL to clipboard', showToast: true },
+        { error: e, message: this.translate.instant('DOMAINS.DOMAIN_COLLECTION.GRID.CONTEXT_MENU.COPY_ERROR'), showToast: true },
       );
     }
     try {
@@ -135,8 +136,8 @@ export class DomainCardComponent implements OnInit {
         () => {
           this.globalMessageService.showMessage({
             severity: 'success',
-            summary: 'Success',
-            detail: 'Domain URL copied to clipboard'
+            summary: this.translate.instant('DOMAINS.DOMAIN_COLLECTION.GRID.CONTEXT_MENU.COPY_SUCCESS_SUMMARY'),
+            detail: this.translate.instant('DOMAINS.DOMAIN_COLLECTION.GRID.CONTEXT_MENU.COPY_SUCCESS_DETAIL')
           });
         },
         (err) => {
@@ -153,7 +154,6 @@ export class DomainCardComponent implements OnInit {
     window.open(url, '_blank');
   }
 
-  // Checks if a given click target is a link or inside a link.
   private clickedOnLink(element: HTMLElement): boolean {
     let node: HTMLElement | null = element;
     while (node && node !== this.elRef.nativeElement) {
@@ -165,14 +165,9 @@ export class DomainCardComponent implements OnInit {
     return false;
   }
 
-    /**
-   * Click handler for the entire card.
-   * If the user clicked on or inside a link, do nothing.
-   * Otherwise, navigate to /domains/[domain-name].
-   */
-    onCardClick(event: MouseEvent) {
-      if (!this.clickedOnLink(event.target as HTMLElement)) {
-        this.viewDomain();
-      }
+  onCardClick(event: MouseEvent) {
+    if (!this.clickedOnLink(event.target as HTMLElement)) {
+      this.viewDomain();
     }
+  }
 }

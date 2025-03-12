@@ -1,0 +1,23 @@
+::ng-deep .p-carousel-container button { display: none; }
+
+:host ::ng-deep .p-carousel-items-content {
+  /* Set a fixed height or use whatever best suits your design */
+  height: 400px !important; 
+}
+
+:host ::ng-deep .p-carousel-item-content {
+  /* Ensure the item content fills the parent height, 
+     and center any content (text + image) */
+  height: 100% !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+:host ::ng-deep .p-carousel-item-content img {
+  /* Scale to fill container height, maintain aspect ratio */
+  height: 100% !important;
+  width: auto !important;
+  object-fit: contain; /* or 'cover' if you prefer a cropped fill */
+}
+

@@ -18,8 +18,7 @@
  */
 
 export const environment = {
-  production: false,
-
+  // production: true,
   // Examples:
   // BASE_URL: 'http://localhost:5173',
   // SUPABASE_URL: '',        // Supabase URL

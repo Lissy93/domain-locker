@@ -1,89 +1,64 @@
 
-
 @if (!isAuthenticated) {
-
   <div class="flex flex-col gap-2">
-
     <app-hero />
-
     <p-divider />
-
-    <h3 class="mt-2 mb-0 text-3xl">Features</h3>
-    <p class="m-0 italic opacity-80 text-lg">
-      Domain Locker is the ultimate all-in-one platform to manage, monitor, and
-      optimize your domain portfolio effortlessly, with smart alerts, detailed
-      analytics, and powerful tools to keep you organized, secure, and always in control.
-    </p>
+    <h3 class="mt-2 mb-0 text-3xl">{{ 'HOME.FEATURES' | translate }}</h3>
+    <p class="m-0 italic opacity-80 text-lg">{{ 'HOME.DESCRIPTION' | translate }}</p>
     <app-feature-grid class="my-4" />
-
     <p-divider />
-
-    <h3 class="mt-2 mb-0 text-3xl">Pricing</h3>
-
+    <h3 class="mt-2 mb-0 text-3xl">{{ 'HOME.PRICING' | translate }}</h3>
     <app-pricing-cards class="w-full" />
-
     <p-divider />
-
-    <h3 class="mt-2 mb-0 text-3xl">Demo</h3>
-
+    <h3 class="mt-2 mb-0 text-3xl">{{ 'HOME.DEMO_TITLE' | translate }}</h3>
     <app-demo />
-
     <app-feature-carousel class="mt-3"/>
-
     <p-divider />
-
     <app-cta />
-
   </div>
-
 }
-
-
-      
 
 @if (isAuthenticated) {
 
-  @if (isDemoInstance) {
-    <app-demo-welcome />
-  }
-
-  @if (loading) {
-    <loading loadingTitle="Loading" loadingDescription="Fetching your domains, and calculating stats" />
-  }
+  <app-demo-welcome *ngIf="isDemoInstance" [isDemoInstance]="true" />
+  <app-demo-welcome *ngIf="isDevInstance" [isDevInstance]="true" />
+  
+  <loading *ngIf="loading" [loadingTitle]="'HOME.LOADING_TITLE' | translate" [loadingDescription]="'HOME.LOADING_DESCRIPTION' | translate" />
+  
   @if (!loading && domains.length === 0) {
     <welcome />
   } @else if (!loading) {
     <h2 class="my-4 block">{{ 'HOME.SUBHEADINGS.DASHBOARD' | translate }}</h2>
     <div class="p-card p-4" pAnimateOnScroll enterClass="fadeIn" leaveClass="fadeOut">
-      <h4 class="mt-0 mb-4">Upcoming Expirations</h4>
+      <h4 class="mt-0 mb-4">{{ 'HOME.UPCOMING_EXPIRATIONS' | translate }}</h4>
       <app-domain-expiration-bar />
     </div>
     @if (showInsights) {
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 relative my-4 mx-0.5">
         <div class="p-card p-4">
-          <h4>Domain Providers</h4>
+          <h4>{{ 'HOME.DOMAIN_PROVIDERS' | translate }}</h4>
           <div class="w-full">
             <app-domain-pie-charts />
           </div>
         </div>
         <div class="p-card p-4">
-          <h4>Security Profile</h4>
+          <h4>{{ 'HOME.SECURITY_PROFILE' | translate }}</h4>
           <app-epp-status-chart />
         </div>
         <div class="p-card p-4">
-          <h4>Host Geography</h4>
+          <h4>{{ 'HOME.HOST_GEOGRAPHY' | translate }}</h4>
           <div class="w-full">
             <app-host-map />
           </div>
         </div>
         <div class="p-card p-4">
-          <h4>Tags</h4>
+          <h4>{{ 'HOME.TAGS' | translate }}</h4>
           <div class="w-full">
             <app-tag-cloud />
           </div>
         </div>
         <div class="p-card p-4 col-span-2">
-          <h4>Registration Timeline</h4>
+          <h4>{{ 'HOME.REGISTRATION_TIMELINE' | translate }}</h4>
           <div class="w-full max-h-96">
             <p-scrollPanel [style]="{ width: '100%', height: '380px' }">
               <app-domain-gantt-chart [groupDates]="true" />
@@ -92,7 +67,7 @@
         </div>
       </div>
       <p-button
-        label="Show more insights"
+        [label]="'HOME.SHOW_MORE_INSIGHTS' | translate"
         icon="pi pi-angle-double-right"
         size="small"
         [outlined]="true"
@@ -104,13 +79,13 @@
       @if (!showInsights) {
         <div class="flex gap-2 items-center px-3 py-2 cursor-pointer hover:text-primary">
           <i class="pi pi-angle-double-down"></i>
-          <span>Expand Stats</span>
+          <span>{{ 'HOME.EXPAND_STATS' | translate }}</span>
           <i class="pi pi-angle-double-down"></i>
         </div>
       } @else {
         <div class="flex gap-2 items-center px-1 py-1 cursor-pointer hover:text-primary text-xs opacity-70">
           <i class="pi pi-angle-double-up"></i>
-          <span>Hide Stats</span>
+          <span>{{ 'HOME.HIDE_STATS' | translate }}</span>
           <i class="pi pi-angle-double-up"></i>
         </div>
       }
@@ -129,7 +104,7 @@
     <p-divider />
     <app-asset-list class="block m-2" pAnimateOnScroll enterClass="fadeIn" leaveClass="fadeOut" />
     <p class="mx-0 mt-4 mb-2 float-right text-xs text-surface-300">
-      <a class="text-primary opacity-70" routerLink="/assets">View All Assets</a><br>
+      <a class="text-primary opacity-70" routerLink="/assets">{{ 'HOME.VIEW_ALL_ASSETS' | translate }}</a><br>
     </p>
   }
 

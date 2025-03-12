@@ -10,11 +10,13 @@ import { HttpClient } from '@angular/common/http';
 import { ConfirmationService } from 'primeng/api';
 import { GlobalMessageService } from '~/app/services/messaging.service';
 import { EnvService } from '~/app/services/environment.service';
+import { FeatureNotEnabledComponent } from '~/app/components/misc/feature-not-enabled.component';
+import { FeatureService } from '~/app/services/features.service';
 
 @Component({
   selector: 'app-upgrade',
   standalone: true,
-  imports: [CommonModule, PrimeNgModule],
+  imports: [CommonModule, PrimeNgModule, FeatureNotEnabledComponent],
   templateUrl: './upgrade.page.html',
   styles: ['::ng-deep .p-confirm-dialog { max-width: 600px; }'],
 })
@@ -31,6 +33,8 @@ export default class UpgradePage implements OnInit {
 
   public status: 'nothing' | 'success' | 'failed' = 'nothing';
 
+  disableBilling$ = this.featureService.isFeatureEnabled('disableBilling');
+
   constructor(
     private billingService: BillingService,
     private errorHandler: ErrorHandlerService,
@@ -39,6 +43,7 @@ export default class UpgradePage implements OnInit {
     private confirmationService: ConfirmationService,
     private messagingService: GlobalMessageService,
     private envService: EnvService,
+    private featureService: FeatureService,
   ) {
     this.currentPlan$ = this.billingService.getUserPlan();
   }

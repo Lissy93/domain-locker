@@ -2,7 +2,6 @@
   [columns]="visibleColumns"
   [scrollable]="true"
   [loading]="loading"
-  
   [resizableColumns]="true"
   [sortMode]="'multiple'"
   [rows]="10"
@@ -12,7 +11,7 @@
   <ng-template pTemplate="header" let-columns>
     <tr>
       <th *ngFor="let col of columns" [pSortableColumn]="col.field" [style.width.px]="col.width">
-        {{col.header}}
+        {{ col.header | translate }}
         <p-sortIcon [field]="col.field"></p-sortIcon>
       </th>
     </tr>
@@ -38,7 +37,7 @@
           </span>
           <span *ngSwitchCase="'tags'">
             <a *ngFor="let tag of domain.tags" [routerLink]="'/assets/tags/'+tag">
-              <p-tag  [value]="tag" styleClass="bg-highlight rounded-2xl text-highlight px-2  py-1 mr-1"></p-tag>
+              <p-tag [value]="tag" styleClass="bg-highlight rounded-2xl text-highlight px-2 py-1 mr-1"></p-tag>
             </a>
           </span>
           <ng-container *ngSwitchCase="'notes'">
@@ -57,7 +56,7 @@
           </div>
           <span *ngSwitchCase="'ip_addresses'">
             <ng-container *ngFor="let ip of domain.ip_addresses">
-              {{ip.ip_address}} ({{ip.is_ipv6 ? 'IPv6' : 'IPv4'}})<br>
+              {{ip.ip_address}} ({{ ip.is_ipv6 ? ('DOMAINS.DOMAIN_COLLECTION.LIST.IPV6' | translate) : ('DOMAINS.DOMAIN_COLLECTION.LIST.IPV4' | translate) }})<br>
             </ng-container>
           </span>
           <span *ngSwitchCase="'sub_domains'">
@@ -70,7 +69,7 @@
           </span>
           <span *ngSwitchCase="'ssl'">
             <a [routerLink]="'/assets/certs/' + domain.ssl?.issuer" class="text-primary">{{domain.ssl?.issuer}}</a><br>
-            Valid until: {{domain.ssl?.valid_to | date:'shortDate'}}
+            {{ 'DOMAINS.DOMAIN_COLLECTION.LIST.VALID_UNTIL' | translate }} {{domain.ssl?.valid_to | date:'shortDate'}}
           </span>
           <span *ngSwitchCase="'whois'">{{domain.whois?.name}}</span>
           <span *ngSwitchCase="'host'" [pTooltip]="domain.host?.org + '\n' + domain.host?.city + ', ' + domain.host?.region + ', ' + domain.host?.country">
@@ -78,7 +77,7 @@
           </span>
           <span *ngSwitchCase="'dns'">
             <ng-container *ngIf="domain.dns?.nameServers">
-              NS: {{domain.dns.nameServers[0]}}
+              {{ 'DOMAINS.DOMAIN_COLLECTION.LIST.NS_LABEL' | translate }} {{domain.dns.nameServers[0]}}
             </ng-container>
           </span>
           <span *ngSwitchDefault>{{domain[col.field]}}</span>

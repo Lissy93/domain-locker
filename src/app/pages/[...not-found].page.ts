@@ -1,5 +1,24 @@
-import { Component } from '@angular/core';
+import { RouteMeta } from '@analogjs/router';
+import { injectResponse } from '@analogjs/router/tokens';
+import { Component, Inject, PLATFORM_ID } from '@angular/core';
 import { PrimeNgModule } from '~/app/prime-ng.module';
+import { ErrorHandlerService } from '~/app/services/error-handler.service';
+import { isPlatformBrowser } from '@angular/common';
+
+
+
+export const routeMeta: RouteMeta = {
+  title: 'Page Not Found | Domain Locker',
+  canActivate: [
+    () => {
+      const response = injectResponse();
+      if (import.meta.env.SSR && response) {
+        response.statusCode = 404;
+      }
+      return true;
+    },
+  ],
+};
 
 @Component({
   standalone: true,
@@ -7,10 +26,10 @@ import { PrimeNgModule } from '~/app/prime-ng.module';
   selector: 'app-not-found-page',
   template: `
   <div class=" w-full h-full flex flex-col justify-center items-center">
-	<h1 class="text-9xl font-extrabold text-default tracking-widest">404</h1>
-	<div class="bg-primary px-2 text-sm rounded rotate-12 absolute">
-		Page Not Found
-	</div>
+  <h1 class="text-9xl font-extrabold text-default tracking-widest">404</h1>
+  <div class="bg-primary px-2 text-sm rounded rotate-12 absolute">
+    Page Not Found
+  </div>
 </div>
 
 <div class="mx-auto mt-4 flex flex-col justify-center items-center text-center gap-4">
@@ -40,4 +59,19 @@ import { PrimeNgModule } from '~/app/prime-ng.module';
 
   `,
 })
-export default class NotFoundPage {}
+export default class NotFoundPage {
+  constructor(
+    private errorHandler: ErrorHandlerService,
+    @Inject(PLATFORM_ID) public platformId: Object,
+  ) {}
+  ngOnInit() {
+
+    const pathName = (isPlatformBrowser(this.platformId) && window) ?
+      window.location.pathname : '[SSR Route]';
+
+    this.errorHandler.handleError({
+      message: `Page not found: ${pathName}`,
+      location: 'NotFoundRoute',
+    });
+  }
+}

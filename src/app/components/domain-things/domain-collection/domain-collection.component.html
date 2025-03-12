@@ -7,15 +7,15 @@
     (sortChange)="onSortChange($event)"
     ($triggerReload)="reloadDomains($event)"
     [showAddButton]="showAddButton"
-  />
+  ></app-field-visibility-filter>
 </div>
 
 @if (domains.length === 0) {
   <div class="p-card p-4">
-    <h4 class="mt-0 mb-4">No Domains Found</h4>
+    <h4 class="mt-0 mb-4">{{ 'DOMAINS.DOMAIN_COLLECTION.NO_DOMAINS_FOUND' | translate }}</h4>
     <p>
-      You don't yet have any domains in this collection yet.
-      Get started by <a routerLink="/domains/add" class="text-primary underline">adding your first domain</a>.
+      {{ 'DOMAINS.DOMAIN_COLLECTION.NO_DOMAINS_TEXT_1' | translate }}
+      <a routerLink="/domains/add" class="text-primary underline">{{ 'DOMAINS.DOMAIN_COLLECTION.ADD_FIRST_DOMAIN' | translate }}</a>.
     </p>
   </div>
 }
@@ -43,25 +43,27 @@
 <!-- Note (count of visible fields, and usage instructions) -->
 <div *ngIf="showFooter" class="flex space-between justify-between items-center flex-wrap mt-4 text-surface-400">
   <p>
-    Viewing {{filteredDomains.length}} of {{domains.length}} domains {{ preFilteredText }}
-    <ng-container *ngIf="searchTerm">matching search term "{{searchTerm}}"</ng-container>,
-    with {{visibleColumns.length}} fields visible in {{isGridLayout ? 'grid' : 'list'}}<br>
+    {{ 'DOMAINS.DOMAIN_COLLECTION.VIEWING' | translate }} {{ filteredDomains.length }} {{ 'DOMAINS.DOMAIN_COLLECTION.OF' | translate }} {{ domains.length }} {{ 'DOMAINS.DOMAIN_COLLECTION.DOMAINS' | translate }} {{ preFilteredText }}
+    <ng-container *ngIf="searchTerm">
+      {{ 'DOMAINS.DOMAIN_COLLECTION.MATCHING_SEARCH' | translate }} "{{ searchTerm }}"
+    </ng-container>,
+    {{ 'DOMAINS.DOMAIN_COLLECTION.WITH' | translate }} {{ visibleColumns.length }} {{ 'DOMAINS.DOMAIN_COLLECTION.FIELDS_VISIBLE_IN' | translate }} 
+    {{ isGridLayout ? ('DOMAINS.DOMAIN_COLLECTION.GRID_VIEW' | translate) : ('DOMAINS.DOMAIN_COLLECTION.LIST_VIEW' | translate) }}<br>
     <ng-container *ngIf="searchTerm || visibleFields.length !== 3">
-      <span (click)="resetFilters()" class="text-primary opacity-70 underline cursor-pointer">Reset Filters</span>
+      <span (click)="resetFilters()" class="text-primary opacity-70 underline cursor-pointer">
+        {{ 'DOMAINS.DOMAIN_COLLECTION.RESET_FILTERS' | translate }}
+      </span>
     </ng-container>
 
     <ng-container *ngIf="(searchTerm || visibleFields.length !== 3) && preFilteredText">
-      or
+      {{ 'DOMAINS.DOMAIN_COLLECTION.OR' | translate }}
     </ng-container>
 
     <ng-container *ngIf="preFilteredText">
-      <a routerLink="/domains" (click)="resetFilters()" class="text-primary opacity-70 underline cursor-pointer">View All</a>
+      <a routerLink="/domains" (click)="resetFilters()" class="text-primary opacity-70 underline cursor-pointer">
+        {{ 'DOMAINS.DOMAIN_COLLECTION.VIEW_ALL' | translate }}
+      </a>
     </ng-container>
   </p>
-  <p class="text-xs">
-    Click a domain name to view full details and change history,<br>
-    or click a tag/registrar/host/cert to see associated domains.<br>
-    Adjust the filters to show/hide fields, change layout or search.<br>
-    Right-click any domain to edit, delete, view, or see more actions.
-  </p>
+  <p class="text-xs" [innerHTML]="'DOMAINS.DOMAIN_COLLECTION.INSTRUCTIONS' | translate"></p>
 </div>

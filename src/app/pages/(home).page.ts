@@ -69,6 +69,7 @@ export default class HomePageComponent implements OnInit {
   loading: boolean = true;
   isAuthenticated: boolean = false;
   isDemoInstance: boolean = false;
+  isDevInstance: boolean = false;
   showInsights: boolean = false;
 
   private subscriptions: Subscription = new Subscription();
@@ -91,7 +92,6 @@ export default class HomePageComponent implements OnInit {
   setAuthState() {
     if (!this.environmentService.isSupabaseEnabled()) {
       this.isAuthenticated = true;
-      console.log('Supabase is disabled, skipping auth check');
       return;
     }
     this.subscriptions.add(
@@ -120,8 +120,9 @@ export default class HomePageComponent implements OnInit {
     });
   }
 
-  newDomainAdded(event: any) {
-    console.log('New domain added:', event);
+  newDomainAdded(newDomainName: string) {
+    this.domains.push({ domain_name: newDomainName } as DbDomain);
+    this.loadDomains();
   }
 
   toggleInsights() {
@@ -136,6 +137,11 @@ export default class HomePageComponent implements OnInit {
         this.router.navigate(['/login']).then(() => {
           this.loading = false;
         });
+      }
+    }
+    if (this.environmentService.getEnvironmentType() === 'dev') {
+      if ((this.environmentService.getSupabaseUrl() || '').includes('admdzkssuivrztrvzinh')) {
+        this.isDevInstance = true;
       }
     }
   }

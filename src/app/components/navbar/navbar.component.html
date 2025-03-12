@@ -61,7 +61,7 @@
         <app-notifications-list *ngIf="notificationsVisible" [isInModal]="true" />
       </div>
     </p-overlayPanel>
-    <a routerLink="/settings"  *ngIf="isAuthenticated && (settingsEnabled$ | async)">
+    <a routerLink="/settings"  *ngIf="isAuthenticated && ((settingsEnabled$ | async) && isSupabaseEnabled)">
       <button
         pButton
         icon="pi pi-wrench"

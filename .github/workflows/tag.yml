@@ -1,0 +1,42 @@
+name: 🏷️ Tag new versions
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'package.json'
+
+jobs:
+  tag-version:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repo with bot token
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.BOT_TOKEN }}
+
+      - name: Configure git as bot user
+        run: |
+          git config user.name "liss-bot"
+          git config user.email "alicia-gh-bot@mail.as93.net"
+
+      - name: Get version from package.json
+        id: get_version
+        run: |
+          VERSION=$(jq -r .version package.json)
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Create Git Tag (skip if exists)
+        run: |
+          VERSION="${{ steps.get_version.outputs.version }}"
+
+          # Check if the tag already exists remotely
+          if git ls-remote --tags origin | grep -q "refs/tags/v${VERSION}"; then
+            echo "Tag v${VERSION} already exists. Skipping."
+          else
+            echo "Tag v${VERSION} does not exist. Creating now..."
+            git tag "v${VERSION}"
+            git push origin "v${VERSION}"
+          fi

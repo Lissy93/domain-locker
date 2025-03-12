@@ -5,30 +5,31 @@ import { PrimeNgModule } from '../../../prime-ng.module';
 import DatabaseService from '~/app/services/database.service';
 import { trigger, state, style, animate, transition } from '@angular/animations';
 import { DomainExpiration } from '~/app/../types/Database';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-domain-expiration-bar',
   standalone: true,
-  imports: [CommonModule, PrimeNgModule],
+  imports: [CommonModule, PrimeNgModule, TranslateModule],
   templateUrl: './domain-expiration-bar.component.html',
   styles: [`
     ::ng-deep .p-metergroup p-metergrouplabel { display: none; }
     ::ng-deep .p-metergroup .p-metergroup-meters { border-radius: 3px; overflow: hidden; }
   `],
-    animations: [
-      trigger('slideInOut', [
-        state('in', style({
-          height: '*',
-          opacity: 1
-        })),
-        state('out', style({
-          height: '0px',
-          opacity: 0
-        })),
-        transition('in => out', animate('300ms ease-in-out')),
-        transition('out => in', animate('300ms ease-in-out'))
-      ])
-    ]
+  animations: [
+    trigger('slideInOut', [
+      state('in', style({
+        height: '*',
+        opacity: 1
+      })),
+      state('out', style({
+        height: '0px',
+        opacity: 0
+      })),
+      transition('in => out', animate('300ms ease-in-out')),
+      transition('out => in', animate('300ms ease-in-out'))
+    ])
+  ]
 })
 export class DomainExpirationBarComponent implements OnInit {
   meterValues: MeterItem[] = [];
@@ -43,16 +44,17 @@ export class DomainExpirationBarComponent implements OnInit {
 
   @Input() showFull: boolean = false;
 
-  constructor(private databaseService: DatabaseService) {}
+  constructor(
+    private databaseService: DatabaseService,
+    private translationService: TranslateService
+  ) {}
 
   ngOnInit() {
-    this.databaseService.instance.getDomainExpirations().subscribe(
-      domains => {
-        this.calculateExpirations(domains);
-        this.prepareTimelineEvents(domains);
-        this.loading = false;
-      }
-    );
+    this.databaseService.instance.getDomainExpirations().subscribe(domains => {
+      this.calculateExpirations(domains);
+      this.prepareTimelineEvents(domains);
+      this.loading = false;
+    });
   }
 
   private calculateExpirations(domains: DomainExpiration[]) {
@@ -98,7 +100,7 @@ export class DomainExpirationBarComponent implements OnInit {
   getTooltipContent(category: string): string {
     const domains = this.domainsPerCategory[category] || [];
     if (!domains.length) {
-      return 'No domains';
+      return this.translationService.instant('DOMAIN_STATS.EXPIRATION_BAR.NO_DOMAINS');
     }
     const displayDomains = domains.slice(0, 4);
     let content = displayDomains.map(d => d.domain).join(', ');
@@ -130,7 +132,6 @@ export class DomainExpirationBarComponent implements OnInit {
       .sort((a, b) => a.expiration.getTime() - b.expiration.getTime())
       .slice(0, 10)
       .map(domain => ({
-        // status: this.getExpirationStatus(domain),
         date: domain.expiration,
         icon: this.getExpirationIcon(domain),
         color: this.getExpirationColor(domain),

@@ -1,9 +1,10 @@
-import { Component, OnInit, NgZone } from '@angular/core';
+import { Component, NgZone, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PrimeNgModule } from '../../prime-ng.module';
 import { DlIconComponent } from '~/app/components/misc/svg-icon.component';
 import DatabaseService from '~/app/services/database.service';
 import { ErrorHandlerService } from '~/app/services/error-handler.service';
+import { TranslateService, TranslateModule } from '@ngx-translate/core';
 
 interface Asset {
   title: string;
@@ -11,20 +12,21 @@ interface Asset {
   icon: string;
   viewBox?: string;
   count?: number;
+  titleKey: string;
 }
 
 @Component({
   standalone: true,
   selector: 'app-asset-list',
   template: `
-    <h2 class="my-4 block">Assets</h2>
+    <h2 class="my-4 block">{{ 'HOME.SUBHEADINGS.ASSETS' | translate }}</h2>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 relative">
       <ng-container *ngFor="let asset of assets">
         <a pAnimateOnScroll enterClass="fadeIn" leaveClass="fadeOut" class="asset-card-link" [routerLink]="asset.link">
           <div class="p-card asset-card">
-            <h4>{{ asset.title }}</h4>
+            <h4>{{ asset.titleKey | translate }}</h4>
             <p class="text-surface-400 my-0" *ngIf="asset.count !== undefined">
-              {{ asset.count }} {{ asset.title }}
+              {{ asset.count }} {{ asset.titleKey | translate }}
             </p>
             <div class="absolute top-2 right-4 h-16 w-16 opacity-70">
               <dl-icon
@@ -61,29 +63,77 @@ interface Asset {
       }
     }
   `],
-  imports: [CommonModule, PrimeNgModule, DlIconComponent]
+  imports: [CommonModule, PrimeNgModule, DlIconComponent, TranslateModule]
 })
 export default class AssetListComponent implements OnInit {
   assets: Asset[] = [
-    { title: 'Registrars', link: '/assets/registrars', icon: 'registrar', viewBox: '0 0 620 512' },
-    { title: 'IP Addresses', link: '/assets/ips', icon: 'ips' },
-    { title: 'SSL Certificates', link: '/assets/certs', icon: 'ssl' },
-    { title: 'Hosts', link: '/assets/hosts', icon: 'host' },
-    { title: 'DNS Records', link: '/assets/dns', icon: 'dns', viewBox: '0 0 620 512' },
-    { title: 'Subdomains', link: '/assets/subdomains', icon: 'subdomains' },
-    { title: 'Links', link: '/assets/links', icon: 'links' },
-    { title: 'Tags', link: '/assets/tags', icon: 'tags' },
-    { title: 'Domain Statuses', link: '/assets/statuses', icon: 'status' },
+    {
+      title: 'Registrars',
+      link: '/assets/registrars',
+      icon: 'registrar',
+      viewBox: '0 0 620 512',
+      titleKey: 'ASSETS.CARDS.REGISTRARS.PLURAL',
+    },
+    {
+      title: 'IP Addresses',
+      link: '/assets/ips',
+      icon: 'ips',
+      titleKey: 'ASSETS.CARDS.IP_ADDRESSES.PLURAL',
+    },
+    {
+      title: 'SSL Certificates',
+      link: '/assets/certs',
+      icon: 'ssl',
+      titleKey: 'ASSETS.CARDS.SSL_CERTIFICATES.PLURAL',
+    },
+    {
+      title: 'Hosts',
+      link: '/assets/hosts',
+      icon: 'host',
+      titleKey: 'ASSETS.CARDS.HOSTS.PLURAL',
+    },
+    {
+      title: 'DNS Records',
+      link: '/assets/dns',
+      icon: 'dns',
+      viewBox: '0 0 620 512',
+      titleKey: 'ASSETS.CARDS.DNS_RECORDS.PLURAL',
+    },
+    {
+      title: 'Subdomains',
+      link: '/assets/subdomains',
+      icon: 'subdomains',
+      titleKey: 'ASSETS.CARDS.SUBDOMAINS.PLURAL',
+    },
+    {
+      title: 'Links',
+      link: '/assets/links',
+      icon: 'links',
+      titleKey: 'ASSETS.CARDS.LINKS.PLURAL',
+    },
+    {
+      title: 'Tags',
+      link: '/assets/tags',
+      icon: 'tags',
+      titleKey: 'ASSETS.CARDS.TAGS.PLURAL',
+    },
+    {
+      title: 'Domain Statuses',
+      link: '/assets/statuses',
+      icon: 'status',
+      titleKey: 'ASSETS.CARDS.STATUSES.PLURAL',
+    },
   ];
 
   constructor(
     private databaseService: DatabaseService,
     private ngZone: NgZone,
     private errorHandlerService: ErrorHandlerService,
+    private translate: TranslateService,
   ) {}
 
   ngOnInit() {
-    // Run the count fetching outside of Angular's change detection
+    // Run the count fetching outside Angular's change detection
     this.ngZone.runOutsideAngular(() => {
       setTimeout(() => this.fetchAssetCounts(), 0);
     });

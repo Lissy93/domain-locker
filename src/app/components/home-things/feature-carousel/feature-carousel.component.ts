@@ -13,7 +13,7 @@ import { features } from '~/app/pages/about/data/feature-comparison';
     DlIconComponent,
   ],
   templateUrl: './feature-carousel.component.html',
-  styles: [`::ng-deep .p-carousel-container button { display: none; }`],
+  styleUrls: ['./feature-carousel.component.scss'],
 })
 export class FeatureCarouselComponent {
   features = features;

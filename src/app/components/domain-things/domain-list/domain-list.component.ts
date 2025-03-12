@@ -4,13 +4,14 @@ import { PrimeNgModule } from '~/app/prime-ng.module';
 import { NgFor, NgSwitch, NgSwitchCase, DatePipe, CommonModule } from '@angular/common';
 import { DomainFaviconComponent } from '~/app/components/misc/favicon.component';
 import { DomainUtils } from '~/app/services/domain-utils.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   standalone: true,
   selector: 'app-domain-list',
   templateUrl: 'domain-list.component.html',
   styleUrl: 'domain-list.component.scss',
-  imports: [PrimeNgModule, NgFor, NgSwitch, NgSwitchCase, DatePipe, CommonModule, DomainFaviconComponent]
+  imports: [PrimeNgModule, NgFor, NgSwitch, NgSwitchCase, DatePipe, CommonModule, DomainFaviconComponent, TranslateModule]
 })
 export class DomainListComponent {
   @Input() domains: DbDomain[] = [];
