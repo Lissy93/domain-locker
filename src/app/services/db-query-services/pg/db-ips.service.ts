@@ -9,7 +9,6 @@ export class IpQueries {
   ) {}
 
   async saveIpAddresses(domainId: string, ipAddresses: Omit<IpAddress, 'id' | 'domainId' | 'created_at' | 'updated_at'>[]): Promise<void> {
-    console.log('saveIpAddresses', ipAddresses);
     if (ipAddresses.length === 0) return;
 
     const dbIpAddresses = ipAddresses.map(ip => ({

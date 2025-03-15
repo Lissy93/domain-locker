@@ -9,6 +9,7 @@ import DatabaseService from '~/app/services/database.service';
 import { SupabaseService } from '~/app/services/supabase.service';
 import { FeatureService } from '~/app/services/features.service';
 import { FeatureNotEnabledComponent } from '~/app/components/misc/feature-not-enabled.component';
+import { ErrorHandlerService } from '~/app/services/error-handler.service';
 
 interface NotificationChannelField {
   label: string;
@@ -154,6 +155,7 @@ export default class NotificationPreferencesPage implements OnInit {
     private databaseService: DatabaseService,
     private supabaseService: SupabaseService,
     private featureService: FeatureService,
+    private errorHandler: ErrorHandlerService,
   ) {}
 
   ngOnInit() {
@@ -271,11 +273,11 @@ export default class NotificationPreferencesPage implements OnInit {
           });
         })
         .catch(error => {
-          console.error('Error saving preferences:', error);
-          this.globalMessageService.showMessage({
-            severity: 'error',
-            summary: 'Error',
-            detail: 'Failed to save notification preferences'
+          this.errorHandler.handleError({
+            message: 'Failed to save notification preferences',
+            error,
+            location: 'NotificationPreferencesPage.savePreferences',
+            showToast: true,
           });
         });
     } else {

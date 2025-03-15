@@ -3,15 +3,14 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PrimeNgModule } from '~/app/prime-ng.module';
 import { DbDomain, Tag } from '~/app/../types/Database';
-import { DomainCollectionComponent } from '~/app/components/domain-things/domain-collection/domain-collection.component';
 import { TagPickListComponent } from '~/app/components/forms/tag-picklist/tag-picklist.component';
 import DatabaseService from '~/app/services/database.service';
-import { MessageService } from 'primeng/api';
+import { ErrorHandlerService } from '~/app/services/error-handler.service';
 
 @Component({
   standalone: true,
   selector: 'app-tag-edit',
-  imports: [CommonModule, PrimeNgModule, DomainCollectionComponent, TagPickListComponent],
+  imports: [CommonModule, PrimeNgModule, TagPickListComponent],
   template: `
   <h2 class="mb-4 ml-4">Add Domains: {{ tagName }}</h2>
   <div *ngIf="tag && tag.id" class="p-card p-4 m-4">
@@ -29,7 +28,7 @@ export default class TagDomainsPageComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private databaseService: DatabaseService,
-    private messageService: MessageService,
+    private errorHandler: ErrorHandlerService,
     private router: Router,
   ) {}
 
@@ -50,11 +49,11 @@ export default class TagDomainsPageComponent implements OnInit {
         }
       },
       error: (error) => {
-        console.error('Error fetching tag details:', error);
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Failed to load tag details'
+        this.errorHandler.handleError({
+          message: 'Failed to load tag details',
+          error,
+          showToast: true,
+          location: 'TagDomainsPageComponent.loadTag',
         });
         this.loading = false;
       }

@@ -12,9 +12,9 @@
   </p>
 
   <div class="flex gap-2 justify-end flex-wrap">
-    <a href="mailto:support&#64;as93.freshdesk.com">
-      <p-button size="small" severity="success" label="Contact Support" icon="pi pi-envelope"></p-button>
-    </a>
+    <!-- <a href="mailto:support&#64;as93.freshdesk.com"> -->
+      <p-button (click)="openFreshChat()" size="small" severity="success" label="Contact Support" icon="pi pi-envelope"></p-button>
+    <!-- </a> -->
     <a routerLink="/advanced/debug-info">
       <p-button size="small" severity="warning" label="Debug Info" icon="pi pi-play"></p-button>
     </a>

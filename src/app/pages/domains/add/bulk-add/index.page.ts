@@ -173,7 +173,6 @@ export default class BulkAddComponent implements OnInit, OnDestroy {
           }
         },
         error: (err) => {
-          console.error('Error fetching domain info:', err);
           this.errorHandler.handleError({
             message: 'An unexpected error occurred fetching domain info.',
             error: err,
@@ -426,8 +425,6 @@ private extractSubdomainName(fullSubdomain: string, parentDomain: string): strin
               subdomains: this.domainsSubMap[domainName] || [],
               links: domainInfo?.links || [],
             };
-
-            console.log('Subdomains to Save: ', [ ...(this.domainsSubMap[domainName] || []), ...(subdomains.map((sd) => ({ name: sd })))])
 
             const operation = existingDomains.includes(domainName)
               ? this.databaseService.instance.updateDomain(domainName, domainData)

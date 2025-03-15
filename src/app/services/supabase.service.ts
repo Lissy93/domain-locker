@@ -286,10 +286,13 @@ export class SupabaseService {
   async isEmailVerified(): Promise<boolean> {
     const { data: user, error } = await this.supabase.auth.getUser();
     if (error) {
-      console.error('Error fetching user data:', error);
+      this.errorHandler.handleError({
+        message: 'Failed to fetch user data',
+        error,
+        location: 'SupabaseService.isEmailVerified',
+      });
       return false;
     }
-    console.log(user.user)
     return user.user.email_confirmed_at ? true : false;
   }
 
@@ -308,7 +311,11 @@ export class SupabaseService {
     });
 
     if (resendError) {
-      console.error('Error resending verification email:', resendError);
+      this.errorHandler.handleError({
+        message: 'Failed to resend verification email',
+        error: resendError,
+        location: 'SupabaseService.resendVerificationEmail',
+      });
       throw resendError;
     }
   }

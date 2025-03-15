@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { PrimeNgModule } from '~/app/prime-ng.module';
 import DatabaseService from '~/app/services/database.service';
 import { MessageService } from 'primeng/api';
-import { Router } from '@angular/router';
+import { ErrorHandlerService } from '~/app/services/error-handler.service';
 
 @Component({
   selector: 'app-domain-tag-picklist',
@@ -24,7 +24,7 @@ export class TagPickListComponent implements OnInit {
   constructor(
     private databaseService: DatabaseService,
     private messageService: MessageService,
-    private router: Router,
+    private errorHandler: ErrorHandlerService,
   ) {}
 
   ngOnInit(): void {
@@ -42,11 +42,11 @@ export class TagPickListComponent implements OnInit {
         this.selectedDomains = selected;
       },
       error: (error) => {
-        console.error('Error loading domains for tag:', error);
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Failed to load domains for this tag',
+        this.errorHandler.handleError({
+          error,
+          message: 'Failed to load domains for this tag',
+          location: 'TagPickListComponent.loadDomainsForTag',
+          showToast: true,
         });
       },
     });
@@ -55,10 +55,10 @@ export class TagPickListComponent implements OnInit {
   // Save the tag for the selected domains
   saveDomainsForTag() {
     if (!this.tagId) {
-      this.messageService.add({
-        severity: 'error',
-        summary: 'Error',
-        detail: 'Tag ID is missing',
+      this.errorHandler.handleError({
+        message: 'Tag ID is missing',
+        location: 'TagPickListComponent.saveDomainsForTag',
+        showToast: true,
       });
       return;
     }
@@ -72,11 +72,11 @@ export class TagPickListComponent implements OnInit {
         this.$afterSave.emit();
       },
       error: (error) => {
-        console.error('Error saving domains for tag:', error);
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Failed to save domains for this tag',
+        this.errorHandler.handleError({
+          error,
+          message: 'Failed to save domains for this tag',
+          location: 'TagPickListComponent.saveDomainsForTag',
+          showToast: true,
         });
       },
     });

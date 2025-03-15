@@ -33,7 +33,11 @@ export class NotificationQueries {
       .single();
 
     if (error) {
-      console.error('Error fetching preferences:', error);
+      this.handleError({
+        message: 'Error fetching preferences',
+        error,
+        location: 'NotificationQueries.getNotification',
+      })
       throw error;
     }
     return data?.notification_channels || null;

@@ -31,6 +31,7 @@ import { InputSwitchModule } from 'primeng/inputswitch';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { InplaceModule } from 'primeng/inplace';
+import { ImageModule } from 'primeng/image';
 import { KeyFilterModule } from 'primeng/keyfilter';
 import { MenubarModule } from 'primeng/menubar';
 import { MenuModule } from 'primeng/menu';
@@ -97,6 +98,7 @@ import { TooltipModule } from 'primeng/tooltip';
     InputTextModule,
     InputTextareaModule,
     InplaceModule,
+    ImageModule,
     KeyFilterModule,
     MenubarModule,
     MenuModule,

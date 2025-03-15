@@ -4,9 +4,9 @@ import { ActivatedRoute } from '@angular/router';
 import { PrimeNgModule } from '~/app/prime-ng.module';
 import { DbDomain } from '~/app/../types/Database';
 import DatabaseService from '~/app/services/database.service';
-import { MessageService } from 'primeng/api';
 import { DomainCollectionComponent } from '~/app/components/domain-things/domain-collection/domain-collection.component';
 import { DomainFaviconComponent } from '~/app/components/misc/favicon.component';
+import { ErrorHandlerService } from '~/app/services/error-handler.service';
 
 @Component({
   standalone: true,
@@ -40,7 +40,7 @@ export default class RegistrarDomainsPageComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private databaseService: DatabaseService,
-    private messageService: MessageService
+    private errorHandler: ErrorHandlerService,
   ) {}
 
   ngOnInit() {
@@ -66,11 +66,11 @@ export default class RegistrarDomainsPageComponent implements OnInit {
         }
       },
       error: (error) => {
-        console.error(`Error fetching domains for registrar ${this.registrarName}:`, error);
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Failed to load domains for this registrar'
+        this.errorHandler.handleError({
+          message: 'Failed to load domains for this registrar',
+          error,
+          showToast: true,
+          location: 'RegistrarIndexPage.loadDomains'
         });
         this.loading = false;
       }

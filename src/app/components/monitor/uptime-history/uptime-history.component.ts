@@ -41,6 +41,7 @@ export class UptimeHistoryComponent implements OnInit {
     this.databaseService.instance
       .getDomainUptime(this.userId, this.domainId, 'year')
       .then((data: any) => {
+        if (!data.data && data.length) data.data = data; // wtf.
         if (data.data) {
           this.uptimeData = data.data;
           this.generateCalendarHeatmap();
@@ -71,7 +72,7 @@ export class UptimeHistoryComponent implements OnInit {
     const dailyAverages = daysInYear.map((day) => ({
       day,
       avgResponseTime: groupedByDay[day]?.length
-        ? groupedByDay[day].reduce((sum, time) => sum + time, 0) /
+        ? groupedByDay[day].reduce((sum, time) => Number(sum) + Number(time), 0) /
           groupedByDay[day].length
         : null,
     }));
