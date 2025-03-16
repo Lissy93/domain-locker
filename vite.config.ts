@@ -110,24 +110,24 @@ export default defineConfig( ({ mode }) => {
       analog({
         prerender: {
           routes: [ // Unauthenticated SSG routes
-            '/',
-            '/login',
-            '/about',
-            '/about/*',
-            {
-              contentDir: 'src/content/docs/developing',
-              transform: (file: PrerenderContentFile) => {
-                const slug = file.attributes['slug'] || file.name;
-                return `/about/developing/${slug}`;
-              },
-            },
-            {
-              contentDir: 'src/content/docs/legal',
-              transform: (file: PrerenderContentFile) => {
-                const slug = file.attributes['slug'] || file.name;
-                return `/about/legal/${slug}`;
-              },  
-            },
+            // '/',
+            // '/login',
+            // '/about',
+            // '/about/*',
+            // {
+            //   contentDir: 'src/content/docs/developing',
+            //   transform: (file: PrerenderContentFile) => {
+            //     const slug = file.attributes['slug'] || file.name;
+            //     return `/about/developing/${slug}`;
+            //   },
+            // },
+            // {
+            //   contentDir: 'src/content/docs/legal',
+            //   transform: (file: PrerenderContentFile) => {
+            //     const slug = file.attributes['slug'] || file.name;
+            //     return `/about/legal/${slug}`;
+            //   },  
+            // },
           ],
           sitemap: {
             host: 'https://domain-locker.com',
