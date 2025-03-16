@@ -37,7 +37,7 @@
 
     <!-- Footer template -->
     <ng-template pTemplate="footer" let-item>
-      <div class="custom-galleria-footer bg-highlight rounded-b-sm py-2">
+      <div class="custom-galleria-footer bg-highlight rounded-b-sm py-2 max-h-[4rem]">
         <!-- <button type="button" pButton icon="pi pi-list" (click)="onThumbnailButtonClick()"></button> --> 
         <span *ngIf="screenshots.length" class="title-container px-2">
           <span class="title font-bold mr-2">{{ screenshots[activeIndex]?.title }}:</span>

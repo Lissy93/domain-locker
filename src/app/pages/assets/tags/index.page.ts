@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterModule } from '@angular/router';
+import { RouterModule } from '@angular/router';
 import { PrimeNgModule } from '~/app/prime-ng.module';
 import { Tag } from '~/app/../types/Database';
 import DatabaseService from '~/app/services/database.service';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { TagEditorComponent } from '~/app/components/forms/tag-editor/tag-editor.component';
+import { ErrorHandlerService } from '~/app/services/error-handler.service';
 
 @Component({
   standalone: true,
@@ -22,8 +23,8 @@ export default class TagsIndexPageComponent implements OnInit {
   constructor(
     private databaseService: DatabaseService,
     private messageService: MessageService,
-    private router: Router,
     private confirmationService: ConfirmationService,
+    private errorHandler: ErrorHandlerService,
   ) {}
 
   ngOnInit() {
@@ -38,11 +39,11 @@ export default class TagsIndexPageComponent implements OnInit {
         this.loadDomainCounts();
       },
       error: (error) => {
-        console.error('Error fetching tags:', error);
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Failed to load tags'
+        this.errorHandler.handleError({
+          message: 'Failed to load tags',
+          error,
+          showToast: true,
+          location: 'TagsIndexPageComponent.loadTags'
         });
         this.loading = false;
       }
@@ -59,11 +60,11 @@ export default class TagsIndexPageComponent implements OnInit {
         this.loading = false;
       },
       error: (error) => {
-        console.error('Error fetching domain counts:', error);
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Failed to load domain counts'
+        this.errorHandler.handleError({
+          message: 'Failed to load domain counts',
+          error,
+          showToast: true,
+          location: 'TagsIndexPageComponent.loadDomainCounts'
         });
         this.loading = false;
       }
@@ -101,11 +102,11 @@ export default class TagsIndexPageComponent implements OnInit {
             this.loadTags();
           },
           error: (error) => {
-            console.error('Error deleting tag:', error);
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Error',
-              detail: 'Failed to delete the tag'
+            this.errorHandler.handleError({
+              message: 'Failed to delete tag',
+              error,
+              showToast: true,
+              location: 'TagsIndexPageComponent.deleteTag'
             });
           }
         });

@@ -7,4 +7,4 @@ import { AppComponent } from '~/app/app.component';
 import { appConfig } from '~/app/app.config';
 
 bootstrapApplication(AppComponent, appConfig)
-  .catch(err => console.error('Ah fuck, something went seriously wrong...', err));
+  .catch(err => console.error('💀 Bollocks, something went seriously wrong...', err));

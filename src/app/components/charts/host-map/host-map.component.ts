@@ -6,6 +6,7 @@ import { ThemeService } from '~/app/services/theme.service';
 import { Subscription } from 'rxjs';
 import { PrimeNgModule } from '~/app/prime-ng.module';
 import { TranslateModule } from '@ngx-translate/core';
+import { ErrorHandlerService } from '~/app/services/error-handler.service';
 
 @Component({
   selector: 'app-host-map',
@@ -27,6 +28,7 @@ export class HostMapComponent implements OnInit, AfterViewInit {
     @Inject(PLATFORM_ID) private platformId: Object,
     private cdr: ChangeDetectorRef,
     private themeService: ThemeService,
+    private errorHandler: ErrorHandlerService,
   ) {}
 
   ngOnInit() {
@@ -63,7 +65,14 @@ export class HostMapComponent implements OnInit, AfterViewInit {
           this.addMarkers();
         }
       },
-      error => console.error('Error fetching hosts:', error)
+      error => {
+        this.errorHandler.handleError({
+          error,
+          message: 'Failed to load hosts',
+          location: 'HostMapComponent.loadHosts',
+          showToast: true,
+        });
+      }
     );
   }
 

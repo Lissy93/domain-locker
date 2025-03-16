@@ -8,6 +8,7 @@ import { isPlatformBrowser } from '@angular/common';
 import { NgIf } from '@angular/common';
 import { PrimeNgModule } from '~/app/prime-ng.module';
 import { TranslateModule } from '@ngx-translate/core';
+import { ErrorHandlerService } from "~/app/services/error-handler.service";
 
 export type ChartOptions = {
   series: ApexNonAxisChartSeries;
@@ -53,6 +54,7 @@ export class DomainPieChartsComponent implements OnInit, AfterViewInit {
   
   constructor(
     private databaseService: DatabaseService,
+    private errorHandler: ErrorHandlerService,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {}
 
@@ -173,7 +175,11 @@ export class DomainPieChartsComponent implements OnInit, AfterViewInit {
     return this.databaseService.instance.registrarQueries.getDomainCountsByRegistrar().pipe(
       map(counts => Object.entries(counts).map(([name, count]) => ({ name, count }))),
       catchError(error => {
-        console.error('Error fetching registrar data:', error);
+        this.errorHandler.handleError({
+          error,
+          message: 'Failed to fetch registrar data',
+          location: 'DomainPieChartsComponent.getRegistrarData',
+        });
         return of([]);
       })
     );
@@ -183,7 +189,11 @@ export class DomainPieChartsComponent implements OnInit, AfterViewInit {
     return this.databaseService.instance.sslQueries.getSslIssuersWithDomainCounts().pipe(
       map(data => data.map(item => ({ name: item.issuer, count: item.domain_count }))),
       catchError(error => {
-        console.error('Error fetching SSL issuer data:', error);
+        this.errorHandler.handleError({
+          error,
+          message: 'Failed to fetch SSL issuer data',
+          location: 'DomainPieChartsComponent.getSslIssuerData',
+        });
         return of([]);
       })
     );
@@ -193,7 +203,11 @@ export class DomainPieChartsComponent implements OnInit, AfterViewInit {
     return this.databaseService.instance.hostsQueries.getHostsWithDomainCounts().pipe(
       map(data => data.map(item => ({ name: item.isp, count: item.domain_count }))),
       catchError(error => {
-        console.error('Error fetching host data:', error);
+        this.errorHandler.handleError({
+          error,
+          message: 'Failed to fetch host data',
+          location: 'DomainPieChartsComponent.getHostData',
+        });
         return of([]);
       })
     );

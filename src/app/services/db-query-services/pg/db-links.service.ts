@@ -153,7 +153,6 @@ export class LinkQueries {
 
   updateLinkInDomains(linkData: ModifiedLink): Observable<void> {
     const { link_ids, link_name, link_url, link_description, domains } = linkData;
-    console.log(linkData);
   
     return this.listDomainNames().pipe(
       switchMap((availableDomains) => {

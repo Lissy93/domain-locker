@@ -1,6 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SupabaseService } from '~/app/services/supabase.service';
+import { ErrorHandlerService } from '~/app/services/error-handler.service';
 
 interface UserThingys {
   user_metadata?: { avatar_url?: string; name?: string };
@@ -52,7 +53,10 @@ export class ProfilePictureComponent implements OnInit {
   profileImageUrl: string = '';
   loading: boolean = true;
 
-  constructor(private supabaseService: SupabaseService) {}
+  constructor(
+    private supabaseService: SupabaseService,
+    private errorHandler: ErrorHandlerService,
+  ) {}
 
   async hashString(input: string): Promise<string> {
     const encoder = new TextEncoder();
@@ -98,7 +102,11 @@ export class ProfilePictureComponent implements OnInit {
         )}&scale=60`;
       }
     } catch (error) {
-      console.error('Failed to fetch profile image:', error);
+      this.errorHandler.handleError({
+        message: 'Failed to fetch profile image',
+        error,
+        location: 'ProfilePictureComponent.ngOnInit',
+      });
     } finally {
       this.loading = false;
     }

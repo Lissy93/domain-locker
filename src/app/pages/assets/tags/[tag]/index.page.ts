@@ -10,6 +10,7 @@ import { DomainCollectionComponent } from '~/app/components/domain-things/domain
 import { TagEditorComponent } from '~/app/components/forms/tag-editor/tag-editor.component';
 import { TagPickListComponent } from '~/app/components/forms/tag-picklist/tag-picklist.component';
 import { type Tag } from '~/app/../types/common';
+import { ErrorHandlerService } from '~/app/services/error-handler.service';
 
 @Component({
   standalone: true,
@@ -33,6 +34,7 @@ export default class TagDomainsPageComponent implements OnInit {
     private databaseService: DatabaseService,
     private messageService: MessageService,
     private confirmationService: ConfirmationService,
+    private errorHandler: ErrorHandlerService,
   ) {}
 
   ngOnInit() {
@@ -54,11 +56,11 @@ export default class TagDomainsPageComponent implements OnInit {
         }
       },
       error: (error) => {
-        console.error('Error fetching tag details:', error);
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Failed to load tag details'
+        this.errorHandler.handleError({
+          message: 'Failed to load tag details',
+          error: error,
+          location: 'TagDomainsPageComponent.loadTag',
+          showToast: true,
         });
         this.loading = false;
       }
@@ -73,11 +75,11 @@ export default class TagDomainsPageComponent implements OnInit {
         this.loading = false;
       },
       error: (error) => {
-        console.error(`Error fetching domains for tag ${this.tagName}:`, error);
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Failed to load domains for this tag'
+        this.errorHandler.handleError({
+          message: `Failed to load domains for tag '${this.tagName}'`,
+          error: error,
+          location: 'TagDomainsPageComponent.loadDomains',
+          showToast: true,
         });
         this.loading = false;
       }
@@ -114,11 +116,11 @@ export default class TagDomainsPageComponent implements OnInit {
             this.router.navigate(['/assets/tags']);
           },
           error: (error) => {
-            console.error('Error deleting tag:', error);
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Error',
-              detail: 'Failed to delete the tag'
+            this.errorHandler.handleError({
+              message: `Error deleting tag '${this.tagName}'`,
+              error: error,
+              location: 'TagDomainsPageComponent.deleteTag',
+              showToast: true,
             });
           }
         });

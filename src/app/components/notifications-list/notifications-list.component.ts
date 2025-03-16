@@ -5,6 +5,7 @@ import { PrimeNgModule } from '~/app/prime-ng.module';
 import { DomainFaviconComponent } from '~/app/components/misc/favicon.component';
 import { CommonModule } from '@angular/common';
 import { PaginatorModule } from 'primeng/paginator';
+import { ErrorHandlerService } from '~/app/services/error-handler.service';
 
 @Component({
   standalone: true,
@@ -20,7 +21,11 @@ export class NotificationsListComponent implements OnInit {
   rowsPerPage = 25;
   unreadNotificationsCount = 0;
 
-  constructor(private databaseService: DatabaseService, private cdr: ChangeDetectorRef) {}
+  constructor(
+    private databaseService: DatabaseService,
+    private cdr: ChangeDetectorRef,
+    private errorHandler: ErrorHandlerService,
+  ) {}
 
   ngOnInit() {
     this.loadNotifications();
@@ -37,7 +42,14 @@ export class NotificationsListComponent implements OnInit {
         this.totalNotifications = total;
         this.updateUnreadCount();
       },
-      (error) => console.error('Error loading notifications:', error)
+      (error) => {
+        this.errorHandler.handleError({
+          message: 'Failed to load notifications',
+          error,
+          showToast: true,
+          location: 'NotificationsListComponent.loadNotifications',
+        });
+      }
     );
   }
 

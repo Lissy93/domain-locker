@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { PrimeNgModule } from '~/app/prime-ng.module';
 import { SupabaseService } from '~/app/services/supabase.service';
-import { CommonModule } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HelpfulLinksComponent } from '~/app/components/misc/helpful-links.component';
+import { ErrorHandlerService } from '~/app/services/error-handler.service';
 
 interface QueryInfo {
   [key: string]: {
@@ -81,12 +82,21 @@ export default class ContactPageComponent implements OnInit {
 
   queryTypes = Object.keys(this.queryInfo);
 
+  private initScript?: HTMLScriptElement;
+  private freshdeskScript?: HTMLScriptElement;
+
   constructor(
     private fb: FormBuilder,
-    private supabaseService: SupabaseService
+    private supabaseService: SupabaseService,
+    private errorHandler: ErrorHandlerService,
+    @Inject(PLATFORM_ID) private platformId: Object
   ) {}
 
   async ngOnInit(): Promise<void> {
+
+    // Init chat widget
+    this.registerFreshChat();
+
     this.contactForm = this.fb.group({
       name: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
@@ -101,10 +111,11 @@ export default class ContactPageComponent implements OnInit {
 
     // Autofill user details
     if (user) {
-      this.contactForm.patchValue({
-        name: user.user_metadata?.['name'] || '',
-        email: user.email || '',
-      });
+
+      const name = user.user_metadata?.['name'] || '';
+      const email = user.email || '';
+
+      this.contactForm.patchValue({name, email});
 
       // Determine user type
       this.userType = user.user_metadata?.['user_type'] || 'Free'; // Default to Free
@@ -112,7 +123,16 @@ export default class ContactPageComponent implements OnInit {
 
       // Update permissions based on user type
       this.updateQueryPermissions();
+
+      // Init Fresh widget with user details
+      if (isPlatformBrowser(this.platformId)) {
+        (window as any).FreshworksWidget('identify', 'ticketForm', {name, email});
+      }
     }
+  }
+
+  ngOnDestroy(): void {
+    this.deregisterFreshChat();
   }
 
   onQueryTypeChange(queryType: string): void {
@@ -134,14 +154,54 @@ export default class ContactPageComponent implements OnInit {
 
   async onSubmit(): Promise<void> {
     if (this.contactForm.invalid) return;
-
-    const { name, email, queryType, body } = this.contactForm.getRawValue();
-
+    // const { name, email, queryType, body } = this.contactForm.getRawValue();
     try {
-      // Replace with your email sending logic
-      console.log('Submitting form:', { name, email, queryType, body });
+      // TODO: Submit { name, email, queryType, body }
     } catch (error) {
-      console.error('Failed to submit form:', error);
+      this.errorHandler.handleError({
+        error,
+        message: 'Failed to submit form',
+        showToast: true,
+        location: 'contact.page',
+      });
     }
+  }
+
+
+  openFreshChat(): void {
+    if (isPlatformBrowser(this.platformId)) {
+      (window as any).FreshworksWidget('open');
+    }
+  }
+
+  registerFreshChat(): void {
+    if (!isPlatformBrowser(this.platformId)) return; 
+
+    this.initScript = document.createElement('script');
+    this.initScript.innerHTML = `
+      window.fwSettings = {
+        'widget_id': 204000000781
+      };
+      !function(){
+        if("function" != typeof window.FreshworksWidget){
+          var n=function(){n.q.push(arguments)};n.q=[];window.FreshworksWidget=n
+        }
+      }();
+    `;
+    document.body.appendChild(this.initScript);
+
+    this.freshdeskScript = document.createElement('script');
+    this.freshdeskScript.type = 'text/javascript';
+    this.freshdeskScript.src = 'https://euc-widget.freshworks.com/widgets/204000000781.js';
+    this.freshdeskScript.async = true;
+    this.freshdeskScript.defer = true;
+    document.body.appendChild(this.freshdeskScript);
+    
+    (window as any).FreshworksWidget('hide');
+  }
+
+  deregisterFreshChat(): void {
+    if (!isPlatformBrowser(this.platformId)) return;
+    (window as any).FreshworksWidget('hide');
   }
 }

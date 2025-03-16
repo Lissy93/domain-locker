@@ -34,7 +34,7 @@
   </p-card>
 
   <!-- Social login options -->
-  <p-card *ngIf="!isAuthenticated && !requireMFA && !(disabledSocialLogin$ | async)"
+  <p-card *ngIf="!isAuthenticated && !requireMFA && (enableSocialLogin$ | async)"
     class="max-w-[500px] w-[calc(100%-0.5rem)]">
     <ng-template pTemplate="title">
       Continue With
@@ -144,7 +144,7 @@
           </div>
         </ng-template>
       </p-messages>
-    </ng-template>      
+    </ng-template>
   </p-card>
 
 </div>

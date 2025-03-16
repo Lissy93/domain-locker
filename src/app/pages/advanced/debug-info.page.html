@@ -19,10 +19,10 @@
   </p-messages>
 </div>
 
-<div class="p-card p-4 max-w-4xl mx-auto">
+<div class="p-card p-4 max-w-4xl mx-auto overflow-y-auto">
   <h2>Environment Info</h2>
 
-<pre class="p-2 bg-bluegray-900 text-bluegray-100 rounded-sm text-xs overflow-x-hidden" id="debug_environmentInfo">
+<pre class="p-2 bg-bluegray-900 text-bluegray-100 rounded-sm text-xs overflow-x-hidden overflow-y-auto" id="debug_environmentInfo">
 ===================================
 APP INFO
 ===================================
@@ -66,9 +66,9 @@ Orientat:   {{ orientation }}
 
 <p-divider class="max-w-4xl mx-auto flex my-2" />
 
-  <div class="p-card p-4 max-w-4xl mx-auto max-h-96"> 
+  <div class="p-card p-4 max-w-4xl mx-auto max-h-96 overflow-y-auto"> 
   <h2>Error Log</h2>
-<pre class="p-2 bg-bluegray-900 text-bluegray-100 rounded-sm text-xs overflow-auto min-h-28"  id="debug_errorLogs">
+<pre class="p-2 bg-bluegray-900 text-bluegray-100 rounded-sm text-xs overflow-auto min-h-28 overflow-y-auto"  id="debug_errorLogs">
 ===================================
 ERROR LOGS
 ===================================@for (error of errorLog; track error.date) {
@@ -78,10 +78,10 @@ ERROR LOGS
 
 <p-divider class="max-w-4xl mx-auto flex my-2" />
     
-<div class="p-card p-4 max-w-4xl mx-auto">
+<div class="p-card p-4 max-w-4xl mx-auto overflow-y-auto">
     <h2>Diagnostics</h2>
 
-<pre class="p-2 bg-bluegray-900 text-bluegray-100 rounded-sm text-xs overflow-auto" id="debug_diagnostics">
+<pre class="p-2 bg-bluegray-900 text-bluegray-100 rounded-sm text-xs overflow-auto overflow-y-auto" id="debug_diagnostics">
 ===================================
 DATABASE TABLE CHECKS
 ===================================
@@ -100,10 +100,10 @@ ENVIRONMENT VARIABLES
 
 <p-divider class="max-w-4xl mx-auto flex my-2" />
 
-<div class="p-card p-4 max-w-4xl mx-auto">
+<div class="p-card p-4 max-w-4xl mx-auto overflow-y-auto">
     <h2>User Info</h2>
 
-<pre class="p-2 bg-bluegray-900 text-bluegray-100 rounded-sm text-xs overflow-auto" id="debug_userInfo">
+<pre class="p-2 bg-bluegray-900 text-bluegray-100 rounded-sm text-xs overflow-auto overflow-y-auto" id="debug_userInfo">
 ===================================
 APP PREFERENCES
 ===================================

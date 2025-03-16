@@ -5,6 +5,7 @@ import { PrimeNgModule } from '~/app/prime-ng.module';
 import { Host } from '~/app/../types/common';
 import DatabaseService from '~/app/services/database.service';
 import { MessageService } from 'primeng/api';
+import { ErrorHandlerService } from '~/app/services/error-handler.service';
 
 @Component({
   standalone: true,
@@ -40,7 +41,8 @@ export default class HostsIndexPageComponent implements OnInit {
 
   constructor(
     private databaseService: DatabaseService,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private errorHandler: ErrorHandlerService,
   ) {}
 
   ngOnInit() {
@@ -77,11 +79,11 @@ export default class HostsIndexPageComponent implements OnInit {
         this.loading = false;
       },
       error: (error) => {
-        console.error('Error fetching hosts:', error);
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Failed to load hosts'
+        this.errorHandler.handleError({
+          message: 'Failed to load hosts',
+          error,
+          showToast: true,
+          location: 'HostsIndexPageComponent.loadHosts'
         });
         this.loading = false;
       }
@@ -98,11 +100,11 @@ export default class HostsIndexPageComponent implements OnInit {
         this.loading = false;
       },
       error: (error) => {
-        console.error('Error fetching domain counts:', error);
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Failed to load domain counts'
+        this.errorHandler.handleError({
+          message: 'Failed to load domain counts',
+          error,
+          showToast: true,
+          location: 'HostsIndexPageComponent.loadDomainCounts'
         });
         this.loading = false;
       }

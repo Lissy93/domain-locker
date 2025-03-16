@@ -77,7 +77,6 @@ export default class SubdomainDetailPageComponent implements OnInit {
         next: async (fetchedDomainInfo) => {
           const results = { ...fetchedDomainInfo.domainInfo };
           this.subdomainWebsiteInfo = results;
-          console.log(this.subdomainWebsiteInfo);
         },
         error: (error) => {
           this.errorHandler.handleError({
@@ -108,7 +107,6 @@ export default class SubdomainDetailPageComponent implements OnInit {
           .deleteSubdomain(this.domain, this.subdomainName)
           .subscribe({
             next: () => {
-              console.log('Done');
               this.messageService.showSuccess('Deleted', `Subdomain "${this.subdomainName}.${this.domain}" has been deleted successfully.`);
               this.router.navigate(['/assets/subdomains', this.domain]);
             },

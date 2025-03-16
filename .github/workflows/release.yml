@@ -17,14 +17,16 @@ jobs:
 
       - name: Generate Changelog
         id: changelog
-        run: |
-          echo "### Changelog" > RELEASE.md
-          git log --oneline $(git describe --tags --abbrev=0 @^)..@ >> RELEASE.md
+        uses: requarks/changelog-action@v1.10.2
+        with:
+          token: ${{ secrets.BOT_TOKEN }}
+          tag: ${{ github.ref_name }}
+          writeToFile: false
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: ${{ github.ref_name }}
-          name: "Release ${{ github.ref_name }}"
-          body_path: RELEASE.md
           token: ${{ secrets.BOT_TOKEN }}
+          tag_name: ${{ github.ref_name }}
+          name: "Release ${{ github.ref_name }} of Domain Locker"
+          body: ${{ steps.changelog.outputs.changes }}

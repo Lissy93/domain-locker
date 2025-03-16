@@ -66,8 +66,7 @@ export default class EditDomainComponent implements OnInit {
         this.isLoading = false;
       },
       error: (error) => {
-        console.error('Error loading domain:', error);
-        this.globalMessageService.showMessage({ severity: 'error', summary: 'Error', detail: 'Failed to load domain' });
+        this.errorHandler.handleError({ error, showToast: true, message: 'Failed to load domain', location: 'domain.Edit' });
         this.router.navigate(['/domains', this.domain!.domain_name]);
         this.isLoading = false;
       }

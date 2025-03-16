@@ -47,7 +47,11 @@
           </p>
           <p class="m-0">{{ formatDate(update.date) }}</p> -
           @if (!domainName) {
-            <a class="m-0 text-default" [routerLink]="'/domains/'+update.domains.domain_name">{{ update.domains.domain_name }}</a>
+            @if (update.domains) {
+              <a class="m-0 text-default" [routerLink]="'/domains/'+update.domains.domain_name">{{ update.domains.domain_name }}</a>
+            } @else {
+              <a class="m-0 text-default" [routerLink]="'/domains/'+update.domain_name">{{ update.domain_name }}</a>
+            }
             -
           }
           @if (update.old_value && update.new_value) {

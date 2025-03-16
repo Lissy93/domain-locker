@@ -366,10 +366,12 @@ CREATE TABLE IF NOT EXISTS "public"."notification_preferences" (
     created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT notification_preferences_pkey PRIMARY KEY (id),
-    CONSTRAINT notification_preferences_domain_id_fkey FOREIGN KEY (domain_id) REFERENCES "public"."domains" (id) ON DELETE CASCADE
+    CONSTRAINT notification_preferences_domain_id_fkey FOREIGN KEY (domain_id) REFERENCES "public"."domains" (id) ON DELETE CASCADE,
+    CONSTRAINT unique_domain_notification UNIQUE (domain_id, notification_type) -- Ensure uniqueness
 );
 
 CREATE INDEX IF NOT EXISTS idx_notification_preferences_domain_id ON "public"."notification_preferences" (domain_id);
+CREATE INDEX IF NOT EXISTS idx_notification_preferences_type ON "public"."notification_preferences" (notification_type);
 
 -- Subdomains table
 CREATE TABLE IF NOT EXISTS "public"."sub_domains" (

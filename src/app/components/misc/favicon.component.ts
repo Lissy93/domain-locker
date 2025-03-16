@@ -1,5 +1,6 @@
 import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule, NgOptimizedImage } from '@angular/common';
+import { ErrorHandlerService } from '~/app/services/error-handler.service';
 
 @Component({
   selector: 'app-domain-favicon',
@@ -58,6 +59,10 @@ export class DomainFaviconComponent implements OnInit, OnDestroy {
   isSpinning: boolean = true;
   private timeoutId: any;
 
+  constructor(
+    private errorHandler: ErrorHandlerService,
+  ) {}
+
   ngOnInit() {
     this.sanitizedDomain = this.getSanitizedDomain(this.domain);
     this.startSpinningTimeout();
@@ -96,7 +101,11 @@ export class DomainFaviconComponent implements OnInit, OnDestroy {
       sanitizedDomain = sanitizedDomain.split('/')[0];
       return sanitizedDomain.toLowerCase();
     } catch (e) {
-      console.error('Error sanitizing domain:', e);
+      this.errorHandler.handleError({
+        message: 'Failed to sanitize domain',
+        error: e,
+        location: 'DomainFaviconComponent.getSanitizedDomain',
+      });
       return domain;
     }
   }

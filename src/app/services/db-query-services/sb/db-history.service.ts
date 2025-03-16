@@ -48,7 +48,11 @@ export class HistoryQueries {
         }));
       }),
       catchError((error) => {
-        console.error('Error fetching change history:', error);
+        this.handleError({
+          message: 'Error fetching change history',
+          error,
+          location: 'HistoryQueries.getChangeHistory',
+        });
         return of([]);
       })
     );
@@ -71,7 +75,11 @@ export class HistoryQueries {
       return count || 0;
     })).pipe(
       catchError(error => {
-        console.error('Error fetching total update count:', error);
+        this.handleError({
+          message: 'Error fetching total update count',
+          error,
+          location: 'HistoryQueries.getTotalUpdateCount',
+        });
         return of(0);
       })
     );
@@ -107,7 +115,9 @@ export class HistoryQueries {
         return data;
       }),
       catchError((error) => {
-        console.error('Error fetching domain updates:', error);
+        this.handleError({
+          error, message: 'Error fetching domain updates', location: 'HistoryQueries.getDomainUpdates',
+        });
         return of([]);
       })
     );

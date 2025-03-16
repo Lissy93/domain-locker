@@ -3,6 +3,7 @@ import { ApexChart, ApexXAxis, ApexDataLabels, ApexPlotOptions, ApexYAxis, ApexT
 import DatabaseService from '~/app/services/database.service';
 import { NgIf } from '@angular/common';
 import { PrimeNgModule } from '~/app/prime-ng.module';
+import { ErrorHandlerService } from '~/app/services/error-handler.service';
 
 export type ChartOptions = {
   series: any[];
@@ -30,7 +31,10 @@ export class ChangeHistoryChartComponent implements OnInit {
   public chartOptions: Partial<ChartOptions> | undefined;
   public loading = true;
 
-  constructor(private databaseService: DatabaseService) {}
+  constructor(
+    private databaseService: DatabaseService,
+    private errorHandler: ErrorHandlerService,
+  ) {}
 
   ngOnInit(): void {
     this.loadChartData();
@@ -45,7 +49,11 @@ export class ChangeHistoryChartComponent implements OnInit {
         this.loading = false;
       },
       error: (error) => {
-        console.error('Error fetching change history data:', error);
+        this.errorHandler.handleError({
+          message: 'Error fetching change history data',
+          error,
+          location: 'ChangeHistoryChartComponent.loadChartData',
+        });
         this.loading = false;
       }
     });
