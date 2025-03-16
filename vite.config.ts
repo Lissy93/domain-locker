@@ -111,6 +111,12 @@ export default defineConfig( ({ mode }) => {
       sourcemap: mode === 'development' ? 'inline' : false,
       outDir: 'dist',
       assetsDir: 'assets',
+      chunkSizeWarningLimit: 1000,
+      rollupOptions: {
+        output: {
+          manualChunks: (id) => id.includes('node_modules') ? 'vendor' : undefined,
+        }
+      }
     },
     resolve: {
       alias: {
