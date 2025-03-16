@@ -86,7 +86,18 @@ export default defineConfig( ({ mode }) => {
     base: '/',
     publicDir: 'src/assets',
     optimizeDeps: {
-      include: ['@angular/core', '@angular/common', '@angular/platform-browser'],
+      include: ['rxjs', '@angular/core', '@angular/common', '@angular/platform-browser'],
+      exclude: [
+        'zone.js', 
+        '@supabase/supabase-js', 
+        'whois-json', 
+        'dotenv', 
+        'pg', 
+        '@sentry/angular', 
+        'ngx-turnstile', 
+        'file-saver', 
+        'fuse.js'
+      ],
     },
     ssr: {
       noExternal: [
