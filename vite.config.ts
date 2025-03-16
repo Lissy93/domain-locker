@@ -86,7 +86,7 @@ export default defineConfig( ({ mode }) => {
     base: '/',
     publicDir: 'src/assets',
     optimizeDeps: {
-      include: ['@angular/common'],
+      include: ['@angular/core', '@angular/common', '@angular/platform-browser'],
     },
     ssr: {
       noExternal: [

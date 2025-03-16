@@ -63,14 +63,14 @@ export class HistoryQueries {
       .from('domain_updates')
       .select('id', { count: 'exact' });
   
-    if (domainName) {
-      query = this.supabase
-        .from('domain_updates')
-        .select('id, domains!inner(domain_name)', { count: 'exact' })
-        .eq('domains.domain_name', domainName);
-    }
+    // if (domainName) {
+    //   query = this.supabase
+    //     .from('domain_updates')
+    //     .select('id, domains!inner(domain_name)', { count: 'exact' })
+    //     .eq('domains.domain_name', domainName);
+    // }
   
-    return from(query.then(({ count, error }) => {
+    return from(query.then(({ count, error }: { count: number | null; error: any }) => {
       if (error) throw error;
       return count || 0;
     })).pipe(
