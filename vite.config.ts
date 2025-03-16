@@ -128,6 +128,9 @@ export default defineConfig( ({ mode }) => {
               if (id.includes('mermaid')) return 'mermaid-diagrams';
               if (id.includes('@sentry')) return 'sentry';
               if (id.includes('@supabase')) return 'supabase';
+              if (id.includes('marked') || id.includes('prismjs')) return 'markdown';
+              if (id.includes('file-saver')) return 'file-handling';
+              if (id.includes('dotenv') || id.includes('pg')) return 'backend-utils';
               if (id.includes('rxjs')) return 'rxjs';
               return 'vendor';
             }
@@ -175,6 +178,8 @@ export default defineConfig( ({ mode }) => {
           minify: true,
           scanHandlers: false,
           serveStatic: false,
+          esbuild: { minify: true },
+          dev: mode === 'development',
         },
         content: {
           highlighter: 'prism',
