@@ -110,7 +110,7 @@ export default defineConfig( ({ mode }) => {
       analog({
         prerender: {
           routes: [ // Unauthenticated SSG routes
-            // '/',
+            '/',
             // '/login',
             // '/about',
             // '/about/*',
