@@ -94,9 +94,11 @@ export default defineConfig( ({ mode }) => {
         'dotenv', 
         'pg', 
         '@sentry/angular', 
-        'ngx-turnstile', 
-        'file-saver', 
-        'fuse.js'
+        'ngx-turnstile',
+        'file-saver',
+        'fuse.js',
+        'leaflet',
+        'apexcharts'
       ],
     },
     ssr: {
@@ -111,9 +113,11 @@ export default defineConfig( ({ mode }) => {
       sourcemap: mode === 'development' ? 'inline' : false,
       outDir: 'dist',
       assetsDir: 'assets',
-      chunkSizeWarningLimit: 1000,
+      chunkSizeWarningLimit: 512,
+      minify: 'terser',
       rollupOptions: {
         output: {
+          inlineDynamicImports: mode === 'production',
           manualChunks(id: string) {
             if (id.includes('node_modules')) {
               if (id.includes('angular') || id.includes('zone.js')) return 'angular-core';
@@ -122,6 +126,8 @@ export default defineConfig( ({ mode }) => {
               if (id.includes('leaflet')) return 'maps';
               if (id.includes('d3')) return 'd3-visuals';
               if (id.includes('mermaid')) return 'mermaid-diagrams';
+              if (id.includes('@sentry')) return 'sentry';
+              if (id.includes('@supabase')) return 'supabase';
               return 'vendor';
             }
             return null;
