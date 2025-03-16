@@ -171,6 +171,10 @@ export default defineConfig( ({ mode }) => {
         },
         nitro: {
           preset: nitroPreset,
+          inlineDeferedImports: true,
+          minify: true,
+          scanHandlers: false,
+          serveStatic: false,
         },
         content: {
           highlighter: 'prism',
