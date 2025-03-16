@@ -1,5 +1,5 @@
 /// <reference types="vitest" />
-import analog, { PrerenderContentFile } from '@analogjs/platform';
+import analog from '@analogjs/platform';
 import { defineConfig, loadEnv } from 'vite';
 import { viteStaticCopy } from 'vite-plugin-static-copy';
 import packageJson from './package.json';
@@ -108,32 +108,6 @@ export default defineConfig( ({ mode }) => {
     },
     plugins: [
       analog({
-        prerender: {
-          routes: [ // Unauthenticated SSG routes
-            '/',
-            // '/login',
-            // '/about',
-            // '/about/*',
-            // {
-            //   contentDir: 'src/content/docs/developing',
-            //   transform: (file: PrerenderContentFile) => {
-            //     const slug = file.attributes['slug'] || file.name;
-            //     return `/about/developing/${slug}`;
-            //   },
-            // },
-            // {
-            //   contentDir: 'src/content/docs/legal',
-            //   transform: (file: PrerenderContentFile) => {
-            //     const slug = file.attributes['slug'] || file.name;
-            //     return `/about/legal/${slug}`;
-            //   },  
-            // },
-          ],
-          sitemap: {
-            host: 'https://domain-locker.com',
-          },
-          
-        },
         nitro: {
           preset: nitroPreset,
         },
