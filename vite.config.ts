@@ -114,19 +114,17 @@ export default defineConfig( ({ mode }) => {
       chunkSizeWarningLimit: 1000,
       rollupOptions: {
         output: {
-          output: {
-            manualChunks(id: string) {
-              if (id.includes('node_modules')) {
-                if (id.includes('angular') || id.includes('zone.js')) return 'angular-core';
-                if (id.includes('primeng') || id.includes('primeicons')) return 'primeng';
-                if (id.includes('apexcharts') || id.includes('ng-apexcharts')) return 'charts';
-                if (id.includes('leaflet')) return 'maps';
-                if (id.includes('d3')) return 'd3-visuals';
-                if (id.includes('mermaid')) return 'mermaid-diagrams';
-                return 'vendor';
-              }
-              return null;
+          manualChunks(id: string) {
+            if (id.includes('node_modules')) {
+              if (id.includes('angular') || id.includes('zone.js')) return 'angular-core';
+              if (id.includes('primeng') || id.includes('primeicons')) return 'primeng';
+              if (id.includes('apexcharts') || id.includes('ng-apexcharts')) return 'charts';
+              if (id.includes('leaflet')) return 'maps';
+              if (id.includes('d3')) return 'd3-visuals';
+              if (id.includes('mermaid')) return 'mermaid-diagrams';
+              return 'vendor';
             }
+            return null;
           }
         }
       }
