@@ -36,9 +36,9 @@ export class DomainPieChartsComponent implements OnInit, AfterViewInit {
 
   @Input() listMode: boolean = false;
 
-  public registrarChartOptions: Partial<ChartOptions> = {};
-  public sslIssuerChartOptions: Partial<ChartOptions> = {};
-  public hostChartOptions: Partial<ChartOptions> = {};
+  public registrarChartOptions: Partial<ChartOptions> | any = {};
+  public sslIssuerChartOptions: Partial<ChartOptions> | any = {};
+  public hostChartOptions: Partial<ChartOptions> | any = {};
 
   public registrarDataLoaded = false;
   public sslIssuerDataLoaded = false;
@@ -128,7 +128,7 @@ export class DomainPieChartsComponent implements OnInit, AfterViewInit {
   }
 
   initChartOptions(chartType: 'registrar' | 'sslIssuer' | 'host', data: {name: string, count: number}[]) {
-    const baseOptions: Partial<ChartOptions> = {
+    const baseOptions: Partial<ChartOptions> | any = {
       series: data.map(item => item.count),
       labels: data.map(item => item.name || 'No Data'),
       chart: {
@@ -158,7 +158,7 @@ export class DomainPieChartsComponent implements OnInit, AfterViewInit {
         colors: ['var(--surface-100)']
       },
       colors: this.colors
-    };
+    } as ApexNonAxisChartSeries | ApexChart | ApexResponsive | ApexTheme | ApexLegend | ApexStroke;
 
     if (chartType === 'registrar') {
       this.registrarChartOptions = baseOptions;

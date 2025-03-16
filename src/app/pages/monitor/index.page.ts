@@ -66,7 +66,7 @@ export default class MonitorPage {
       height: 50,
       sparkline: { enabled: true },
     }
-  };
+  } as ApexOptions;
 
   donutChartConfig: ApexOptions = {
     chart: {
@@ -74,7 +74,7 @@ export default class MonitorPage {
       height: 50,
       width: 50,
     },
-  };
+  } as ApexOptions;
 
   constructor(
     private router: Router,
