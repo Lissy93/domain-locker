@@ -60,21 +60,21 @@ export default class MonitorPage {
   getResponseCodeColor = getResponseCodeColor;
   getPerformanceColor = getPerformanceColor;
 
-  sparkLineConfig: ApexOptions = {
+  sparkLineConfig: ApexOptions | any = {
     chart: {
       type: 'line',
       height: 50,
       sparkline: { enabled: true },
     }
-  } as ApexOptions;
+  } as ApexOptions | any;
 
-  donutChartConfig: ApexOptions = {
+  donutChartConfig: ApexOptions | any = {
     chart: {
       type: 'donut',
       height: 50,
       width: 50,
     },
-  } as ApexOptions;
+  } as ApexOptions | any;
 
   constructor(
     private router: Router,

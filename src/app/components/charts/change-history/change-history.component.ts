@@ -6,15 +6,15 @@ import { PrimeNgModule } from '~/app/prime-ng.module';
 import { ErrorHandlerService } from '~/app/services/error-handler.service';
 
 export type ChartOptions = {
-  series: any[];
-  chart: ApexChart;
-  xaxis: ApexXAxis;
-  yaxis: ApexYAxis;
-  plotOptions: ApexPlotOptions;
-  dataLabels: ApexDataLabels;
-  tooltip: ApexTooltip;
-  stroke: ApexStroke;
-  fill: ApexFill;
+  series: any;
+  chart: ApexChart | any;
+  xaxis: ApexXAxis | any;
+  yaxis: ApexYAxis | any;
+  plotOptions: ApexPlotOptions | any;
+  dataLabels: ApexDataLabels | any;
+  tooltip: ApexTooltip | any;
+  stroke: ApexStroke | any;
+  fill: ApexFill | any;
 };
 
 @Component({
@@ -28,7 +28,7 @@ export class ChangeHistoryChartComponent implements OnInit {
   @Input() domainName?: string;
   @Input() days: number = 14;
 
-  public chartOptions: Partial<ChartOptions> | undefined;
+  public chartOptions: Partial<ChartOptions> | any;
   public loading = true;
 
   constructor(
@@ -102,7 +102,7 @@ export class ChangeHistoryChartComponent implements OnInit {
       },
       tooltip: {
         y: {
-          formatter: function (val) {
+          formatter: function (val: string) {
             return val + " changes";
           }
         }
