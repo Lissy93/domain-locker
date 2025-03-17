@@ -34,15 +34,16 @@ jobs:
           npm install -g vercel
           if [ "${{ github.ref_name }}" = "main" ]; then
             echo "Deploying to production"
-            vercel deploy --prebuilt --prod --confirm
+            vercel deploy --prebuilt --prod --confirm --token $VERCEL_TOKEN
           elif [ "${{ github.ref_name }}" = "demo" ]; then
             echo "Deploying to demo"
-            vercel deploy --prebuilt --confirm --env NEXT_PUBLIC_SITE=demo
+            vercel deploy --prebuilt --confirm --env NEXT_PUBLIC_SITE=demo --token $VERCEL_TOKEN
           else
             echo "Deploying to feature environment"
-            vercel deploy --prebuilt --confirm --env NEXT_PUBLIC_SITE=feature
+            vercel deploy --prebuilt --confirm --env NEXT_PUBLIC_SITE=feature --token $VERCEL_TOKEN
           fi
         env:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+  
