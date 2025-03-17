@@ -1,0 +1,47 @@
+name: 🚀 Deploy to Vercel
+
+on:
+  push:
+    branches:
+      - main
+      - demo
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 22
+
+      - name: Install dependencies
+        run: npm install --legacy-peer-deps
+
+      - name: Build for Vercel
+        run: |
+          NODE_OPTIONS=--max-old-space-size=8192 npm run build:vercel
+
+      - name: Deploy to Vercel
+        if: ${{ success() }}
+        run: |
+          npm install -g vercel
+          if [ "${{ github.ref_name }}" = "main" ]; then
+            echo "Deploying to production"
+            vercel deploy --prebuilt --prod --confirm
+          elif [ "${{ github.ref_name }}" = "demo" ]; then
+            echo "Deploying to demo"
+            vercel deploy --prebuilt --confirm --env NEXT_PUBLIC_SITE=demo
+          else
+            echo "Deploying to preview"
+            vercel deploy --prebuilt --confirm --env NEXT_PUBLIC_SITE=preview
+          fi
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
