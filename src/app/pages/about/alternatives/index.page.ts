@@ -1,14 +1,14 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PrimeNgModule } from '~/app/prime-ng.module';
-import { DlIconComponent } from '~/app/components/misc/svg-icon.component';
+import { TableModule } from 'primeng/table';
 import { alternativeComparison, providerInfo, Has, type Providers, type FeatureComparison, ProviderInfo } from '../data/feature-comparison';
 import { OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-features',
   standalone: true,
-  imports: [CommonModule, PrimeNgModule, DlIconComponent],
+  imports: [CommonModule, PrimeNgModule, TableModule],
   templateUrl: './index.page.html',
   styles: [`::ng-deep .p-datatable-wrapper { border-radius: 6px; } `],
 })

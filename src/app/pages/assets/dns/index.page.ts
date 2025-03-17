@@ -5,6 +5,7 @@ import DatabaseService from '~/app/services/database.service';
 import { MessageService } from 'primeng/api';
 import { TabViewModule } from 'primeng/tabview';
 import { Router } from '@angular/router';
+import { TableModule } from 'primeng/table';
 
 interface DnsRecord {
   record_value: string;
@@ -19,7 +20,7 @@ interface DomainWithRecords {
 @Component({
   standalone: true,
   selector: 'app-dns-records',
-  imports: [CommonModule, PrimeNgModule, TabViewModule],
+  imports: [CommonModule, PrimeNgModule, TabViewModule, TableModule],
   templateUrl: './index.page.html',
   styleUrls: ['./index.page.scss'],
 })

@@ -3,21 +3,28 @@ import pkg from 'pg';
 const { Client } = pkg;
 
 export default defineEventHandler(async (event) => {
-  // 1) Set CORS headers
-  const res = event.node.res; // raw Node response
-  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000'); 
+  const req = event.node.req;
+  const res = event.node.res;
+
+  // Get origin from header, or fallback to localhost
+  const requestOrigin = req.headers['origin'] || 'http://localhost:3000';
+
+  // Provide a flexible whitelist, or allow all (for dev)
+  res.setHeader('Access-Control-Allow-Origin', requestOrigin);
+  res.setHeader('Vary', 'Origin');
+
+  // Additional CORS headers
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  
-  // If it's a preflight (OPTIONS) request, return early
-  if (event.node.req.method === 'OPTIONS') {
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+
+  // 4) For OPTIONS preflight request => short-circuit
+  if (req.method === 'OPTIONS') {
     res.statusCode = 204;
     return '';
   }
 
-  // 2) The normal logic continues if it's not an OPTIONS request
   try {
-    // read request body
     const body = await readBody(event);
     if (!body?.query) {
       return sendError(
@@ -26,8 +33,10 @@ export default defineEventHandler(async (event) => {
       );
     }
 
+    // Deconstruct from body
     const { query, params, credentials } = body;
-    // creds may be undefined
+
+    // Consolidate credentials from either body or env
     const host = credentials?.host || process.env['DL_PG_HOST'];
     const port = credentials?.port || process.env['DL_PG_PORT'] || '5432';
     const user = credentials?.user || process.env['DL_PG_USER'];
@@ -44,14 +53,8 @@ export default defineEventHandler(async (event) => {
       );
     }
 
-    const client = new Client({
-      host,
-      port: parseInt(port, 10),
-      user,
-      password,
-      database,
-    });
-
+    // Connect to Postgres
+    const client = new Client({ host, port: +port, user, password, database });
     await client.connect().catch((connErr) => {
       throw createError({
         statusCode: 500,
@@ -60,6 +63,7 @@ export default defineEventHandler(async (event) => {
       });
     });
 
+    // Attempt the query
     try {
       const result = await client.query(query, params || []);
       return { data: result.rows };

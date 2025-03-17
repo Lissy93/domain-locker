@@ -6,7 +6,7 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 // Dependencies
 import { MessageService, ConfirmationService } from 'primeng/api';
 import { filter, Subscription } from 'rxjs';
-import { NgApexchartsModule } from 'ng-apexcharts';
+// import { NgApexchartsModule } from 'ng-apexcharts';
 
 // PrimeNG module importing required components
 import { PrimeNgModule } from '~/app/prime-ng.module';
@@ -34,7 +34,7 @@ import { MetaTagsService } from '~/app/services/meta-tags.service';
   imports: [
     RouterOutlet,
     PrimeNgModule,
-    NgApexchartsModule,
+    // NgApexchartsModule,
     CommonModule,
     NavbarComponent,
     FooterComponent,

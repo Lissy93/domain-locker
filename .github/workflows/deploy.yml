@@ -1,0 +1,77 @@
+name: 🚀 Deploy to Vercel
+
+on:
+  push:
+    branches:
+      - main
+      - demo
+      - '**'
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 22
+      
+      - name: Install dependencies
+        run: npm install --legacy-peer-deps
+
+      # Build step for demo branch
+      - name: Build for Vercel (demo)
+        if: ${{ github.ref_name == 'demo' }}
+        env:
+          SUPABASE_ANON_KEY: ${{ secrets.DEPLOY_DEMO_SUPABASE_ANON_KEY }}
+          SUPABASE_URL: ${{ secrets.DEPLOY_DEMO_SUPABASE_URL }}
+          DL_SUPABASE_PROJECT: ${{ secrets.DEPLOY_DEMO_DL_SUPABASE_PROJECT }}
+          DL_DNSDUMP_URL: ${{ secrets.DEPLOY_PROD_DL_DNSDUMP_URL }}
+          DL_PREFERRED_SUBDOMAIN_PROVIDER: ${{ secrets.DEPLOY_PROD_DL_PREFERRED_SUBDOMAIN_PROVIDER }}
+          DL_SHODAN_URL: ${{ secrets.DEPLOY_PROD_DL_SHODAN_URL }}
+          NITRO_PRESET: 'vercel'
+          DL_ENV_TYPE: 'demo'
+        run: |
+          NODE_OPTIONS=--max-old-space-size=8192 npm run build:vercel
+
+      # Build step for all other branches (prod/feature)
+      - name: Build for Vercel (prod/feature)
+        if: ${{ github.ref_name != 'demo' }}
+        env:
+          DL_STRIPE_CANCEL_URL: ${{ secrets.DEPLOY_PROD_DL_STRIPE_CANCEL_URL }}
+          DL_STRIPE_CHECKOUT_URL: ${{ secrets.DEPLOY_PROD_DL_STRIPE_CHECKOUT_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.DEPLOY_PROD_SUPABASE_ANON_KEY }}
+          SUPABASE_URL: ${{ secrets.DEPLOY_PROD_SUPABASE_URL }}
+          DL_SUPABASE_PROJECT: ${{ secrets.DEPLOY_PROD_DL_SUPABASE_PROJECT }}
+          DL_DNSDUMP_URL: ${{ secrets.DEPLOY_PROD_DL_DNSDUMP_URL }}
+          DL_PREFERRED_SUBDOMAIN_PROVIDER: ${{ secrets.DEPLOY_PROD_DL_PREFERRED_SUBDOMAIN_PROVIDER }}
+          DL_SHODAN_URL: ${{ secrets.DEPLOY_PROD_DL_SHODAN_URL }}
+          NITRO_PRESET: 'vercel'
+          DL_ENV_TYPE: 'managed'
+        run: |
+          NODE_OPTIONS=--max-old-space-size=8192 npm run build:vercel
+
+      - name: Deploy to Vercel
+        if: ${{ success() }}
+        run: |
+          npm install -g vercel
+          if [ "${{ github.ref_name }}" = "main" ]; then
+            echo "Deploying to production"
+            vercel deploy --prebuilt --prod --confirm --token $VERCEL_TOKEN
+          elif [ "${{ github.ref_name }}" = "demo" ]; then
+            echo "Deploying to demo"
+            vercel deploy --prebuilt --confirm --env NEXT_PUBLIC_SITE=demo --token $VERCEL_TOKEN
+          else
+            echo "Deploying to feature environment"
+            vercel deploy --prebuilt --confirm --env NEXT_PUBLIC_SITE=feature --token $VERCEL_TOKEN
+          fi
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+

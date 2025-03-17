@@ -6,12 +6,13 @@ import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { isPlatformBrowser } from '@angular/common';
 import { localeToCurrency } from '~/app/constants/currencies';
+import { TableModule } from 'primeng/table';
 
 @Component({
   standalone: true,
   selector: 'app-edit-domain-value',
   templateUrl: './edit.page.html',
-  imports: [PrimeNgModule, RouterModule, FormsModule],
+  imports: [PrimeNgModule, RouterModule, FormsModule, TableModule],
 })
 export default class EditDomainValuePage implements OnInit {
   domains: any[] = [];

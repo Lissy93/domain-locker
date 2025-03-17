@@ -10,6 +10,7 @@ import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import DatabaseService from '~/app/services/database.service';
 import { SaveDomainData } from '~/app/../types/Database';
 import { notificationTypes } from '~/app/constants/notification-types';
+import { TableModule } from 'primeng/table';
 
 import type { DomainInfo } from '~/app/../types/DomainInfo';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -21,7 +22,7 @@ import { ErrorHandlerService } from '~/app/services/error-handler.service';
 @Component({
   selector: 'app-add-domain',
   standalone: true,
-  imports: [PrimeNgModule, ReactiveFormsModule, CommonModule],
+  imports: [PrimeNgModule, ReactiveFormsModule, CommonModule, TableModule],
   providers: [ConfirmationService],
   templateUrl: './add.page.html',
   styleUrls: ['./add.page.scss']

@@ -5,6 +5,7 @@ import { PrimeNgModule } from '~/app/prime-ng.module';
 import DatabaseService from '~/app/services/database.service';
 import { MessageService } from 'primeng/api';
 import { ErrorHandlerService } from '~/app/services/error-handler.service';
+import { TableModule } from 'primeng/table';
 
 interface SslIssuer {
   issuer: string;
@@ -14,7 +15,7 @@ interface SslIssuer {
 @Component({
   standalone: true,
   selector: 'app-ssl-issuers-index',
-  imports: [CommonModule, RouterModule, PrimeNgModule],
+  imports: [CommonModule, RouterModule, PrimeNgModule, TableModule],
   template: `
     <h1 class="mt-2 mb-4">SSL Certificate Issuers</h1>
     <p-table [value]="sslIssuers" [loading]="loading" styleClass="p-datatable-striped">
