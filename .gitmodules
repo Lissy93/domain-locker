@@ -1,0 +1,3 @@
+[submodule "supabase"]
+	path = supabase
+	url = https://github.com/Lissy93/dl-sb-iac

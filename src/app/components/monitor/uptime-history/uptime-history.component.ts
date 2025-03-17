@@ -25,8 +25,8 @@ export class UptimeHistoryComponent implements OnInit {
   @Input() userId!: string;
 
   uptimeData: UptimeData[] = [];
-  calendarHeatmap: ApexOptions | null = null;
-  responseCodePieChart: ApexOptions | null = null;
+  calendarHeatmap: ApexOptions | any = null;
+  responseCodePieChart: ApexOptions | any = null;
 
   constructor(
     private databaseService: DatabaseService,
@@ -146,7 +146,7 @@ export class UptimeHistoryComponent implements OnInit {
       },
       tooltip: {
         enabled: true,
-        custom: ({ series, seriesIndex, dataPointIndex, w }) => {
+        custom: ({ series, seriesIndex, dataPointIndex, w }: { series: any; seriesIndex: number; dataPointIndex: number; w: any }) => {
           const data = w.globals.initialSeries[seriesIndex].data[dataPointIndex];
           if (data.y === -1) {
             return `<div class="tooltip-text">
@@ -170,7 +170,7 @@ export class UptimeHistoryComponent implements OnInit {
         },
       },
       series,
-    };
+    } as any;
   }
   
   generateResponseCodePieChart(): void {

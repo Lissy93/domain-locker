@@ -1,7 +1,6 @@
 import { Component, Output, EventEmitter, Input, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { DomainFaviconComponent } from '../../misc/favicon.component';
 import { PrimeNgModule } from '~/app/prime-ng.module';
 import { Router } from '@angular/router';
 import QuickAddDomain from '~/app/pages/domains/add/quick-add/index.page';
@@ -14,7 +13,7 @@ export interface FieldOption {
 @Component({
   selector: 'app-field-visibility-filter',
   standalone: true,
-  imports: [CommonModule, FormsModule, PrimeNgModule, DomainFaviconComponent, QuickAddDomain],
+  imports: [CommonModule, FormsModule, PrimeNgModule, QuickAddDomain],
   templateUrl: 'domain-filters.component.html',
   styleUrls: ['domain-filters.component.scss'],
 })

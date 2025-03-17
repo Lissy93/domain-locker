@@ -26,7 +26,7 @@ export type ChartOptions = {
 })
 export class EppStatusChartComponent implements OnInit {
   @ViewChild('epp-chart') chart: ChartComponent | undefined;
-  public chartOptions: Partial<ChartOptions> | undefined;
+  public chartOptions!: any;
   private totalDomainsWithEpp: number = 0;
   private percentages: number[] = [];
   private counts: Record<string, number> = {};
@@ -150,7 +150,7 @@ export class EppStatusChartComponent implements OnInit {
       },
       tooltip: {
         enabled: true,
-        custom: ({ seriesIndex }) => {
+        custom: ({ seriesIndex }: { seriesIndex: number }) => {
           const eppCode = statuses[seriesIndex];
           const count = this.counts[eppCode];
           const category = getByEppCode(eppCode);
@@ -163,6 +163,6 @@ export class EppStatusChartComponent implements OnInit {
         }
       },
       labels: statuses.map(status => getByEppCode(status)?.label || status)
-    };
+    } as ApexPlotOptions;
   }
 }

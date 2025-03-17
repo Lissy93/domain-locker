@@ -4,7 +4,6 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { PrimeNgModule } from '~/app/prime-ng.module';
 import DatabaseService from '~/app/services/database.service';
-import { ErrorHandlerService } from '~/app/services/error-handler.service';
 import { Observable } from 'rxjs';
 import { ModifiedLink } from '~/app/pages/assets/links/index.page';
 
@@ -16,7 +15,7 @@ import { ModifiedLink } from '~/app/pages/assets/links/index.page';
 })
 export class LinkDialogComponent implements OnInit {
   linkForm: FormGroup;
-  domainOptions$: Observable<string[]> | undefined;
+  domainOptions$: Observable<string[]> | any;
   visible = true;
 
   isEdit: boolean;
@@ -25,7 +24,6 @@ export class LinkDialogComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private databaseService: DatabaseService,
-    private errorHandler: ErrorHandlerService,
     public config: DynamicDialogConfig, // Inject config to get passed data
     public ref: DynamicDialogRef // For dialog control
   ) {

@@ -26,7 +26,7 @@ interface DomainCostingPoints extends Array<DomainCostingPoint> {};
   styleUrls: ['./domain-valuation.component.scss'],
 })
 export class DomainValuationChartComponent implements OnInit {
-  chartOptions: ApexOptions | undefined;
+  chartOptions: ApexOptions | any;
   dataLoaded = false;
 
   constructor(
@@ -83,14 +83,14 @@ export class DomainValuationChartComponent implements OnInit {
     );
   }
 
-  createChartOptions(autoRenewData: any, noAutoRenewData: DomainCostingPoints): ApexOptions {
+  createChartOptions(autoRenewData: any, noAutoRenewData: DomainCostingPoints): ApexOptions | any {
     return {
       chart: {
         type: 'bubble',
         height: 450,
         toolbar: { show: false },
         events: {
-          dataPointSelection: (event, chartContext, config) => {
+          dataPointSelection: (event: any, chartContext: any, config: { seriesIndex: number; dataPointIndex: string | number; }) => {
             const series = config.seriesIndex === 0 ? autoRenewData : noAutoRenewData;
             const selectedDomain = series[config.dataPointIndex];
             this.router.navigate(['/domains', selectedDomain.domainName]);
@@ -111,14 +111,14 @@ export class DomainValuationChartComponent implements OnInit {
       ],
       xaxis: {
         title: { text: 'Current Value or Purchase Price' },
-        labels: { formatter: (val) => `$${val}` },
+        labels: { formatter: (val: string) => `$${val}` },
       },
       yaxis: {
         title: { text: 'Renewal Cost' },
-        labels: { formatter: (val) => `$${val}` },
+        labels: { formatter: (val: string) => `$${val}` },
       },
       tooltip: {
-        custom: ({ seriesIndex, dataPointIndex }) => {
+        custom: ({ seriesIndex, dataPointIndex }: { seriesIndex: number; dataPointIndex: number }) => {
           const series = seriesIndex === 0 ? autoRenewData : noAutoRenewData;
           const info = series[dataPointIndex].tooltipInfo;
           return info ? `

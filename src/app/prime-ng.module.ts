@@ -56,7 +56,6 @@ import { SplitButtonModule } from 'primeng/splitbutton';
 import { SplitterModule } from 'primeng/splitter';
 import { StepsModule } from 'primeng/steps';
 import { StyleClassModule } from 'primeng/styleclass';
-import { TableModule } from 'primeng/table';
 import { TabViewModule } from 'primeng/tabview';
 import { TagModule } from 'primeng/tag';
 import { TimelineModule } from 'primeng/timeline';
@@ -123,7 +122,7 @@ import { TooltipModule } from 'primeng/tooltip';
     SplitterModule,
     StepsModule,
     StyleClassModule,
-    TableModule,
+    // TableModule,
     TabViewModule,
     TagModule,
     TimelineModule,

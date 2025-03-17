@@ -22,6 +22,7 @@ jobs:
           token: ${{ secrets.BOT_TOKEN }}
           tag: ${{ github.ref_name }}
           writeToFile: false
+          includeInvalidCommits: true
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
