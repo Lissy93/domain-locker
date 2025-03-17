@@ -86,7 +86,20 @@ export default defineConfig( ({ mode }) => {
     base: '/',
     publicDir: 'src/assets',
     optimizeDeps: {
-      include: ['@angular/common'],
+      include: ['rxjs', '@angular/core', '@angular/common', '@angular/platform-browser'],
+      exclude: [
+        'zone.js', 
+        '@supabase/supabase-js', 
+        'whois-json', 
+        'dotenv', 
+        'pg', 
+        '@sentry/angular', 
+        'ngx-turnstile',
+        'file-saver',
+        'fuse.js',
+        'leaflet',
+        'apexcharts'
+      ],
     },
     ssr: {
       noExternal: [
@@ -100,6 +113,31 @@ export default defineConfig( ({ mode }) => {
       sourcemap: mode === 'development' ? 'inline' : false,
       outDir: 'dist',
       assetsDir: 'assets',
+      chunkSizeWarningLimit: 512,
+      minify: 'terser',
+      rollupOptions: {
+        output: {
+          // inlineDynamicImports: mode === 'production',
+          manualChunks(id: string) {
+            if (id.includes('node_modules')) {
+              if (id.includes('angular') || id.includes('zone.js')) return 'angular-core';
+              if (id.includes('primeng') || id.includes('primeicons')) return 'primeng';
+              if (id.includes('apexcharts') || id.includes('ng-apexcharts')) return 'charts';
+              if (id.includes('leaflet')) return 'maps';
+              if (id.includes('d3')) return 'd3-visuals';
+              if (id.includes('mermaid')) return 'mermaid-diagrams';
+              if (id.includes('@sentry')) return 'sentry';
+              if (id.includes('@supabase')) return 'supabase';
+              if (id.includes('marked') || id.includes('prismjs')) return 'markdown';
+              if (id.includes('file-saver')) return 'file-handling';
+              if (id.includes('dotenv') || id.includes('pg')) return 'backend-utils';
+              if (id.includes('rxjs')) return 'rxjs';
+              return 'vendor';
+            }
+            return null;
+          }
+        }
+      }
     },
     resolve: {
       alias: {
@@ -136,6 +174,12 @@ export default defineConfig( ({ mode }) => {
         },
         nitro: {
           preset: nitroPreset,
+          inlineDeferedImports: true,
+          minify: true,
+          scanHandlers: false,
+          serveStatic: false,
+          esbuild: { minify: true },
+          dev: mode === 'development',
         },
         content: {
           highlighter: 'prism',
