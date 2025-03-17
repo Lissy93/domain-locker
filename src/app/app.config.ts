@@ -46,7 +46,7 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(withFetch()),
     provideClientHydration(),
     provideContent(
-      withMarkdownRenderer({ loadMermaid: () => import('mermaid') }),
+      // withMarkdownRenderer({ loadMermaid: () => import('mermaid') }),
       withShikiHighlighter(),
     ),
     provideAnimations(),
