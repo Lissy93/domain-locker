@@ -180,6 +180,12 @@ export default defineConfig( ({ mode }) => {
           serveStatic: false,
           esbuild: { minify: true },
           dev: mode === 'development',
+          compatibilityDate: '2024-05-07',
+          vercel: {
+            config: {
+              bypassToken: process.env['VERCEL_BYPASS_TOKEN'] || 'c5OCpVz4MjgoAe/g1YJ5RIOFYaiS3NrmssA/0NCJqLs=',
+            }
+          },
         },
         content: {
           highlighter: 'prism',
