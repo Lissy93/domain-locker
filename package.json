@@ -13,7 +13,7 @@
     "start": "node dist/analog/server/index.mjs",
     "start:deno": "deno run --unstable --allow-net --allow-read --allow-env .output/server/index.ts",
     "build": "ng build",
-    "build:vercel": "NITRO_PRESET=vercel ng build --prod --configuration production",
+    "build:vercel": "NITRO_PRESET=vercel ng build --configuration production",
     "build:deno": "NITRO_PRESET=deno ng build --configuration production",
     "build:netlify": "NITRO_PRESET=netlify NODE_OPTIONS=--max-old-space-size=8096  ng build --configuration production",
     "watch": "ng build --watch --configuration development",
