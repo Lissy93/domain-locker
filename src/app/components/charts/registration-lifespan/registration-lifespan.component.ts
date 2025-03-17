@@ -2,7 +2,7 @@ import { Component, OnInit, Input, AfterViewInit, ChangeDetectorRef } from '@ang
 import { CommonModule } from '@angular/common';
 import { PrimeNgModule } from '~/app/prime-ng.module';
 import DatabaseService from '~/app/services/database.service';
-import { ErrorHandlerService } from '~/app/services/error-handler.service';
+import { Router } from '@angular/router';
 
 interface Domain {
   id: number;
@@ -33,7 +33,7 @@ export class DomainGanttChartComponent implements OnInit, AfterViewInit {
 
   constructor(
     private databaseService: DatabaseService,
-    private errorHandler: ErrorHandlerService,
+    private router: Router,
     private cdr: ChangeDetectorRef
   ) {}
 
@@ -58,13 +58,8 @@ export class DomainGanttChartComponent implements OnInit, AfterViewInit {
         }));
         this.loading = false;
       },
-      error: (error: Error) => {
-        this.errorHandler.handleError({
-          error,
-          message: 'Failed to load domains',
-          location: 'DomainGanttChartComponent.loadDomains',
-          showToast: true
-        });
+      error: () => {
+        console.error('Error fetching domains');
         this.loading = false;
       }
     });

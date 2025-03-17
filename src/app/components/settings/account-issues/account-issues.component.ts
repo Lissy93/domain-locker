@@ -2,7 +2,6 @@ import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PrimeNgModule } from '~/app/prime-ng.module';
 import { SupabaseService } from '~/app/services/supabase.service';
-import { ErrorHandlerService } from '~/app/services/error-handler.service';
 
 interface AccountIssueInterface {
   type: 'warn' | 'error' | 'info' | 'success';
@@ -24,8 +23,7 @@ export class AccountIssuesComponent implements OnInit {
 
   constructor(
     private supabaseService: SupabaseService,
-    private cdr: ChangeDetectorRef,
-    private errorHandler: ErrorHandlerService,
+    private cdr: ChangeDetectorRef // Inject ChangeDetectorRef
   ) {}
 
   async ngOnInit(): Promise<void> {
@@ -33,15 +31,10 @@ export class AccountIssuesComponent implements OnInit {
       const accountIssues = await this.supabaseService.getAccountIssues();
       if (accountIssues.length) this.accountIssues = accountIssues;
     } catch (error) {
-      this.errorHandler.handleError({
-        message: 'Failed to load account issues',
-        error,
-        showToast: true,
-        location: 'AccountIssuesComponent.ngOnInit',
-      });
+      console.error('Error fetching account issues:', error);
     } finally {
       this.loading = false;
-      this.cdr.detectChanges();
+      this.cdr.detectChanges(); // Trigger change detection manually
     }
   }
 }

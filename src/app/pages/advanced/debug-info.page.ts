@@ -188,11 +188,7 @@ export default class DebugInfoPage implements OnInit {
       this.navigatorLanguage = navigator.language || 'none';
       this.navigatorLanguages = navigator.languages || [];
     } catch (err) {
-      this.errorHandler.handleError({
-        error: err,
-        message: 'Failed to gather domain/browser info',
-        location: 'DebugInfoPage',
-      });
+      console.error('Failed to gather domain/browser info:', err);
     }
   }
 
@@ -262,12 +258,7 @@ export default class DebugInfoPage implements OnInit {
         this.loadingTableChecks = false;
       },
       error: (err) => {
-        this.errorHandler.handleError({
-          error: err,
-          message: 'Failed to check tables',
-          location: 'DebugInfoPage',
-          showToast: true,
-        });
+        console.error('Unexpected error from checkAllTables:', err);
         this.loadingTableChecks = false;
       },
     });

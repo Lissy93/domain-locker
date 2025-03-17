@@ -3,7 +3,6 @@ import { BehaviorSubject, combineLatest, firstValueFrom, map, Observable } from 
 import { BillingService } from '~/app/services/billing.service';
 import { EnvService, type EnvironmentType } from '~/app/services/environment.service';
 import { features, type FeatureDefinitions } from '~/app/constants/feature-options';
-import { ErrorHandlerService } from './error-handler.service';
 
 @Injectable({
   providedIn: 'root',
@@ -15,11 +14,7 @@ export class FeatureService {
 
   private activeFeatures$: BehaviorSubject<Record<keyof FeatureDefinitions, any>> = new BehaviorSubject({} as Record<keyof FeatureDefinitions, any>);
 
-  constructor(
-    private billingService: BillingService,
-    private environmentService: EnvService,
-    private errorHandler: ErrorHandlerService,
-  ) {
+  constructor(private billingService: BillingService, private environmentService: EnvService) {
     this.environment = this.environmentService.getEnvironmentType();
     this.userPlan$ = this.billingService.getUserPlan();
 
@@ -78,10 +73,7 @@ export class FeatureService {
     return this.getFeatureValue<boolean>(feature).pipe(
       map((value) => {
         if (typeof value !== 'boolean') {
-          this.errorHandler.handleError({
-            message: `Feature "${feature}" did not resolve to a boolean. Got: ${value}`,
-            showToast: false,
-          });
+          console.error(`Feature "${feature}" did not resolve to a boolean. Got:`, value);
           return false; // Fallback to false if value isn't boolean
         }
         return value;
