@@ -6,11 +6,12 @@ import { Host } from '~/app/../types/common';
 import DatabaseService from '~/app/services/database.service';
 import { MessageService } from 'primeng/api';
 import { ErrorHandlerService } from '~/app/services/error-handler.service';
+import { TableModule } from 'primeng/table';
 
 @Component({
   standalone: true,
   selector: 'app-hosts-index',
-  imports: [CommonModule, RouterModule, PrimeNgModule],
+  imports: [CommonModule, RouterModule, PrimeNgModule, TableModule],
   template: `
 <h1 class="mt-2 mb-4">Hosts</h1>
 <p-table [value]="hosts" [loading]="loading" styleClass="p-datatable-striped">

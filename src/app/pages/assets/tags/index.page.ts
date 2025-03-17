@@ -7,11 +7,12 @@ import DatabaseService from '~/app/services/database.service';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { TagEditorComponent } from '~/app/components/forms/tag-editor/tag-editor.component';
 import { ErrorHandlerService } from '~/app/services/error-handler.service';
+import { TableModule } from 'primeng/table';
 
 @Component({
   standalone: true,
   selector: 'app-tags-index',
-  imports: [CommonModule, RouterModule, PrimeNgModule, TagEditorComponent],
+  imports: [CommonModule, RouterModule, PrimeNgModule, TagEditorComponent, TableModule],
   templateUrl: './index.page.html',
   styleUrl: './tags.scss'
 })

@@ -5,7 +5,7 @@ import { PrimeNgModule } from '~/app/prime-ng.module';
 import { isPlatformBrowser } from '@angular/common';
 import { localeToCurrency } from '~/app/constants/currencies';
 
-import { NgModule } from '@angular/core';
+import { TableModule } from 'primeng/table';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { DbDomain } from '~/app/../types/Database';
@@ -14,7 +14,7 @@ import { DbDomain } from '~/app/../types/Database';
   standalone: true,
   selector: 'app-valuation-index-page',
   templateUrl: './index.page.html',
-  imports: [PrimeNgModule, CommonModule, RouterModule],
+  imports: [PrimeNgModule, CommonModule, RouterModule, TableModule],
 })
 export default class ValuationPageComponent implements OnInit {
   domains: any[] = [];
