@@ -20,6 +20,9 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 22
+      
+      - name: Install dependencies
+        run: npm install --legacy-peer-deps
 
       # Build step for demo branch
       - name: Build for Vercel (demo)
