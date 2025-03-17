@@ -23,11 +23,12 @@ export type FeatureDefinitions = {
   changeHistory: FeatureConfig<boolean>;
   accountSettings: FeatureConfig<boolean>;
   writePermissions: FeatureConfig<boolean>;
-  disableDocs: FeatureConfig<boolean>;
-  disableSignUp: FeatureConfig<boolean>;
-  disableSocialLogin: FeatureConfig<boolean>;
-  disableBilling: FeatureConfig<boolean>;
+  enableDocs: FeatureConfig<boolean>;
+  enableSignUp: FeatureConfig<boolean>;
+  enableSocialLogin: FeatureConfig<boolean>;
+  enableBilling: FeatureConfig<boolean>;
   allowLocalDbConfig: FeatureConfig<boolean>;
+  enableDeletionTool: FeatureConfig<boolean>;
 };
 
 export const features: FeatureDefinitions = {
@@ -39,7 +40,9 @@ export const features: FeatureDefinitions = {
       pro: 100,
       enterprise: 1000,
     },
-    selfHosted: 100,
+    selfHosted: 500,
+    dev: 100,
+    demo: 25,
   },
   notificationChannels: {
     default: false,
@@ -93,36 +96,39 @@ export const features: FeatureDefinitions = {
     default: true,
   },
   writePermissions: {
+    default: import.meta.env['DL_DISABLE_WRITE_METHODS'] ? false : true,
+    demo: false,
+  },
+  enableDocs: {
+    default: true,
+    demo: false,
+    selfHosted: false,
+  },
+  enableSignUp: {
     default: true,
     demo: false,
   },
-  disableDocs: {
-    default: false,
-    demo: true,
-    selfHosted: true,
+  enableSocialLogin: {
+    default: true,
+    demo: false,
+    dev: false,
+    selfHosted: false,
   },
-  disableSignUp: {
-    default: false,
-    demo: true,
-  },
-  disableSocialLogin: {
-    default: false,
-    demo: true,
-    dev: true,
-    selfHosted: true,
-  },
-  disableBilling: {
-    default: false,
-    demo: true,
-    selfHosted: true,
-    dev: true,
+  enableBilling: {
+    default: true,
+    demo: false,
+    selfHosted: false,
+    dev: false,
   },
   allowLocalDbConfig: {
     default: false,
     demo: true,
     selfHosted: true,
     dev: true,
-  }
+  },
+  enableDeletionTool: {
+    default: import.meta.env['DL_DISABLE_WRITE_METHODS'] ? false : true,
+  },
 };
 
 export const featureDescriptions: Record<keyof FeatureDefinitions, { label: string; description: string }> = {
@@ -158,24 +164,28 @@ export const featureDescriptions: Record<keyof FeatureDefinitions, { label: stri
     label: 'Write Permissions',
     description: 'Allow others to write to your account',
   },
-  disableDocs: {
-    label: 'No Documentation',
-    description: 'Disable access to the local documentation',
+  enableDocs: {
+    label: 'Documentation Enabled',
+    description: 'Allows local access to documentation and posts',
   },
-  disableSignUp: {
+  enableSignUp: {
     label: 'Disable Sign Up',
     description: 'Prevent new users from signing up',
   },
-  disableSocialLogin: {
-    label: 'Disable Social Login',
-    description: 'Prevent users from signing up or logging in with social accounts',
+  enableSocialLogin: {
+    label: 'Enable Social Login',
+    description: 'Allow users to sign up or log in with social accounts (like Google, GitHub, etc)',
   },
-  disableBilling: {
-    label: 'Disable Billing',
-    description: 'Prevent users from upgrading their account or sending payments',
+  enableBilling: {
+    label: 'Enable Billing',
+    description: 'Allow users to upgrade their accounts, and manage payments',
   },
   allowLocalDbConfig: {
     label: 'Allow Local DB Config',
     description: 'Allow users to configure which database to use, and connect to it through the app',
+  },
+  enableDeletionTool: {
+    label: 'Enable Deletion Tool',
+    description: 'Allow users to use the tools at /settings/delete-account to selectively and bulk delete data',
   },
 };

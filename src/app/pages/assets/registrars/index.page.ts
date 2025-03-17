@@ -4,8 +4,8 @@ import { RouterModule } from '@angular/router';
 import { PrimeNgModule } from '~/app/prime-ng.module';
 import { Registrar } from '~/app/../types/common';
 import DatabaseService from '~/app/services/database.service';
-import { MessageService } from 'primeng/api';
 import { DomainFaviconComponent } from '~/app/components/misc/favicon.component';
+import { ErrorHandlerService } from '~/app/services/error-handler.service';
 
 @Component({
   standalone: true,
@@ -19,7 +19,7 @@ export default class RegistrarsIndexPageComponent implements OnInit {
 
   constructor(
     private databaseService: DatabaseService,
-    private messageService: MessageService
+    private errorHandler: ErrorHandlerService,
   ) {}
 
   ngOnInit() {
@@ -34,11 +34,11 @@ export default class RegistrarsIndexPageComponent implements OnInit {
         this.loadDomainCounts();
       },
       error: (error) => {
-        console.error('Error fetching registrars:', error);
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Failed to load registrars'
+        this.errorHandler.handleError({
+          message: 'Failed to load registrars',
+          error,
+          showToast: true,
+          location: 'RegistrarsIndexPageComponent.loadRegistrars'
         });
         this.loading = false;
       }
@@ -56,11 +56,11 @@ export default class RegistrarsIndexPageComponent implements OnInit {
         this.registrars = this.registrars.sort((a, b) => b.domainCount - a.domainCount);
       },
       error: (error) => {
-        console.error('Error fetching domain counts:', error);
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Failed to load domain counts'
+        this.errorHandler.handleError({
+          message: 'Unable to fetch domain counts',
+          error,
+          showToast: true,
+          location: 'RegistrarsIndexPageComponent.loadDomainCounts'
         });
         this.loading = false;
       }

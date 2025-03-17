@@ -49,7 +49,7 @@ export class DomainCardComponent implements OnInit {
     private globalMessageService: GlobalMessageService,
     private elRef: ElementRef,
     private errorHandler: ErrorHandlerService,
-    private translate: TranslateService
+    private translate: TranslateService,
   ) {}
 
   isVisible(field: string): boolean {
@@ -112,11 +112,11 @@ export class DomainCardComponent implements OnInit {
             this.cardVisible = false;
           },
           error: (err) => {
-            console.error('Error deleting domain:', err);
-            this.globalMessageService.showMessage({
-              severity: 'error',
-              summary: this.translate.instant('DOMAINS.DOMAIN_COLLECTION.GRID.CONTEXT_MENU.DELETE_ERROR_SUMMARY'),
-              detail: err.message || this.translate.instant('DOMAINS.DOMAIN_COLLECTION.GRID.CONTEXT_MENU.DELETE_ERROR_DETAIL')
+            this.errorHandler.handleError({
+              error: err,
+              message: this.translate.instant('DOMAINS.DOMAIN_COLLECTION.GRID.CONTEXT_MENU.DELETE_ERROR_SUMMARY') || 'Failed to delete domain',
+              location: 'DomainCardComponent.deleteDomain',
+              showToast: true,
             });
           }
         });

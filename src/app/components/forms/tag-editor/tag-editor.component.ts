@@ -4,6 +4,7 @@ import { PrimeNgModule } from '~/app/prime-ng.module';
 import { MessageService } from 'primeng/api';
 import DatabaseService from '~/app/services/database.service';
 import { Tag } from '~/app/../types/common';
+import { ErrorHandlerService } from '~/app/services/error-handler.service';
 
 @Component({
   selector: 'app-tag-editor',
@@ -23,6 +24,7 @@ export class TagEditorComponent {
   constructor(
     private databaseService: DatabaseService,
     private messageService: MessageService,
+    private errorHandler: ErrorHandlerService,
   ) {}
 
   saveTag() {
@@ -60,11 +62,11 @@ export class TagEditorComponent {
             detail: 'Tag with this name already exists',
           });
         } else {
-          console.error('Error creating tag:', err);
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: 'Failed to create tag',
+          this.errorHandler.handleError({
+            error: err,
+            message: 'Failed to create tag',
+            location: 'TagEditorComponent.createTag',
+            showToast: true,
           });
         }
       }
@@ -82,11 +84,11 @@ export class TagEditorComponent {
         this.$afterSave.emit(this.tag.name);
       },
       error: (err) => {
-        console.error('Error updating tag:', err);
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Failed to update tag',
+        this.errorHandler.handleError({
+          error: err,
+          message: 'Failed to update tag',
+          location: 'TagEditorComponent.updateTag',
+          showToast: true,
         });
       }
     });

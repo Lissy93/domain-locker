@@ -54,7 +54,6 @@ export default class SubdomainsIndexPageComponent implements OnInit {
   }
 
   loadSubdomainsForDomain(domain: DomainGroup) {
-    console.log('Loading subdomains for domain:', domain.name);
     if (domain.subdomains?.length || domain.loadingSubs) {
       return;
     }

@@ -80,6 +80,7 @@ export class DomainSparklineComponent implements OnInit {
 
   fetchUptimeData(): void {
     this.databaseService.instance.getDomainUptime(this.userId, this.domainId, this.timeframe).then((data: any) => {
+      if (!data.data && data.length) data.data = data; // Note to future me: I am sorry.
       if (data.data) {
         this.uptimeData = data.data;
         this.processUptimeData();
@@ -148,7 +149,7 @@ export class DomainSparklineComponent implements OnInit {
   calculateAverage(times: number[]): number {
     const filteredTimes = times.filter((t) => t != null);
     return (
-      filteredTimes.reduce((acc, time) => acc + time, 0) / filteredTimes.length
+      filteredTimes.reduce((acc, time) => Number(acc) + Number(time), 0) / filteredTimes.length
     );
   }
 

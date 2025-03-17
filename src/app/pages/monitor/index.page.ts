@@ -111,6 +111,7 @@ export default class MonitorPage {
   loadDomainSummaries(): void {
     this.domains.forEach((domain) => {
       this.databaseService.instance.getDomainUptime(domain.user_id, domain.id, 'day').then((data: any) => {
+        if (data && !data.data) data.data = data; // data be data with data has data if data not data and data is data. Got it?
         if (data.data) {
           const uptimeData: UptimeData[] = data.data;
   
@@ -131,10 +132,18 @@ export default class MonitorPage {
             (uptimeData.filter((entry: UptimeData) => entry.is_up).length /
               uptimeData.length) *
             100;
-  
-          const avgResponseTime = uptimeData.reduce((sum, entry) => sum + (entry.response_time_ms || 0), 0) / uptimeData.length;
-          const avgDnsTime = uptimeData.reduce((sum, entry) => sum + (entry.dns_lookup_time_ms || 0), 0) / uptimeData.length;
-          const avgSslTime = uptimeData.reduce((sum, entry) => sum + (entry.ssl_handshake_time_ms || 0), 0) / uptimeData.length;
+            const avgResponseTime = uptimeData.reduce((sum, entry) =>
+              sum + Number(entry.response_time_ms || 0), 0
+            ) / uptimeData.length;
+            
+            const avgDnsTime = uptimeData.reduce((sum, entry) =>
+              sum + Number(entry.dns_lookup_time_ms || 0), 0
+            ) / uptimeData.length;
+            
+            const avgSslTime = uptimeData.reduce((sum, entry) =>
+              sum + Number(entry.ssl_handshake_time_ms || 0), 0
+            ) / uptimeData.length;
+            
   
           this.domainSummaries.push({
             domainId: domain.id,

@@ -40,9 +40,6 @@ export const aboutPages: AboutPage[] = [
     description: 'In-depth articles to help you get the most out of Domain Locker',
     links: [
       { title: 'Useful tools and resources', description: 'Free and/or open source tools, utils and services for managing domains', link: '/about/external-tools', icon: '' },
-      { title: 'What is a domain name', description: '', link: '', icon: '' },
-      { title: 'Registering and managing domains', description: '', link: '', icon: '' },
-      { title: 'Using a custom domain for your app', description: '', link: '', icon: '' },
       
     ],
   },

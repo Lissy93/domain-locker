@@ -10,6 +10,7 @@ import { DbDomain } from '~/app/../types/Database';
 import { forkJoin } from 'rxjs';
 import { FeatureService } from '~/app/services/features.service';
 import { FeatureNotEnabledComponent } from '~/app/components/misc/feature-not-enabled.component';
+import { ErrorHandlerService } from '~/app/services/error-handler.service';
 
 @Component({
   standalone: true,
@@ -30,6 +31,7 @@ export default class BulkNotificationPreferencesPage implements OnInit {
     private fb: FormBuilder,
     private globalMessageService: GlobalMessageService,
     private featureService: FeatureService,
+    private errorHandler: ErrorHandlerService,
   ) {}
 
   ngOnInit() {
@@ -61,7 +63,12 @@ export default class BulkNotificationPreferencesPage implements OnInit {
         this.loading = false;
       },
       error: (error) => {
-        console.error('Error loading domains or preferences:', error);
+        this.errorHandler.handleError({
+          error,
+          message: 'Error loading domains or preferences',
+          showToast: true,
+          location: 'bulk-notification-preferences.page',
+        });
       }
     });
   }
@@ -89,12 +96,21 @@ export default class BulkNotificationPreferencesPage implements OnInit {
             });
           },
           error: (error) => {
-            console.error('Error saving preferences:', error);
+            this.errorHandler.handleError({
+              error,
+              message: 'Error saving notification preferences',
+              showToast: true,
+              location: 'bulk-notification-preferences.page',
+            });
           }
         });
-      console.log('Preferences saved successfully');
     } catch (error) {
-      console.error('Error saving preferences:', error);
+      this.errorHandler.handleError({
+        error,
+        message: 'Failed to save notification preferences',
+        showToast: true,
+        location: 'bulk-notification-preferences.page',
+      });
     }
   }
 }

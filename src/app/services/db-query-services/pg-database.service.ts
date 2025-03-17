@@ -18,13 +18,17 @@ import { WhoisQueries } from '~/app/services/db-query-services/pg/db-whois.servi
 import { StatusQueries } from '~/app/services/db-query-services/pg/db-statuses.service';
 import { SubdomainsQueries } from '~/app/services/db-query-services/pg/db-subdomains.service';
 import { PgApiUtilService } from '~/app/utils/pg-api.util';
+import { ErrorHandlerService } from '../error-handler.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export default class PgDatabaseService extends DatabaseService {
 
-  constructor(private pgApiUtil: PgApiUtilService) {
+  constructor(
+    private pgApiUtil: PgApiUtilService,
+    private errorHandler: ErrorHandlerService
+  ) {
     super();
     this.linkQueries = new LinkQueries(this.pgApiUtil, this.handleError.bind(this), this.listDomains.bind(this));
     this.tagQueries = new TagQueries(this.pgApiUtil, this.handleError.bind(this), this.getCurrentUser.bind(this));
@@ -48,13 +52,12 @@ export default class PgDatabaseService extends DatabaseService {
 
 
   private handleError(error: any): Observable<never> {
-    console.log('Failed to execute Postgres query', error);
-    // this.errorHandler.handleError({
-    //   error,
-    //   message: 'Failed to execute Postgres query',
-    //   location: 'pg-database.service',
-    //   showToast: false,
-    // });
+    this.errorHandler.handleError({
+      error,
+      message: 'Failed to execute Postgres query',
+      location: 'pg-database.service',
+      showToast: false,
+    });
     return throwError(() => error || new Error('An error occurred while processing your request.'));
   }
 

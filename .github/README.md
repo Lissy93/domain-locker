@@ -56,7 +56,7 @@ You'll never again loose track of your domains, miss an expiration, or forget wh
 
 ### Features
 
-- 📡 Auto-fetched assets: SSL certs, hosts, registrars, IPs, subdomains, DNS, etc
+- 📡 Auto-fetched data: SSL certs, hosts, registrars, IPs, subdomains, DNS, etc
 - 🔬 View detailed metrics and analysis for each domain
 - 📊 Visual analytics and breakdowns and trends across your portfolio
 - 💬 Configurable alerts and webhook notifications
@@ -66,7 +66,6 @@ You'll never again loose track of your domains, miss an expiration, or forget wh
 - 💹 Keep record of purchase prices and renewal costs
 - 🔖 Add categories, and link related resources to domains
 - 🎨 Multi-language support, dark/light/custom themes
-
 
 ### Demo
 
@@ -78,12 +77,18 @@ Try the live demo to [demo.domain-locker.com](https://demo.domain-locker.com) <b
 ## Get Started
 
 To use Domain Locker, you have two options:
+1. 💻 The managed instance, at **[domain-locker.com](https://domain-locker.com/)** _(free)_
+2. 🏗️ Or **[self-hosting](#deployment)** yourself via Docker _(also free, ofc!)_
 
-1. The managed instance, at **[domain-locker.com](http://domain-locker.com/)** _(free)_
-2. Or **[self-hosting](#deployment)** yourself via Docker _(also free, ofc!)_
+### Option 1: Domain-Locker.com
+Head to [our website](https://domain-locker.com), and sign up with Google, GitHub or your email.<br>
+The starter plan is free, and no setup is required. Just sign in, add your domains, and start tracking them.
 
+### Option 2: Self-Hosting
 
-### Self-Hosting
+> [!WARNING]
+> The self-hosted version is in Alpha phase, and still under active development
+
 
 ```bash
 TODO
@@ -97,6 +102,9 @@ TODO
 - **Environment**:
   - When starting the container, bind `PORT` to `3000`.
   - Then specify the Postgres environmental variables: `DL_PG_HOST`, `DL_PG_PORT`, `DL_PG_USER`, `DL_PG_PASSWORD` and `DL_PG_NAME`.
+- **Crons**
+  - `/api/domain-updater` - Execute this daily, to keep domain data up-to-date and trigger notifications
+  - `/api/uptime-monitor` - Execute this every N minutes, to monitor website uptime and performance
 - **Example**:
   - Putting it all together, you can use our [`docker-compose.yml`](https://github.com/Lissy93/domain-locker/blob/main/docker-compose.yml) file.
   - For more details, view the [Self-Hosting Docs](https://domain-locker.com/about/self-hosting)
@@ -115,8 +123,16 @@ cp .env.example .env                                  # Set environmental variab
 npm run dev                                           # Start the dev server
 ```
 
-You'll of course need Git and Node installed on your system.<br>
-The example .env file includes the public credentials for our Supabase dev instance, which you're free to use for development purposes.
+- **Prerequisites**
+  - You'll need Git and Node installed on your system.
+- **Configuring**
+  - The example `.env.sample` file includes the public creds for our Supabase dev instance
+  - To use alternate db, see the [Database](#database) section below to configure with Postgres
+- **Deploying**
+  - You can build with code with `npm run build`, then run with `npm start`
+  - With Docker, you can build the container with `docker build -t domain-locker .`
+  - Don't use the dev Supabase instance in prod, as it's frequently wiped
+
 
 #### Tech Stack
 
@@ -125,7 +141,13 @@ Domain Locker is made up of an app, database and some API endpoints.
 - **The server** is a series of Deno endpoints with Typescript functions
 - **The database** can be either Postgres or Supabase
 
-While the self-hosted instance is intended to be deployed stand-alone, the managed version however depends on a few additional third-party services, which you can see below
+While the self-hosted instance is intended to be deployed stand-alone, the managed version however depends on a few additional third-party services, which you can see below, [the docs of which are here](https://domain-locker.com/about/developing/third-party-docs).
+
+<details>
+<summary>Why</summary>
+Why Angular? As some sort of sick joke to future me, who then needs to maintain this.
+</details>
+
 
 <p align="center">
 <img width="800" src="/.github/screenshots/architecture.png" />
@@ -169,7 +191,9 @@ graph TD;
 
 #### Database
 
-A database is needed to store all your domains and associated info. Domain Locker supports both Supabase and standard Postgres for storing data. The db used will depend on which env vars are set.
+A database is needed to store all your domains and associated info.
+Domain Locker supports both Supabase and standard Postgres for storing data.
+The db used will depend on which env vars are set.
 
 - **Supabase**: Follow the Supabase [self-hosting docs](https://supabase.com/docs/guides/self-hosting), then use [dl-sb-iac](https://github.com/lissy93/dl-sb-iac) to import the schema and configure auth, edge functions, emails, etc.
 	- Then set: `SUPABASE_URL` and `SUPABASE_ANON_KEY` environmental variables
