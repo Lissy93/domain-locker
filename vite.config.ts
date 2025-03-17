@@ -188,13 +188,13 @@ export default defineConfig( ({ mode }) => {
           },
         },
       }),
-      // viteStaticCopy({
-      //   targets: themeTargets.map((target) => ({
-      //     src: target.src,
-      //     dest: 'themes',
-      //     rename: target.rename,
-      //   })),
-      // }),
+      viteStaticCopy({
+        targets: themeTargets.map((target) => ({
+          src: target.src,
+          dest: 'themes',
+          rename: target.rename,
+        })),
+      }),
     ],
 
     test: {
