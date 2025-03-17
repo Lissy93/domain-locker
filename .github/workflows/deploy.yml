@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - demo
+      - '**'
   workflow_dispatch:
 
 jobs:
@@ -38,8 +39,8 @@ jobs:
             echo "Deploying to demo"
             vercel deploy --prebuilt --confirm --env NEXT_PUBLIC_SITE=demo
           else
-            echo "Deploying to preview"
-            vercel deploy --prebuilt --confirm --env NEXT_PUBLIC_SITE=preview
+            echo "Deploying to feature environment"
+            vercel deploy --prebuilt --confirm --env NEXT_PUBLIC_SITE=feature
           fi
         env:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
