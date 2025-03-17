@@ -4,7 +4,6 @@ import { RouterModule } from '@angular/router';
 import { PrimeNgModule } from '~/app/prime-ng.module';
 import DatabaseService from '~/app/services/database.service';
 import { MessageService } from 'primeng/api';
-import { ErrorHandlerService } from '~/app/services/error-handler.service';
 
 interface SslIssuer {
   issuer: string;
@@ -39,8 +38,7 @@ export default class SslIssuersIndexPageComponent implements OnInit {
 
   constructor(
     private databaseService: DatabaseService,
-    private messageService: MessageService,
-    private errorHandler: ErrorHandlerService,
+    private messageService: MessageService
   ) {}
 
   ngOnInit() {
@@ -58,11 +56,11 @@ export default class SslIssuersIndexPageComponent implements OnInit {
         this.loading = false;
       },
       error: (error) => {
-        this.errorHandler.handleError({
-          message: 'Failed to load SSL issuers',
-          error,
-          showToast: true,
-          location: 'SslIssuersIndexPageComponent.loadSslIssuers'
+        console.error('Error fetching SSL issuers:', error);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Failed to load SSL issuers'
         });
         this.loading = false;
       }

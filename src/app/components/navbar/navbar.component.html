@@ -1,6 +1,7 @@
+<!-- src/app/components/navbar/navbar.component.html -->
 <div class="custom-menubar flex justify-between items-center py-2 px-4">
   <button pButton icon="pi pi-bars" (click)="toggleSidebar()" class="p-button-text p-button-rounded mr-2 sm:hidden"></button>
-  <a routerLink="/" class="flex items-center no-underline" aria-label="Domain Locker Home">
+  <a routerLink="/" class="flex items-center no-underline">
     <app-logo />
     <h1 class="text-xl font-bold ml-2 text-primary relative">
       Domain Locker
@@ -12,22 +13,16 @@
     </h1>
   </a>
   <div class="hidden sm:flex sm:items-center">
-    <p-menubar
-      [model]="items"
-      [styleClass]="'bg-transparent border-none p-0'"
-      [attr.role]="'menubar'"
-      [attr.aria-label]="'Primary Navigation'"
-    ></p-menubar>
+    <p-menubar [model]="items" [styleClass]="'bg-transparent border-none p-0'"></p-menubar>
 
     <p-button
-      *ngIf="!isAuthenticated && (enableSignUp$ | async)"
+      *ngIf="!isAuthenticated && !(disabledSignUp$ | async)"
       routerLink="/login"
       [queryParams]="{ newUser: 'true' }"
-      label="Sign Up"
+      label="Sign Up" 
       size="small"
-      icon="pi pi-face-smile"
+      icon="pi pi-face-smile" 
       class="ml-1"
-      aria-label="Login"
     />
 
     <button
@@ -37,7 +32,6 @@
       pTooltip="Display Options"
       tooltipPosition="bottom"
       showDelay="500"
-      aria-label="Open Display Settings"
       class="p-button-rounded p-button-text text-default hover:text-primary">
     </button>
     <p-button
@@ -49,7 +43,6 @@
       showDelay="500"
       [text]="true"
       severity="contrast"
-      aria-label="Open Notifications"
       class="notification-button text-default hover:text-primary">
       <p-badge
         *ngIf="unreadNotificationsCount"
@@ -75,7 +68,6 @@
         pTooltip="Settings"
         tooltipPosition="bottom"
         showDelay="500"
-        aria-label="Settings"
         class="p-button-rounded p-button-text text-default hover:text-primary">
       </button>
     </a>
@@ -102,7 +94,6 @@
         icon="pi pi-palette"
         severity="contrast"
         [text]="true"
-        aria-label="Display Options"
         class="text-default hover:text-primary">
       </p-button>
       <p-button
@@ -110,7 +101,6 @@
         icon="pi pi-wrench"
         severity="contrast"
         [text]="true"
-        aria-label="Settings"
         class="text-default hover:text-primary">
       </p-button>
       <p-button
@@ -119,7 +109,6 @@
         icon="pi pi-bell"
         [text]="true"
         severity="contrast"
-        aria-label="Notifications"
         class="notification-button text-default hover:text-primary">
         <p-badge
           *ngIf="unreadNotificationsCount"

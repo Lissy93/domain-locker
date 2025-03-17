@@ -161,7 +161,8 @@ export class SubdomainListComponent implements OnInit {
   }
 
   private editSubdomain(subdomain: Subdomain): void {
-    // TODO: Implement edit subdomain, and open dialog
+    // Placeholder for opening edit dialog
+    console.log('Editing subdomain:', subdomain);
   }
 
   async deleteSubdomain(subdomain: Subdomain): Promise<void> {
@@ -182,6 +183,7 @@ export class SubdomainListComponent implements OnInit {
         .deleteSubdomain(this.domain, subdomain.name)
         .subscribe({
           next: () => {
+            console.log('Done');
             this.messagingService.showSuccess('Deleted', `Subdomain "${subdomain.name}.${this.domain}" has been deleted successfully.`);
             this.router.navigate(['/assets/subdomains', this.domain]);
           },

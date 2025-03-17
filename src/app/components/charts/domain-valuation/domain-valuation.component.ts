@@ -5,7 +5,6 @@ import { Router } from '@angular/router';
 import { PrimeNgModule } from '~/app/prime-ng.module';
 import { NgApexchartsModule } from 'ng-apexcharts';
 import { CommonModule } from '@angular/common';
-import { ErrorHandlerService } from '~/app/services/error-handler.service';
 
 interface DomainCostingPoint {
   x?: number;
@@ -31,7 +30,6 @@ export class DomainValuationChartComponent implements OnInit {
 
   constructor(
     private databaseService: DatabaseService,
-    private errorHandler: ErrorHandlerService,
     private router: Router
   ) {}
 
@@ -72,14 +70,7 @@ export class DomainValuationChartComponent implements OnInit {
         this.chartOptions = this.createChartOptions(autoRenewData, noAutoRenewData);
         this.dataLoaded = true;
       },
-      (error) => {
-        this.errorHandler.handleError({
-          error,
-          message: 'Failed to load domain costings',
-          location: 'DomainValuationChartComponent.loadDomainCostings',
-          showToast: true,
-        });
-      }
+      (error) => console.error('Error loading domain costings:', error)
     );
   }
 

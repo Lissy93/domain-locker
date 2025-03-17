@@ -3,7 +3,6 @@ import DatabaseService from '~/app/services/database.service';
 import { Router } from '@angular/router';
 import { PrimeNgModule } from '~/app/prime-ng.module';
 import { CommonModule } from '@angular/common';
-import { ErrorHandlerService } from '~/app/services/error-handler.service';
 
 interface ExpiringDomain {
   domain_name: string;
@@ -32,11 +31,7 @@ export class YearCalendarComponent implements OnInit {
   monthsData: MonthlyExpirations[] = [];
   noExpirations = false;
 
-  constructor(
-    private databaseService: DatabaseService,
-    private router: Router,
-    private errorHandler: ErrorHandlerService,
-  ) {}
+  constructor(private databaseService: DatabaseService, private router: Router) {}
 
   ngOnInit(): void {
     this.loadYearData();
@@ -58,14 +53,7 @@ export class YearCalendarComponent implements OnInit {
         this.populateMonthsData(filteredDomains);
         this.noExpirations = this.monthsData.every(month => month.domains.length === 0);
       },
-      (error) => {
-        this.errorHandler.handleError({
-          error,
-          message: 'Failed to load domain costings',
-          location: 'YearCalendarComponent.loadYearData',
-          showToast: true,
-        });
-      }
+      (error) => console.error('Error loading domain costings:', error)
     );
   }
 

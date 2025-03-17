@@ -4,7 +4,6 @@ import { PrimeNgModule } from '~/app/prime-ng.module';
 import DatabaseService from '~/app/services/database.service';
 import { Router } from '@angular/router';
 import { TreeNode } from 'primeng/api';
-import { ErrorHandlerService } from '~/app/services/error-handler.service';
 
 @Component({
   selector: 'app-tld-organization-chart',
@@ -22,11 +21,7 @@ export class TldOrganizationChartComponent implements OnInit {
   ];
   groupBy = this.groupByOptions[0];
 
-  constructor(
-    private db: DatabaseService,
-    public router: Router,
-    private errorHandler: ErrorHandlerService,
-  ) {}
+  constructor(private db: DatabaseService, public router: Router) {}
 
   ngOnInit() {
     this.prepareChartData();
@@ -72,11 +67,7 @@ export class TldOrganizationChartComponent implements OnInit {
         this.setNodeStyles();
       },
       (error) => {
-        this.errorHandler.handleError({
-          error,
-          message: 'Failed to fetch domains',
-          location: 'TldOrganizationChartComponent.prepareChartData',
-        });
+        console.error('Error fetching domains:', error);
       }
     );
   }

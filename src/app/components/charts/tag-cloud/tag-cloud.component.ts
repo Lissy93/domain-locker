@@ -8,7 +8,6 @@ import DatabaseService from '~/app/services/database.service';
 import { Subscription } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { TranslateModule } from '@ngx-translate/core';
-import { ErrorHandlerService } from '~/app/services/error-handler.service';
 
 interface CloudWord {
   text: string;
@@ -46,8 +45,7 @@ export class DomainTagCloudComponent implements OnInit, OnDestroy {
 
   constructor(
     private databaseService: DatabaseService,
-    private errorHandler: ErrorHandlerService,
-    private router: Router,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -81,12 +79,7 @@ export class DomainTagCloudComponent implements OnInit, OnDestroy {
         this.loading = false;
       },
       error: (error) => {
-        this.errorHandler.handleError({
-          error,
-          message: 'Failed to fetch tags with domain counts',
-          location: 'DomainTagCloudComponent.loadTagsWithCounts',
-          showToast: true,
-        });
+        console.error('Error fetching tags with domain counts:', error);
         this.loading = false;
       }
     });
@@ -119,12 +112,7 @@ export class DomainTagCloudComponent implements OnInit, OnDestroy {
         .on('end', this.draw.bind(this))
         .start();
     } catch (err) {
-      this.errorHandler.handleError({
-        error: err,
-        message: 'Failed to render word cloud',
-        location: 'DomainTagCloudComponent.renderCloud',
-        showToast: true,
-      });
+      console.error('Error rendering word cloud:', err);
     }
   }
 

@@ -25,11 +25,6 @@ import { screenshots } from '~/app/pages/about/data/feature-comparison';
     <p-divider />
     <app-screenshots [screenshots]="screenshots" />
     <p-divider />
-    <p-card styleClass="mx-2">
-      <h3>Try it locally</h3>
-      <pre>TODO: Add quick command for spinning up local instance</pre>
-    </p-card>
-    <p-divider />
     <app-cta />
   `,
   standalone: true,
@@ -37,4 +32,5 @@ import { screenshots } from '~/app/pages/about/data/feature-comparison';
 })
 export default class DemoPage {
   public screenshots = screenshots;
+  // Your component logic here
 }

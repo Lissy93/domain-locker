@@ -16,7 +16,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Registrar } from '~/app/../types/common';
 import { subdomainsReadyForSave } from '~/app/pages/assets/subdomains/subdomain-utils';
 import { EnvService } from '~/app/services/environment.service';
-import { ErrorHandlerService } from '~/app/services/error-handler.service';
 
 @Component({
   selector: 'app-add-domain',
@@ -65,7 +64,6 @@ export default class AddDomainComponent implements OnInit, OnDestroy {
     private router: Router,
     private route: ActivatedRoute,
     private envService: EnvService,
-    private errorHandler: ErrorHandlerService,
   ) {}
 
   ngOnInit(): void {
@@ -142,11 +140,7 @@ export default class AddDomainComponent implements OnInit, OnDestroy {
         this.domainForm.get('domainName')?.updateValueAndValidity();
       },
       error: (error) => {
-        this.errorHandler.handleError({
-          error,
-          message: 'Failed to fetch existing domains',
-          location: 'AddDomainComponent.fetchExistingDomains',
-        });
+        console.error('Failed to fetch existing domains:', error);
         this.existingDomains = [];
       }
     });
@@ -245,18 +239,15 @@ export default class AddDomainComponent implements OnInit, OnDestroy {
         // Populate the subdomains in the form
         this.domainForm.patchValue({ subdomains: subdomainNames });
       } else {
-        this.errorHandler.handleError({
-          message: 'Unexpected subdomain data format',
-          location: 'AddDomainComponent.fetchExistingDomains',
-        });
+        console.warn('Unexpected subdomain data format:', response);
       }
     } catch (error) {
-      this.errorHandler.handleError({
-        error,
-        showToast: true,
-        message: 'Unable to fetch subdomain info',
-        location: 'AddDomainComponent.fetchSubdomains',
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Warning',
+        detail: 'Unable to fetch subdomain information.',
       });
+      console.error('Error fetching subdomains:', error);
     }
   }
 
@@ -506,11 +497,7 @@ export default class AddDomainComponent implements OnInit, OnDestroy {
     } else {
       errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
     }
-    this.errorHandler.handleError({
-      error,
-      message: errorMessage,
-      location: 'AddDomainComponent.httpError',
-    });
+    console.error(errorMessage);
     return throwError(() => new Error(errorMessage));
   }
 
@@ -518,12 +505,11 @@ export default class AddDomainComponent implements OnInit, OnDestroy {
    * Handles general errors
    */
   private handleError(error: any): void {
-    
-    this.errorHandler.handleError({
-      error,
-      showToast: true,
-      message: 'An error occurred while processing your request',
-      location: 'AddDomainComponent.handleError',
+    console.error('An error occurred:', error);
+    this.messageService.add({
+      severity: 'error',
+      summary: 'Error',
+      detail: 'Unable to process your request. Please try again.'
     });
     this.domainForm.patchValue({
       registrar: '',

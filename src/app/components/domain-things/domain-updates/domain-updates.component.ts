@@ -9,7 +9,6 @@ import { DropdownModule } from 'primeng/dropdown';
 import { InputTextModule } from 'primeng/inputtext';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { CHANGE_CATEGORIES } from '~/app/constants/change-categories';
-import { ErrorHandlerService } from '~/app/services/error-handler.service';
 
 @Component({
   standalone: true,
@@ -38,10 +37,7 @@ export class DomainUpdatesComponent implements OnInit {
 
   public filterDomain: string | undefined;
 
-  constructor(
-    private databaseService: DatabaseService,
-    private errorHandler: ErrorHandlerService,
-  ) {}
+  constructor(private databaseService: DatabaseService) {}
 
   ngOnInit(): void {
     this.fetchTotalCount();
@@ -62,12 +58,7 @@ export class DomainUpdatesComponent implements OnInit {
           this.loading = false;
         },
         error: (error) => {
-          this.errorHandler.handleError({
-            error,
-            message: 'Failed to fetch domain updates',
-            location: 'DomainUpdatesComponent.fetchUpdates',
-            showToast: true,
-          });
+          console.error('Error fetching domain updates:', error);
           this.loading = false;
         }
       });
@@ -80,12 +71,7 @@ export class DomainUpdatesComponent implements OnInit {
         this.totalRecords = total;
       },
       error: (error) => {
-        this.errorHandler.handleError({
-          error,
-          message: 'Failed to fetch total updates count',
-          location: 'DomainUpdatesComponent.fetchTotalCount',
-          showToast: true,
-        });
+        console.error('Error fetching total updates count:', error);
       },
     });
   }

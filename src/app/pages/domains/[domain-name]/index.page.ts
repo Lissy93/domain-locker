@@ -98,6 +98,7 @@ export default class DomainDetailsPage implements OnInit {
 
   public filterIpAddresses(ipAddresses: { ip_address: string, is_ipv6: boolean }[] | undefined, isIpv6: boolean): any[] {
     if (!ipAddresses) return [];
+    console.log(2, ipAddresses);
     return ipAddresses.filter(ip => ip.is_ipv6 === isIpv6);
   }
 
@@ -124,11 +125,11 @@ export default class DomainDetailsPage implements OnInit {
         this.router.navigate(['/domains']);
       },
       error: (err) => {
-        this.errorHandler.handleError({
-          error: err,
-          message: 'Failed to delete domain',
-          showToast: true,
-          location: 'Domain',
+        console.error('Error deleting domain:', err);
+        this.globalMessageService.showMessage({
+          severity: 'error',
+          summary: 'Error',
+          detail: err.message || 'Failed to delete domain'
         });
       }
     });

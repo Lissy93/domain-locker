@@ -6,7 +6,6 @@ import { DbDomain } from '~/app/../types/Database';
 import DatabaseService from '~/app/services/database.service';
 import { MessageService } from 'primeng/api';
 import { DomainCollectionComponent } from '~/app/components/domain-things/domain-collection/domain-collection.component';
-import { ErrorHandlerService } from '~/app/services/error-handler.service';
 
 @Component({
   standalone: true,
@@ -30,8 +29,7 @@ export default class HostDomainsPageComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private databaseService: DatabaseService,
-    private messageService: MessageService,
-    private errorHandler: ErrorHandlerService,
+    private messageService: MessageService
   ) {}
 
   ngOnInit() {
@@ -49,11 +47,11 @@ export default class HostDomainsPageComponent implements OnInit {
         this.loading = false;
       },
       error: (error) => {
-        this.errorHandler.handleError({
-          message: 'Failed to load domains for this host',
-          error,
-          showToast: true,
-          location: 'HostDomainsPageComponent.loadDomains',
+        console.error(`Error fetching domains for host ${this.hostIsp}:`, error);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Failed to load domains for this host'
         });
         this.loading = false;
       }

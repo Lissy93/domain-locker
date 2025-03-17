@@ -7,7 +7,6 @@ import DatabaseService from '~/app/services/database.service';
 import { MessageService } from 'primeng/api';
 import { DomainCollectionComponent } from '~/app/components/domain-things/domain-collection/domain-collection.component';
 import { getByEppCode, type SecurityCategory } from '~/app/constants/security-categories';
-import { ErrorHandlerService } from '~/app/services/error-handler.service';
 
 @Component({
   standalone: true,
@@ -53,8 +52,7 @@ export default class StatusDomainsPageComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private databaseService: DatabaseService,
-    private messageService: MessageService,
-    private errorHandler: ErrorHandlerService,
+    private messageService: MessageService
   ) {}
 
   ngOnInit() {
@@ -73,11 +71,11 @@ export default class StatusDomainsPageComponent implements OnInit {
         this.loading = false;
       },
       error: (error) => {
-        this.errorHandler.handleError({
-          message: 'Failed to load domains for this status',
-          error,
-          showToast: true,
-          location: 'StatusesDomainPageComponent.loadDomains'
+        console.error(`Error fetching domains for status ${this.statusCode}:`, error);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Failed to load domains for this status'
         });
         this.loading = false;
       }

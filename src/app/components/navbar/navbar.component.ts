@@ -50,7 +50,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
   planColor: string = 'primary';
 
   settingsEnabled$ = this.featureService.isFeatureEnabled('accountSettings');
-  enableSignUp$ = this.featureService.isFeatureEnabled('enableSignUp');
+  disabledSignUp$ = this.featureService.isFeatureEnabled('disableSignUp');
   private subscriptions: Subscription = new Subscription();
 
   public isSupabaseEnabled = this.databaseService.serviceType === 'supabase';
@@ -155,7 +155,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
       // User is not logged in, show docs links
       this.items = unauthenticatedNavLinks;
       this.itemsWithSettings = unauthenticatedNavLinks;
-      if (!(await this.featureService.isFeatureEnabledPromise('enableDocs'))) {
+      if (await this.featureService.isFeatureEnabledPromise('disableDocs')) {
         // Docs is disabled, don't show docs links
         this.items = [];
         this.itemsWithSettings = [];

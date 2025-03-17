@@ -24,7 +24,7 @@ export default class UpgradePage implements OnInit {
   currentPlan$: Observable<string | null>;
   public availablePlans = pricingFeatures;
   public billingInfo: any;
-
+  
   public isAnnual = true;
   public billingCycleOptions = [
     { label: 'Annual', value: true, icon: 'pi pi-calendar-plus' },
@@ -33,7 +33,7 @@ export default class UpgradePage implements OnInit {
 
   public status: 'nothing' | 'success' | 'failed' = 'nothing';
 
-  enableBilling$ = this.featureService.isFeatureEnabled('enableBilling');
+  disableBilling$ = this.featureService.isFeatureEnabled('disableBilling');
 
   constructor(
     private billingService: BillingService,
@@ -51,13 +51,13 @@ export default class UpgradePage implements OnInit {
   ngOnInit(): void {
     // Ensure the user's current plan is fetched
     this.billingService.fetchUserPlan().catch((error) =>
-      this.errorHandler.handleError({ error, message: 'Failed to fetch user plan', showToast: true }),
+      console.error('Failed to fetch current plan:', error)
     );
 
     const sessionId = this.route.snapshot.queryParamMap.get('session_id');
     const success = this.route.snapshot.queryParamMap.get('success');
     const cancelled = this.route.snapshot.queryParamMap.get('canceled');
-
+    
     if (success && sessionId) {
       this.status = 'success';
     } else if (cancelled) {

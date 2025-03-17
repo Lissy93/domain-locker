@@ -26,7 +26,6 @@ import { CtaComponent } from '~/app/components/home-things/cta/cta.component';
 import { HeroComponent } from '~/app/components/home-things/hero/hero.component';
 import { DemoComponent } from '~/app/components/home-things/demo/demo.component';
 import { DemoWelcomeComponent } from '~/app/components/home-things/demo-welcome/demo.welcome.component';
-import { AboutLinks } from '~/app/components/about-things/about-links.component';
 
 import { TranslateModule } from '@ngx-translate/core';
 import { ErrorHandlerService } from '~/app/services/error-handler.service';
@@ -58,7 +57,6 @@ import { Router } from '@angular/router';
     HeroComponent,
     DemoComponent,
     DemoWelcomeComponent,
-    AboutLinks,
   ],
   templateUrl: './home.page.html',
   styles: [`
@@ -111,13 +109,13 @@ export default class HomePageComponent implements OnInit {
         this.loading = false;
       },
       error: (error) => {
-        this.errorHandlerService.handleError({
-          message: 'Failed to load domains',
-          error,
-          showToast: true,
-          location: 'HomePageComponent.loadDomains'
-        });
+        console.error('Error fetching domains:', error);
         this.loading = false;
+        this.messageService.add({ 
+          severity: 'error', 
+          summary: 'Error', 
+          detail: 'Couldn\'t fetch domains from database' 
+        });
       }
     });
   }

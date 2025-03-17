@@ -678,11 +678,7 @@ export default class MainDatabaseService extends DatabaseService {
         return flattenedData;
       }),
       catchError((error) => {
-        this.errorHandler.handleError({
-          message: 'Error fetching domain data',
-          error,
-          location: 'MainDatabaseService.fetchAllForExport',
-        });
+        console.error('Error fetching domain data:', error);
         return [];
       })
     );
