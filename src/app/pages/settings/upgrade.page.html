@@ -1,6 +1,6 @@
-<app-feature-not-enabled *ngIf="(disableBilling$ | async)" feature="disableBilling" />
+<app-feature-not-enabled *ngIf="!(enableBilling$ | async)" feature="enableBilling" />
 
-@if (!(disableBilling$ | async)) {
+@if (enableBilling$ | async) {
 <p-messages severity="success" *ngIf="status === 'success'">
   <ng-template pTemplate>
     <div class="flex items-center">
@@ -33,10 +33,10 @@
       styleClass="w-fit"
     />
   </a> -->
-  <p-selectButton 
-    [options]="billingCycleOptions" 
-    [(ngModel)]="isAnnual" 
-    optionLabel="label" 
+  <p-selectButton
+    [options]="billingCycleOptions"
+    [(ngModel)]="isAnnual"
+    optionLabel="label"
     optionValue="value"
   />
 </div>
@@ -87,7 +87,7 @@
 
 
 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4 mt-4">
-  <div *ngFor="let plan of availablePlans" class="p-card px-2 py-6 flex flex-col space-betweem gap-4 relative"> 
+  <div *ngFor="let plan of availablePlans" class="p-card px-2 py-6 flex flex-col space-betweem gap-4 relative">
     <div *ngIf="(currentPlan$ | async) === plan.planId"
       class="absolute text-center bg-highlight text-highlight w-full top-0 rounded-t ml-[-0.5rem] font-semibold py-1">
       Current Plan
@@ -102,13 +102,13 @@
         ${{ getPrice(plan) }}<span class="text-lg font-medium text-gray-500">/mo</span>
       </p>
       <p class="text-gray-400 mb-4">{{ isAnnual ? 'Billed annually' : 'Billed monthly' }}</p>
-      
+
       <ul class="text-surface-500 space-y-2 list-none m-0 p-0">
         <li *ngFor="let feature of plan.features">
           <i class="pi pi-check-circle mr-2 text-green-500"></i>{{ feature }}
         </li>
       </ul>
-    </div>  
+    </div>
     <button pButton
       *ngIf="(currentPlan$ | async) === 'free' && plan.planId !== 'free'"
       routerLink="/settings/upgrade"

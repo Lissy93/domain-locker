@@ -3,9 +3,9 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { PrimeNgModule } from '~/app/prime-ng.module';
 import DatabaseService from '~/app/services/database.service';
-import { MessageService } from 'primeng/api';
 import { LoadingComponent } from '~/app/components/misc/loading.component';
 import { getByEppCode, type SecurityCategory, securityCategories } from '~/app/constants/security-categories';
+import { ErrorHandlerService } from '~/app/services/error-handler.service';
 
 @Component({
   standalone: true,
@@ -22,7 +22,7 @@ export default class StatusesIndexPageComponent implements OnInit {
 
   constructor(
     private databaseService: DatabaseService,
-    private messageService: MessageService,
+    private errorHandler: ErrorHandlerService,
   ) {}
 
   ngOnInit() {
@@ -43,11 +43,11 @@ export default class StatusesIndexPageComponent implements OnInit {
         this.loading = false;
       },
       error: (error) => {
-        console.error('Error fetching statuses:', error);
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Failed to load statuses'
+        this.errorHandler.handleError({
+          message: 'Failed to load statuses',
+          error,
+          showToast: true,
+          location: 'StatusesIndexPageComponent.loadStatuses'
         });
         this.loading = false;
       }

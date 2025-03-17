@@ -1,4 +1,6 @@
-# Stage 1: Build Angular Analog App
+# ──────────────────────────────────────────────────────────────
+# Stage 1: Build Angular/Analog App
+# ──────────────────────────────────────────────────────────────
 FROM node:20-alpine AS builder
 
 # Set working directory
@@ -15,24 +17,38 @@ COPY . .
 ENV NODE_OPTIONS="--max-old-space-size=8192"
 RUN npm run build
 
-# Stage 2: Create a minimal runtime image
+
+# ──────────────────────────────────────────────────────────────
+# Stage 2: Minimal Alpine-based Runtime
+# ──────────────────────────────────────────────────────────────
 FROM node:20-alpine AS runner
 
 # Set working directory
 WORKDIR /app
 
-# Copy built application from the previous stage
-COPY --from=builder /app/dist /app/dist
-COPY --from=builder /app/package.json ./
+# Copy only the essential build artifacts and scripts
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/package.json ./package.json
+COPY --from=builder /app/check.js ./check.js
 
 # Install only production dependencies
 RUN npm install --omit=dev --legacy-peer-deps
 
+# Create a non-root user for security
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+USER appuser
+
 # Expose application port
 EXPOSE 3000
 
-# Set environment variables with sensible defaults
+# Set environment variables (example)
 ENV DL_ENV_TYPE="selfHosted"
 
-# Start the application
-CMD ["node", "dist/analog/server/index.mjs"]
+# Healthcheck to verify the app is running
+HEALTHCHECK --interval=30s --timeout=5s --retries=3 \
+  CMD wget --spider -q http://localhost:3000/api/health || exit 1
+
+# Start the container:
+#  1) Run check.js (ignoring any failures),
+#  2) Then run the main server script.
+CMD ["sh", "-c", "node check.js || true && node dist/analog/server/index.mjs"]

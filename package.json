@@ -1,6 +1,6 @@
 {
   "name": "domain-locker",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "type": "module",
   "engines": {
     "node": ">=18.19.1"
@@ -10,14 +10,12 @@
   "scripts": {
     "ng": "ng",
     "dev": "ng serve",
-    "start": "node dist/analog/server/index.mjs",
+    "start": "node check.js || true && node dist/analog/server/index.mjs",
     "start:deno": "deno run --unstable --allow-net --allow-read --allow-env .output/server/index.ts",
-    
     "build": "ng build",
     "build:vercel": "NITRO_PRESET=vercel ng build --configuration production",
     "build:deno": "NITRO_PRESET=deno ng build --configuration production",
     "build:netlify": "NITRO_PRESET=netlify NODE_OPTIONS=--max-old-space-size=8096  ng build --configuration production",
-    
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "lint": "ng lint"
@@ -38,7 +36,7 @@
     "@angular/router": "^18.0.0",
     "@ngx-translate/core": "^16.0.3",
     "@ngx-translate/http-loader": "^16.0.0",
-    "@sentry/angular": "^8.37.1",
+    "@sentry/angular": "^9.5.0",
     "@supabase/supabase-js": "^2.45.3",
     "@types/leaflet": "^1.9.12",
     "@types/leaflet.markercluster": "^1.5.4",

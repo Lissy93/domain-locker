@@ -28,6 +28,7 @@ interface DangerCard {
 })
 export class DeleteAccountComponent {
   writePermissions: boolean = false;
+  allowDataDeletion: boolean = false;
   @Input() isInPage: boolean = true;
   
   constructor(
@@ -41,6 +42,9 @@ export class DeleteAccountComponent {
     ngOnInit() {
       (this.featureService.isFeatureEnabled('writePermissions')).subscribe((isEnabled) => {
         this.writePermissions = isEnabled;
+      });
+      (this.featureService.isFeatureEnabled('enableDeletionTool')).subscribe((isEnabled) => {
+        this.allowDataDeletion = isEnabled;
       });
     }
 
@@ -115,6 +119,10 @@ export class DeleteAccountComponent {
       this.messageService.showWarn('Feature not enabled', 'You do not have permission to delete your account');
       return;
     }
+    if (!this.allowDataDeletion) {
+      this.messageService.showWarn('Data Deletion Disabled', 'You do not have permission to delete your account');
+      return;
+    }
     this.confirmationService.confirm({
       message: 'Are you sure you want to delete your account and all associated?'
         +'<br><span class="text-red-400 font-bold">This action cannot be undone.</span>',
@@ -132,6 +140,14 @@ export class DeleteAccountComponent {
 
   async deleteAccount() {
     try {
+
+      this.supabaseService.user$.subscribe((user) => {
+        const noDelete = ['dev@domain-locker.com', 'demo@domain-locker.com'];
+        if (noDelete.includes(user?.email || '')) {
+          this.messageService.showError('Cannot delete account', 'This account is a demo account and cannot be deleted');
+          return;
+        }
+      });
       await this.supabaseService.deleteAccount();
       this.messageService.showSuccess('Account Deleted', 'Your account has been permanently deleted, and all data wiped');
       this.supabaseService.signOut();

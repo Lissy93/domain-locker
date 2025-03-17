@@ -5,6 +5,7 @@ import { NgIf, isPlatformBrowser } from '@angular/common';
 import { PrimeNgModule } from '~/app/prime-ng.module';
 import { getByEppCode } from '~/app/constants/security-categories';
 import { TranslateModule } from '@ngx-translate/core';
+import { ErrorHandlerService } from '~/app/services/error-handler.service';
 
 export type ChartOptions = {
   series: ApexNonAxisChartSeries;
@@ -34,6 +35,7 @@ export class EppStatusChartComponent implements OnInit {
 
   constructor(
     private databaseService: DatabaseService,
+    private errorHandler: ErrorHandlerService,
     @Inject(PLATFORM_ID) private platformId: any
   ) {}
 
@@ -89,7 +91,11 @@ export class EppStatusChartComponent implements OnInit {
         this.loading = false;
       },
       error: (error) => {
-        console.error('Error fetching EPP status counts:', error);
+        this.errorHandler.handleError({
+          error,
+          message: 'Failed to fetch EPP status counts',
+          location: 'EppStatusChartComponent.loadEppCounts',
+        });
       }
     });
   }

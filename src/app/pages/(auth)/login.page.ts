@@ -61,8 +61,8 @@ export default class LoginPageComponent implements OnInit {
 
   private subscriptions: Subscription = new Subscription();
 
-  disabledSocialLogin$ = this.featureService.isFeatureEnabled('disableSocialLogin');
-  
+  enableSocialLogin$ = this.featureService.isFeatureEnabled('enableSocialLogin');
+
   constructor(
     private fb: FormBuilder,
     private supabaseService: SupabaseService,
@@ -117,7 +117,7 @@ export default class LoginPageComponent implements OnInit {
           this.requireMFA = true;
           this.factorId = factors.totp[0].id;
           this.form.get('mfaCode')?.setValidators([
-            Validators.required, 
+            Validators.required,
             Validators.pattern(/^\d{6}$/)
           ]);
           this.form.get('mfaCode')?.updateValueAndValidity();
@@ -127,7 +127,7 @@ export default class LoginPageComponent implements OnInit {
       }
     });
   }
-  
+
   ngOnDestroy() {
     this.subscriptions.unsubscribe();
   }
@@ -151,7 +151,7 @@ export default class LoginPageComponent implements OnInit {
     this.factorId = null;
     this.challengeId = null;
     this.form.get('mfaCode')?.reset();
-    
+
     // Reset form validators based on mode
     if (this.isLogin) {
       this.form.get('confirmPassword')?.clearValidators();
@@ -166,7 +166,7 @@ export default class LoginPageComponent implements OnInit {
   }
 
   async checkIfSignupDisabled() {
-    if ((await this.featureService.isFeatureEnabledPromise('disableSignUp'))) {
+    if (!(await this.featureService.isFeatureEnabledPromise('enableSignUp'))) {
       this.messagingService.showWarn(
         'Sign Up Disabled',
         'It\'s not possible to create new accounts on the demo instance.',
@@ -198,7 +198,7 @@ export default class LoginPageComponent implements OnInit {
   signOut() {
     this.supabaseService.signOut();
   }
-  
+
   private resetMessages() {
     this.errorMessage = '';
     this.successMessage = '';
@@ -215,34 +215,34 @@ export default class LoginPageComponent implements OnInit {
     try {
       await this.supabaseService.signInWithGoogle();
     } catch (error: any) {
-      this.errorHandlerService.handleError({ 
-        error, 
-        message: 'Failed to sign in with Google', 
-        showToast: true, 
-        location: 'loginWithGoogle' 
+      this.errorHandlerService.handleError({
+        error,
+        message: 'Failed to sign in with Google',
+        showToast: true,
+        location: 'loginWithGoogle'
       });
     }
-  }  
+  }
 
   async loginWithFacebook(): Promise<void> {
     try {
       await this.supabaseService.signInWithFacebook();
     } catch (error: any) {
-      this.errorHandlerService.handleError({ 
-        error, 
-        message: 'Failed to sign in with Facebook', 
-        showToast: true, 
-        location: 'loginWithFacebook' 
+      this.errorHandlerService.handleError({
+        error,
+        message: 'Failed to sign in with Facebook',
+        showToast: true,
+        location: 'loginWithFacebook'
       });
     }
   }
-  
+
   async onSubmit() {
     if (!this.form.valid || (this.requireMFA && this.form.get('mfaCode')?.invalid)) return;
-  
+
     this.resetMessages();
     this.showLoader = true;
-  
+
     try {
       const credentials = {
         email: this.form.get('email')?.value,
@@ -309,13 +309,13 @@ export default class LoginPageComponent implements OnInit {
   private async setupMFAVerification(factorId: string): Promise<void> {
     this.requireMFA = true;
     this.factorId = factorId;
-    
+
     this.form.get('mfaCode')?.setValidators([
       Validators.required,
       Validators.pattern(/^\d{6}$/)
     ]);
     this.form.get('mfaCode')?.updateValueAndValidity();
-    
+
     this.successMessage = 'Please enter your 2FA code to continue';
     this.cdr.detectChanges();
   }
@@ -331,7 +331,7 @@ export default class LoginPageComponent implements OnInit {
       this.turnstileResponse,
     );
     const timeoutPromise = this.createTimeout(delayTimeout);
-    
+
     const result = await Promise.race([authPromise, timeoutPromise]);
     if (result instanceof Error) {
       throw result;
@@ -339,13 +339,13 @@ export default class LoginPageComponent implements OnInit {
 
     this.handleSuccess();
   }
-  
+
   private createTimeout(ms: number): Promise<never> {
     return new Promise((_, reject) => {
       setTimeout(() => reject(new Error('Request timed out')), ms);
     });
   }
-  
+
   private handleSuccess() {
     if (this.requireMFA) {
       this.successMessage = '2FA verification is enabled. Please enter your code when prompted';
@@ -359,7 +359,7 @@ export default class LoginPageComponent implements OnInit {
     }
     this.cdr.detectChanges();
   }
-  
+
   private handleError(error: unknown) {
     if (error instanceof Error) {
       this.errorMessage = error.message;
@@ -371,7 +371,7 @@ export default class LoginPageComponent implements OnInit {
     }
     this.cdr.detectChanges();
   }
-  
+
   public resendVerificationEmail() {
     this.showLoader = true;
     try {
@@ -385,5 +385,5 @@ export default class LoginPageComponent implements OnInit {
       this.showLoader = false;
     }
   }
-  
+
 }

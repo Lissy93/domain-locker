@@ -1,5 +1,5 @@
 // Angular
-import { Component, OnInit, Inject, PLATFORM_ID, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Inject, PLATFORM_ID, OnDestroy, ChangeDetectorRef, ErrorHandler } from '@angular/core';
 import { RouterOutlet, Router, NavigationEnd } from '@angular/router';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 
@@ -22,8 +22,7 @@ import { ThemeService } from '~/app/services/theme.service';
 import { GlobalMessageService } from '~/app/services/messaging.service';
 import { SupabaseService } from '~/app/services/supabase.service';
 import { HitCountingService } from '~/app/services/hit-counting.service';
-import { ErrorHandlerService } from '~/app/services/error-handler.service';
-import { TranslationService } from '~/app/services/translation.service';
+import { ErrorHandlerService, GlobalErrorHandler } from '~/app/services/error-handler.service';
 import { AccessibilityService } from '~/app/services/accessibility-options.service';
 import { EnvService } from '~/app/services/environment.service';
 import { FeatureService } from '~/app/services/features.service';
@@ -42,7 +41,11 @@ import { MetaTagsService } from '~/app/services/meta-tags.service';
     LoadingComponent,
     BreadcrumbsComponent,
   ],
-  providers: [MessageService, ErrorHandlerService],
+  providers: [
+    MessageService,
+    ErrorHandlerService,
+   { provide: ErrorHandler, useClass: GlobalErrorHandler },
+  ],
   template: `
     <!-- Navbar -->
     <app-navbar />
@@ -101,6 +104,8 @@ export class AppComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+    this.errorHandler.printInitialDetails();
+    this.errorHandler.initializeGlitchTip();
 
     // Set meta tags on route change
     this.router.events
@@ -223,7 +228,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   /* Check if documentation enabled before navigating to any /about page */
   private async checkIfDocsDisabled(docsPath?: string): Promise<void> {
-    if (await this.featureService.isFeatureEnabledPromise('disableDocs')) {
+    if (!(await this.featureService.isFeatureEnabledPromise('enableDocs'))) {
       // Docs disabled, show warning and navigate back to home
       this.globalMessageService.showWarn(
         'Docs Disabled',

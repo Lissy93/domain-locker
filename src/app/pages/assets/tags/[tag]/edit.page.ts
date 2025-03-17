@@ -3,19 +3,19 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PrimeNgModule } from '~/app/prime-ng.module';
 import { DbDomain, Tag } from '~/app/../types/Database';
-import { DomainCollectionComponent } from '~/app/components/domain-things/domain-collection/domain-collection.component';
 import { TagEditorComponent } from '~/app/components/forms/tag-editor/tag-editor.component';
 import DatabaseService from '~/app/services/database.service';
 import { MessageService } from 'primeng/api';
+import { ErrorHandlerService } from '~/app/services/error-handler.service';
 
 @Component({
   standalone: true,
   selector: 'app-tag-edit',
-  imports: [CommonModule, PrimeNgModule, DomainCollectionComponent, TagEditorComponent],
+  imports: [CommonModule, PrimeNgModule, TagEditorComponent],
   template: `
   <h2 class="mb-4 ml-4">Edit Tag: {{ tagName }}</h2>
   <div class="p-card p-4 m-4">
-    <app-tag-editor [tag]="tag" ($afterSave)="afterSave($event)" />
+    <app-tag-editor [tag]="tag" ($afterSave)="afterSave()" />
   </div>`,
 })
 export default class TagDomainsPageComponent implements OnInit {
@@ -30,6 +30,7 @@ export default class TagDomainsPageComponent implements OnInit {
     private databaseService: DatabaseService,
     private messageService: MessageService,
     private router: Router,
+    private errorHandler: ErrorHandlerService,
   ) {}
 
   ngOnInit() {
@@ -49,11 +50,11 @@ export default class TagDomainsPageComponent implements OnInit {
         }
       },
       error: (error) => {
-        console.error('Error fetching tag details:', error);
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Failed to load tag details'
+        this.errorHandler.handleError({
+          message: 'Failed to load tag details',
+          error,
+          showToast: true,
+          location: 'TagDomainsPageComponent.loadTag',
         });
         this.loading = false;
       }

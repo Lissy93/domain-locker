@@ -5,12 +5,13 @@ import { aboutPages } from '~/app/pages/about/data/about-page-list';
 import { injectContentFiles } from '@analogjs/content';
 import { DocAttributes } from '~/app/components/about-things/doc-viewer.component';
 import { DlIconComponent } from '~/app/components/misc/svg-icon.component';
+import { CtaComponent } from '~/app/components/home-things/cta/cta.component';
 
 @Component({
   standalone: true,
   selector: 'about-index-page',
   templateUrl: './about.page.html',
-  imports: [CommonModule, PrimeNgModule, DlIconComponent],
+  imports: [CommonModule, PrimeNgModule, DlIconComponent, CtaComponent],
 })
 export default class AboutPageComponent {
   sections = aboutPages;

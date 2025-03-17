@@ -29,7 +29,7 @@ export default class DatabaseService {
   ) {
     // If Postgres creds are present, use Postgres as DB
     if (this.envService.isPostgresEnabled()){
-      this.service = new PgDatabaseService(this.pgApiUtil) as unknown as IDatabaseService;
+      this.service = new PgDatabaseService(this.pgApiUtil, this.errorHandler) as unknown as IDatabaseService;
       this.serviceType = 'postgres';
     }
     // If Supabase is enabled, use Supabase as DB

@@ -29,7 +29,7 @@ export interface DocAttributes {
       <analog-markdown class="block max-w-[59rem]" [content]="doc.content"></analog-markdown>
     </article>
 
-    <div class="relative h-full min-h-64 min-w-64 w-full md:w-fit mr-0 md:mr-4">
+    <div class="relative h-full min-h-64 min-w-[18rem] w-full md:w-fit mr-0 md:mr-4">
       <nav class="p-card py-4 relative md:fixed sticky-nav" [style.top]="navTop">
         <a [routerLink]="['/about', categoryName]" class="no-underline text-default">
           <h2 class="capitalize mx-4">{{ categoryName }} Docs</h2>

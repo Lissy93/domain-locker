@@ -33,8 +33,24 @@ export class NotificationQueries {
     await this.pgApiUtil.postToPgExecutor(query, params).toPromise();
   }
 
-  async updateNotificationTypes(domainId: string, notifications: { type: string; isEnabled: boolean }[]): Promise<void> {
-    // TODO: Implement this
+  async updateNotificationTypes(domainId: string, notifications: { notification_type: string; is_enabled: boolean }[]): Promise<void> {
+    if (!notifications.length) return;
+  
+    const upsertQuery = `
+      INSERT INTO notification_preferences (domain_id, notification_type, is_enabled)
+      VALUES ${notifications.map((_, i) => `($1, $${i * 2 + 2}, $${i * 2 + 3})`).join(', ')}
+      ON CONFLICT (domain_id, notification_type) 
+      DO UPDATE SET is_enabled = EXCLUDED.is_enabled
+    `;
+  
+    const queryParams = [domainId, ...notifications.flatMap(n => [n.notification_type, n.is_enabled])];
+  
+    try {
+      await this.pgApiUtil.postToPgExecutor(upsertQuery, queryParams).toPromise();
+    } catch (error) {
+      this.handleError(error);
+      throw error;
+    }
   }
 
   async getNotificationChannels() {
