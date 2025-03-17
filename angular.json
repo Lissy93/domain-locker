@@ -41,13 +41,7 @@
               "hmr": true
             },
             "production": {
-              "buildTarget": "domain-locker:build:production",
-              "optimization": true,
-              "sourceMap": false,
-              "namedChunks": false,
-              "extractLicenses": true,
-              "vendorChunk": false,
-              "buildOptimizer": true
+              "buildTarget": "domain-locker:build:production"
             }
           }
         },
