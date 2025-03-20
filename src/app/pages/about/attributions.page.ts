@@ -15,14 +15,14 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
     <p-progressSpinner *ngIf="loading" class="flex mx-auto my-4"></p-progressSpinner>
 
     <div class="" *ngIf="!loading">
-      <div 
-        *ngFor="let section of sections" 
+      <div
+        *ngFor="let section of sections"
         class="my-4 p-card p-3 pb-5"
       >
         <h2 class="mb-3 text-{{section.badge.color || 'primary'}}-400">{{ section.label }}</h2>
-        
+
         <!-- Fallback image if iframe fails -->
-        <img 
+        <img
           *ngIf="section.showFallback"
           [src]="section.url"
           alt="{{ section.label }}"
@@ -64,7 +64,7 @@ export default class AttributionsPage implements AfterViewInit {
   loading = true;
 
   user = 'lissy93';
-  repo = 'dashy';
+  repo = 'domain-locker';
   frameHeight = 300;
   githubLink = `https://github.com/${this.user}/${this.repo}`;
 
