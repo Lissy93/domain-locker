@@ -126,16 +126,17 @@ export default defineConfig( ({ mode }) => {
               transform: (file: PrerenderContentFile) => {
                 const slug = file.attributes['slug'] || file.name;
                 return `/about/legal/${slug}`;
-              },  
+              },
             },
           ],
           sitemap: {
             host: 'https://domain-locker.com',
           },
-          
+
         },
         nitro: {
           preset: nitroPreset,
+          sourceMap: false,
         },
         content: {
           highlighter: 'prism',
