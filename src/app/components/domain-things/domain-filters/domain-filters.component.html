@@ -14,13 +14,13 @@
       <p-multiSelect
         id="field-filters"
         [options]="fieldOptions"
-        [(ngModel)]="selectedFields"
+        [(ngModel)]="selectedFieldsList"
         (onChange)="onSelectionChange()"
         optionLabel="label"
         selectedItemsLabel="{0} fields shown"
         [style]="{minWidth: '200px'}"
         placeholder="Choose visible fields"
-      ></p-multiSelect>
+      />
     </div>
     <!-- Sort Select Dropdown -->
     <div class="flex flex-col gap-1" *ngIf="selectedLayout">
