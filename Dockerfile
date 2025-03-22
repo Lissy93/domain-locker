@@ -8,7 +8,7 @@ WORKDIR /app
 
 # Copy package files and install dependencies
 COPY package.json package-lock.json ./
-RUN npm ci
+RUN npm ci --legacy-peer-deps
 
 # Copy application source code
 COPY . .
@@ -22,6 +22,9 @@ RUN npm run build
 # Stage 2: Minimal Alpine-based Runtime
 # ──────────────────────────────────────────────────────────────
 FROM node:20-alpine AS runner
+
+# Install PostgreSQL client
+RUN apk add --no-cache postgresql-client
 
 # Set working directory
 WORKDIR /app

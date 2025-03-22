@@ -1,5 +1,4 @@
 name: 🚀 Deploy to Vercel
-
 on:
   push:
     branches:
@@ -7,14 +6,33 @@ on:
       - demo
       - '**'
   workflow_dispatch:
+    inputs:
+      branch:
+        description: "Which branch do you want to deploy from?"
+        required: false
+        default: ""
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Determine branch
+        id: determine_branch
+        run: |
+          # If this workflow is triggered manually AND a branch input is provided,
+          # use that. Otherwise, fall back to the automatically provided ref_name.
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.branch }}" != "" ]; then
+            echo "branchName=${{ inputs.branch }}" >> $GITHUB_OUTPUT
+          else
+            echo "branchName=${{ github.ref_name }}" >> $GITHUB_OUTPUT
+          fi
+
       - name: Check out code
         uses: actions/checkout@v3
+        with:
+          # Check out the branch from the previous step. 
+          ref: ${{ steps.determine_branch.outputs.branchName }}
 
       - name: Use Node.js
         uses: actions/setup-node@v3
@@ -26,7 +44,7 @@ jobs:
 
       # Build step for demo branch
       - name: Build for Vercel (demo)
-        if: ${{ github.ref_name == 'demo' }}
+        if: ${{ steps.determine_branch.outputs.branchName == 'demo' }}
         env:
           SUPABASE_ANON_KEY: ${{ secrets.DEPLOY_DEMO_SUPABASE_ANON_KEY }}
           SUPABASE_URL: ${{ secrets.DEPLOY_DEMO_SUPABASE_URL }}
@@ -34,14 +52,16 @@ jobs:
           DL_DNSDUMP_URL: ${{ secrets.DEPLOY_PROD_DL_DNSDUMP_URL }}
           DL_PREFERRED_SUBDOMAIN_PROVIDER: ${{ secrets.DEPLOY_PROD_DL_PREFERRED_SUBDOMAIN_PROVIDER }}
           DL_SHODAN_URL: ${{ secrets.DEPLOY_PROD_DL_SHODAN_URL }}
+          DL_DEMO_USER: ${{ secrets.DEPLOY_DEMO_DL_DEMO_USER }}
+          DL_DEMO_PASS: ${{ secrets.DEPLOY_DEMO_DL_DEMO_PASS }}
           NITRO_PRESET: 'vercel'
           DL_ENV_TYPE: 'demo'
         run: |
           NODE_OPTIONS=--max-old-space-size=8192 npm run build:vercel
 
-      # Build step for all other branches (prod/feature)
+      # Build step for main or other branches
       - name: Build for Vercel (prod/feature)
-        if: ${{ github.ref_name != 'demo' }}
+        if: ${{ steps.determine_branch.outputs.branchName != 'demo' }}
         env:
           DL_STRIPE_CANCEL_URL: ${{ secrets.DEPLOY_PROD_DL_STRIPE_CANCEL_URL }}
           DL_STRIPE_CHECKOUT_URL: ${{ secrets.DEPLOY_PROD_DL_STRIPE_CHECKOUT_URL }}
@@ -60,18 +80,18 @@ jobs:
         if: ${{ success() }}
         run: |
           npm install -g vercel
-          if [ "${{ github.ref_name }}" = "main" ]; then
+          BRANCH="${{ steps.determine_branch.outputs.branchName }}"
+          if [ "$BRANCH" = "main" ]; then
             echo "Deploying to production"
-            vercel deploy --prebuilt --prod --confirm --token $VERCEL_TOKEN
-          elif [ "${{ github.ref_name }}" = "demo" ]; then
+            npx vercel deploy --prebuilt --prod --yes --token $VERCEL_TOKEN
+          elif [ "$BRANCH" = "demo" ]; then
             echo "Deploying to demo"
-            vercel deploy --prebuilt --confirm --env NEXT_PUBLIC_SITE=demo --token $VERCEL_TOKEN
+            npx vercel deploy --prebuilt --yes --target=demo --token $VERCEL_TOKEN
           else
             echo "Deploying to feature environment"
-            vercel deploy --prebuilt --confirm --env NEXT_PUBLIC_SITE=feature --token $VERCEL_TOKEN
+            npx vercel deploy --prebuilt --yes --target=staging --token $VERCEL_TOKEN
           fi
         env:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-
