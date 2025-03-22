@@ -131,7 +131,7 @@ export abstract class DatabaseService {
   statusQueries!: SbStatusQueries | PgStatusQueries;
   subdomainsQueries!: SbSubdomainsQueries | PgSubdomainsQueries;
 
-  abstract getDomainUptime(userId: string, domainId: string, timeframe: string): any;
+  abstract getDomainUptime(userId: string, domainId: string, timeframe: string, limit?: number): any;
   abstract listDomains(): Observable<DbDomain[]>;
   abstract domainExists(inputUserId: string | null, domainName: string): Promise<boolean>;
   abstract saveDomain(data: SaveDomainData): Observable<DbDomain>;

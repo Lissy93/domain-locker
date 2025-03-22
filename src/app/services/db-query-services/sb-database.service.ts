@@ -694,13 +694,66 @@ export default class MainDatabaseService extends DatabaseService {
    * @param domainId The ID of the domain
    * @param timeframe The timeframe to filter data (e.g., 'day', 'week', etc.)
    */
-    getDomainUptime(userId: string, domainId: string, timeframe: string) {
-      return this.supabase.supabase.rpc('get_domain_uptime', {
-        user_id: userId,
-        domain_id: domainId,
-        timeframe: timeframe,
-      });
-    }
+/**
+ * Fetches domain uptime records for the given timeframe,
+ * verifying that domain belongs to userId.
+ */
+async getDomainUptime(userId: string, domainId: string, timeframe: string, limit?: number) {
+  const fromDate = this.getFromDateForTimeframe(timeframe);
+  const { data, error } = await this.supabase.supabase
+    .from('uptime')
+    .select(`
+      checked_at,
+      is_up,
+      response_code,
+      response_time_ms,
+      dns_lookup_time_ms,
+      ssl_handshake_time_ms,
+      domains!inner(id, user_id)
+    `)
+    // domain must match
+    .eq('domain_id', domainId)
+    // user must match
+    .eq('domains.user_id', userId)
+    // checked_at >= fromDate
+    .gte('checked_at', fromDate.toISOString())
+    .order('checked_at', { ascending: true })
+    .limit(limit || 1000);
+
+  if (error) {
+    throw new Error(`Failed to fetch domain uptime: ${error.message}`);
+  }
+  return data || [];
+}
+
+/** 
+ * Helper that maps timeframe => JS date offset 
+ * e.g. 'day' => fromDate = (now - 1 day)
+ */
+private getFromDateForTimeframe(timeframe: string): Date {
+  const now = Date.now();
+  let offsetMs = 24 * 60 * 60 * 1000; // default 1 day
+  switch (timeframe) {
+    case 'day':
+      offsetMs = 24 * 60 * 60 * 1000;
+      break;
+    case 'week':
+      offsetMs = 7 * 24 * 60 * 60 * 1000;
+      break;
+    case 'month':
+      offsetMs = 30 * 24 * 60 * 60 * 1000;
+      break;
+    case 'year':
+      offsetMs = 365 * 24 * 60 * 60 * 1000;
+      break;
+    default:
+      // fallback to 1 day
+      offsetMs = 24 * 60 * 60 * 1000;
+      break;
+  }
+  return new Date(now - offsetMs);
+}
+
 
     
   checkAllTables(): Observable<{table: string; count: number | string; success: string;}[]> {

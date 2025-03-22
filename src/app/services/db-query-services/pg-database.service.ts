@@ -848,7 +848,7 @@ SELECT domains.*, registrars.name AS registrar_name, tags.name AS tag_name, host
     
   
   
-  async getDomainUptime(userId: string, domainId: string, timeframe: string): Promise<{
+  async getDomainUptime(userId: string, domainId: string, timeframe: string, limit?: number): Promise<{
     checked_at: string;
     is_up: boolean;
     response_code: number;
