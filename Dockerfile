@@ -23,6 +23,9 @@ RUN npm run build
 # ──────────────────────────────────────────────────────────────
 FROM node:20-alpine AS runner
 
+# Install PostgreSQL client
+RUN apk add --no-cache postgresql-client
+
 # Set working directory
 WORKDIR /app
 
