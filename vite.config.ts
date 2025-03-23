@@ -60,27 +60,12 @@ export default defineConfig( ({ mode }) => {
 
   const env = loadEnv(mode, process.cwd(), '')
   const buildPreset = env['BUILD_PRESET'] || env['NITRO_PRESET'] || 'node';
+  const targetEnv = env['DL_ENV_TYPE'] || 'unspecified/self-hosted';
+  const nitroPreset =  buildPreset || 'node-server';
 
-  const nitroPreset = (() => {
-    switch (buildPreset) {
-      case 'vercel':
-        console.log('🔼 Building for Vercel');
-        return 'vercel';
-      case 'netlify':
-        console.log('🪁 Building for Netlify');
-        return 'netlify';
-      case 'deno':
-      case 'deno_server':
-        console.log('🦕 Building for Deno');
-        return 'deno_server';
-      case 'bun':
-        console.log('🐰 Building for Bun');
-        return 'bun';
-      default:
-        console.log('🚀 Building for Node.js');
-        return 'node-server';
-    }
-  })();
+  // Print info message
+  const emoji: any = {'vercel': '🔼', 'netlify': '🪁', 'deno': '🦕', 'bun': '🐰'};
+  console.log(`${emoji[buildPreset] || '🚀'} Building for ${buildPreset} as ${mode} mode for ${targetEnv} environment`);
 
   return {
     base: '/',
@@ -100,6 +85,29 @@ export default defineConfig( ({ mode }) => {
       sourcemap: mode === 'development' ? 'inline' : false,
       outDir: 'dist',
       assetsDir: 'assets',
+      minify: 'terser',
+      rollupOptions: {
+        output: {
+          manualChunks(id: string) {
+            if (id.includes('node_modules')) {
+              if (id.includes('angular') || id.includes('zone.js')) return 'angular-core';
+              if (id.includes('primeng') || id.includes('primeicons')) return 'primeng';
+              if (id.includes('apexcharts') || id.includes('ng-apexcharts')) return 'charts';
+              if (id.includes('leaflet')) return 'maps';
+              if (id.includes('d3')) return 'd3-visuals';
+              if (id.includes('mermaid')) return 'mermaid-diagrams';
+              if (id.includes('@sentry')) return 'sentry';
+              if (id.includes('@supabase')) return 'supabase';
+              if (id.includes('marked') || id.includes('prismjs')) return 'markdown';
+              if (id.includes('file-saver')) return 'file-handling';
+              if (id.includes('dotenv') || id.includes('pg')) return 'backend-utils';
+              if (id.includes('rxjs')) return 'rxjs';
+              return 'vendor';
+            }
+            return null;
+          }
+        }
+      }
     },
     resolve: {
       alias: {
@@ -126,16 +134,17 @@ export default defineConfig( ({ mode }) => {
               transform: (file: PrerenderContentFile) => {
                 const slug = file.attributes['slug'] || file.name;
                 return `/about/legal/${slug}`;
-              },  
+              },
             },
           ],
           sitemap: {
             host: 'https://domain-locker.com',
           },
-          
+
         },
         nitro: {
           preset: nitroPreset,
+          sourceMap: false,
         },
         content: {
           highlighter: 'prism',

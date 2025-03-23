@@ -1,6 +1,6 @@
 import {
   ApplicationConfig, importProvidersFrom,
-  APP_INITIALIZER, PLATFORM_ID, 
+  APP_INITIALIZER, PLATFORM_ID,
   APP_ID} from '@angular/core';
 // Importing providers
 import { HTTP_INTERCEPTORS, provideHttpClient, withFetch, withInterceptorsFromDi } from '@angular/common/http';
@@ -34,7 +34,7 @@ import { EnvLoaderService } from './utils/env.loader';
 export const appConfig: ApplicationConfig = {
   providers: [
     { provide: APP_ID, useValue: 'domain-locker' },
-    
+
     // Transfer relevant env vars on self-hosted version
     {
       provide: APP_INITIALIZER,
@@ -46,12 +46,12 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(withFetch()),
     provideClientHydration(),
     provideContent(
-      withMarkdownRenderer({ loadMermaid: () => import('mermaid') }),
+      withMarkdownRenderer(),
       withShikiHighlighter(),
     ),
     provideAnimations(),
     provideFileRouter(
-      withInMemoryScrolling({ anchorScrolling: 'enabled' }),
+      withInMemoryScrolling({scrollPositionRestoration: 'enabled'}),
       withEnabledBlockingInitialNavigation(),
     ),
     // HTTP Interceptors
@@ -60,7 +60,7 @@ export const appConfig: ApplicationConfig = {
       withInterceptorsFromDi()
     ),
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
-    
+
     // PrimeNG Services
     ConfirmationService,
     MessageService,

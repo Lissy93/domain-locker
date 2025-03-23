@@ -1,6 +1,6 @@
 {
   "name": "domain-locker",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "type": "module",
   "engines": {
     "node": ">=22.13.0"
@@ -15,18 +15,18 @@
     "build": "ng build",
     "build:vercel": "NITRO_PRESET=vercel ng build --configuration production",
     "build:deno": "NITRO_PRESET=deno ng build --configuration production",
-    "build:netlify": "NITRO_PRESET=netlify NODE_OPTIONS=--max-old-space-size=8096  ng build --configuration production",
+    "build:netlify": "NITRO_PRESET=netlify NODE_OPTIONS=--max-old-space-size=4096  ng build --configuration production",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "lint": "ng lint"
   },
   "private": true,
   "dependencies": {
-    "@analogjs/content": "^1.14.1-beta.5",
-    "@analogjs/platform": "^1.14.1-beta.5",
-    "@analogjs/router": "^1.14.1-beta.5",
-    "@analogjs/vite-plugin-angular": "^1.14.1-beta.5",
-    "@analogjs/vitest-angular": "^1.14.1-beta.5",
+    "@analogjs/content": "^1.14.1-beta.6",
+    "@analogjs/platform": "^1.14.1-beta.6",
+    "@analogjs/router": "^1.14.1-beta.6",
+    "@analogjs/vite-plugin-angular": "^1.14.1-beta.6",
+    "@analogjs/vitest-angular": "^1.14.1-beta.6",
     "@angular/animations": "^19.2.2",
     "@angular/cdk": "^18.2.9",
     "@angular/common": "^19.2.2",

@@ -141,9 +141,7 @@ export class ErrorHandlerService {
     if (!error && !message) return; // Not much I can do without an error or message!
     
     // Log to console in development mode
-    if (isDevMode()) {
-      this.printToConsole(message, location, error);
-    }
+    this.printToConsole(message, location, error);
 
     // Show error toast if showError is true
     if (showToast && message && error) {

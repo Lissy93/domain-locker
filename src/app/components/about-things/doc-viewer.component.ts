@@ -1,10 +1,12 @@
-import { Component, Input, HostListener, ViewEncapsulation } from '@angular/core';
+import { Component, Input, HostListener, ViewEncapsulation, PLATFORM_ID, Inject } from '@angular/core';
 import { ContentFile } from '@analogjs/content';
-import { Observable } from 'rxjs';
+import { filter, Observable, Subscription } from 'rxjs';
 import { MarkdownComponent } from '@analogjs/content';
 import { PrimeNgModule } from '~/app/prime-ng.module';
 import { MetaTagsService } from '~/app/services/meta-tags.service';
-import { CommonModule, NgIf } from '@angular/common';
+import { CommonModule, isPlatformBrowser, NgIf } from '@angular/common';
+import { NavigationEnd, Router } from '@angular/router';
+import { ErrorHandlerService } from '~/app/services/error-handler.service';
 
 export interface DocAttributes {
   title: string;
@@ -88,48 +90,160 @@ export class DocsViewerComponent {
 
   doc: ContentFile<DocAttributes | Record<string, never>> | null = null;
 
-  navTop = 'unset'; // default top offset
+  navTop = 'unset';
+  private docSub?: Subscription;
+  private routerSub?: Subscription;
+  private docLoaded = false;
+  private hasRenderedMermaid = false;
 
-  constructor(private metaTagsService: MetaTagsService) {}
+  constructor(
+    private router: Router,
+    private errorHandler: ErrorHandlerService,
+    private metaTagsService: MetaTagsService,
+    @Inject(PLATFORM_ID) private platformId: Object
+  ) {}
 
   ngOnInit() {
-    this.doc$.subscribe(doc => {
-      // Set current doc when it resolves
-      this.doc = doc;
-      // If doc has attributes, then get them for meta and JSON-LD content
-      if (doc?.attributes) {
-        const { title, description, coverImage, author, publishedDate, modifiedDate, slug } = doc.attributes;
+    this.docSub = this.doc$.subscribe({
+      next: (doc) => {
+        // Set current doc when it resolves
+        this.doc = doc;
+        // If doc has attributes, then get them for meta and JSON-LD content
+        if (doc?.attributes) {
+          const { title, description, coverImage, author, publishedDate, modifiedDate, slug } = doc.attributes;
 
-        // Set meta tags
-        this.metaTagsService.setCustomMeta(title, description, undefined, coverImage || this.getFallbackImage(title));
-        
-        // Set JSON-LD structured data
-        this.metaTagsService.addStructuredData('article', {
-          title: title,
-          description: description,
-          coverImage: coverImage || this.getFallbackImage(title),
-          author: author || 'Domain Locker Team',
-          publishedDate: publishedDate || new Date().toISOString(),
-          modifiedDate: modifiedDate || publishedDate || new Date().toISOString(),
-          slug: slug,
-          category: this.categoryName,
-        });
+          // Set meta tags
+          this.metaTagsService.setCustomMeta(title, description, undefined, coverImage || this.getFallbackImage(title));
+          
+          // Set JSON-LD structured data
+          this.metaTagsService.addStructuredData('article', {
+            title: title,
+            description: description,
+            coverImage: coverImage || this.getFallbackImage(title),
+            author: author || 'Domain Locker Team',
+            publishedDate: publishedDate || new Date().toISOString(),
+            modifiedDate: modifiedDate || publishedDate || new Date().toISOString(),
+            slug: slug,
+            category: this.categoryName,
+          });
+        }
+        if (isPlatformBrowser(this.platformId)) {
+          setTimeout(() => {
+            this.loadAndRenderMermaid();
+          }, 50);
+        }
+        this.docLoaded = true;
+      },
+      error: (err) => {
+        this.errorHandler.handleError({ error: err, message: 'Doc subscription error', location: 'doc-viewer' });
       }
     });
+
+    this.routerSub = this.router.events
+      .pipe(filter((e) => e instanceof NavigationEnd))
+      .subscribe({
+        next: () => {
+          if (isPlatformBrowser(this.platformId)) {
+            setTimeout(() => this.loadAndRenderMermaid(), 50);
+          }
+        },
+        error: (err) => {
+          this.errorHandler.handleError({ error: err, message: 'Router events error', location: 'doc-viewer' });
+        }
+      });
+  }
+
+  ngOnDestroy(): void {
+    if (this.docSub) {
+      try {
+        this.docSub.unsubscribe();
+      } catch (err) {
+        this.errorHandler.handleError({ error: err, message: 'Doc subscription cleanup error', location: 'doc-viewer' });
+      }
+    }
+    if (this.routerSub) {
+      try {
+        this.routerSub.unsubscribe();
+      } catch (err) {
+        this.errorHandler.handleError({ error: err, message: 'Router subscription cleanup error', location: 'doc-viewer' });
+      }
+    }
+  }
+
+  ngAfterViewChecked(): void {
+    // If running client-side, and doc is loaded but no mermaid rendered yet, then init
+    if (!isPlatformBrowser(this.platformId)) return;
+    if (this.docLoaded && !this.hasRenderedMermaid) {
+      this.loadAndRenderMermaid();
+      this.hasRenderedMermaid = true;
+    }
   }
 
   /** Called on window scroll. If user scrolled > 7rem => fix nav top at 7rem. Otherwise 0. */
   @HostListener('window:scroll')
   onWindowScroll() {
-    const scrollY = window.scrollY;
-    const sevenRemInPx = 112; // approx 7rem if root font-size = 16px
-    this.navTop = scrollY > sevenRemInPx ? '1rem' : '9rem';
+    try {
+      const scrollY = window.scrollY;
+      const sevenRemInPx = 112; // approx 7rem if root font-size = 16px
+      this.navTop = scrollY > sevenRemInPx ? '1rem' : '9rem';
+    } catch (err) {
+      this.errorHandler.handleError({ error: err, message: 'Scroll handler error', location: 'doc-viewer' });
+    }
   }
 
   getFallbackImage(title: string) {
-    const encodedTitle = encodeURIComponent(title);
-    return `https://dynamic-og-image-generator.vercel.app/api/generate?title=${encodedTitle}`
-    + ' &author=Domain+Locker&websiteUrl=domain-locker.com&avatar=https%3A%2F%2Fdomain-locker'
-    + '.com%2Ficons%2Fandroid-chrome-maskable-192x192.png&theme=dracula';
+    try {
+      const encodedTitle = encodeURIComponent(title);
+      return `https://dynamic-og-image-generator.vercel.app/api/generate?title=${encodedTitle}`
+        + ' &author=Domain+Locker&websiteUrl=domain-locker.com&avatar=https%3A%2F%2Fdomain-locker'
+        + '.com%2Ficons%2Fandroid-chrome-maskable-192x192.png&theme=dracula';
+    } catch (err) {
+      this.errorHandler.handleError({ error: err, message: 'Fallback image error', location: 'doc-viewer' });
+      return 'https://domain-locker.com/og.png';
+    }
+  }
+
+  /**
+   * 1) Checks for any <pre class="mermaid"> blocks
+   * 2) If found, dynamically load mermaid from a CDN
+   * 3) Then call mermaid.initialize + mermaid.run
+   */
+  private loadAndRenderMermaid() {
+    try {
+      const mermaidBlocks = document.querySelectorAll('pre.mermaid');
+      if (!mermaidBlocks?.length) {
+        return;
+      }
+      const existingScript = document.getElementById('mermaidScript') as HTMLScriptElement | null;
+      if (existingScript) {
+        this.runMermaid();
+      } else {
+        const script = document.createElement('script');
+        script.id = 'mermaidScript';
+        script.src = 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js';
+        script.async = true;
+        script.onload = () => {
+          this.runMermaid();
+        };
+        document.head.appendChild(script);
+      }
+    } catch (err) {
+      this.errorHandler.handleError({ error: err, message: 'loadAndRenderMermaid error', location: 'doc-viewer' });
+    }
+  }
+
+  private runMermaid() {
+    try {
+      const mermaid = (window as any).mermaid;
+      if (!mermaid) return;
+      try {
+        mermaid.initialize({ startOnLoad: false });
+        mermaid.run({ querySelector: 'pre.mermaid' });
+      } catch (err) {
+        this.errorHandler.handleError({ error: err, message: 'Mermaid render failed', location: 'doc-viewer' });
+      }
+    } catch (err) {
+      this.errorHandler.handleError({ error: err, message: 'runMermaid error', location: 'doc-viewer' });
+    }
   }
 }

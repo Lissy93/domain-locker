@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import Fuse from 'fuse.js';
 import { DomainCardComponent } from '~/app/components/domain-things/domain-card/domain-card.component';
@@ -58,6 +58,10 @@ export class DomainCollectionComponent implements OnInit {
   ];
 
   visibleColumns: any[] = [];
+
+  constructor(
+    private cdr: ChangeDetectorRef,
+  ) {}
 
   ngOnInit() {
     this.filteredDomains = this.domains;
@@ -136,7 +140,8 @@ export class DomainCollectionComponent implements OnInit {
   reloadDomains(event: any) {
     setTimeout(() => {
       this.$triggerReload.emit(event);
-    }, 1500);
+      this.cdr.detectChanges();
+    }, 1000);
   }
 
   initializeFuse() {

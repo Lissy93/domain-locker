@@ -50,6 +50,7 @@ export class FieldVisibilityFilterComponent implements OnInit {
   @Output() $triggerReload = new EventEmitter();
 
   selectedFields: FieldOption[] = [];
+  selectedFieldsList: string[] = [];
   sortOrder: FieldOption = this.sortOptions[0];
   selectedLayout: boolean = true;
   quickAddDialogOpen: boolean = false;
@@ -95,6 +96,7 @@ export class FieldVisibilityFilterComponent implements OnInit {
     this.selectedFields = this.fieldOptions.filter(option => 
       this.defaultSelectedFields.includes(option.value)
     );
+    this.selectedFieldsList = this.selectedFields.map(field => field.value);
     this.onSelectionChange();
   }
 
@@ -102,6 +104,9 @@ export class FieldVisibilityFilterComponent implements OnInit {
     if (this.selectedFields.length === 0) {
       this.initializeSelectedFields();
     }
+    this.selectedFields = this.fieldOptions.filter(option => 
+      this.selectedFieldsList.includes(option.value)
+    );
     this.visibilityChange.emit(this.selectedFields);
   }
 
