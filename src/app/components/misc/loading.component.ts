@@ -147,8 +147,9 @@ export class LoadingComponent implements AfterViewInit, OnDestroy {
     // or from an empty result.
 
     const tryTranslate = (key: string, fallback: string) => {
+      return fallback;
+      // TODO: Fix the following, so we can show fallback only when translations not yet loaded.
       const t = this.translate.instant(key);
-      // Only override if we found a valid translation
       return (t && t !== key) ? t : fallback;
     };
 
