@@ -32,7 +32,7 @@ export interface DocAttributes {
     </article>
 
     <div class="relative h-full min-h-64 min-w-[18rem] w-full md:w-fit mr-0 md:mr-4">
-      <nav class="p-card py-4 relative md:fixed sticky-nav" [style.top]="navTop">
+      <nav class="p-card py-4 relative md:fixed sticky-nav overflow-y-auto" [style.top]="navTop" [style.max-height]="navBottom">
         <a [routerLink]="['/about', categoryName]" class="no-underline text-default">
           <h2 class="capitalize mx-4">{{ categoryName }} Docs</h2>
         </a>
@@ -91,6 +91,7 @@ export class DocsViewerComponent {
   doc: ContentFile<DocAttributes | Record<string, never>> | null = null;
 
   navTop = 'unset';
+  navBottom = 'unset';
   private docSub?: Subscription;
   private routerSub?: Subscription;
   private docLoaded = false;
@@ -186,6 +187,14 @@ export class DocsViewerComponent {
       const scrollY = window.scrollY;
       const sevenRemInPx = 112; // approx 7rem if root font-size = 16px
       this.navTop = scrollY > sevenRemInPx ? '1rem' : '9rem';
+
+      // If at bottom of page, then apply max-height: 80vh; to nav
+      const scrollHeight = document.documentElement.scrollHeight;
+      if (scrollY + 1000  >= scrollHeight) {
+        this.navBottom = '80vh';
+      } else {
+        this.navBottom = 'unset';
+      }
     } catch (err) {
       this.errorHandler.handleError({ error: err, message: 'Scroll handler error', location: 'doc-viewer' });
     }

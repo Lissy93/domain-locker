@@ -1,7 +1,7 @@
-import { Component, OnInit, ChangeDetectorRef, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, ViewChild, AfterViewInit, PLATFORM_ID, Inject } from '@angular/core';
 import { MenuItem } from 'primeng/api';
 import { RouterModule } from '@angular/router';
-import { CommonModule } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { PrimeNgModule } from '~/app/prime-ng.module';
 import { SupabaseService } from '~/app/services/supabase.service';
 import { FormsModule } from '@angular/forms';
@@ -62,6 +62,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
     private environmentService: EnvService,
     private cdr: ChangeDetectorRef,
     private featureService: FeatureService,
+    @Inject(PLATFORM_ID) private platformId: Object,
   ) {}
 
   ngOnInit() {
@@ -138,12 +139,15 @@ export class NavbarComponent implements OnInit, AfterViewInit {
   }
 
   async checkAuthStatus() {
-    const isAuthenticated = await this.supabaseService.isAuthenticated();
-    this.supabaseService.setAuthState(isAuthenticated);
+    this.isAuthenticated = await this.supabaseService.isAuthenticated();
+    this.supabaseService.setAuthState(this.isAuthenticated);
   }
 
   // Set the navbar links, depending if user is logged in or not
   async initializeMenuItems() {
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
     if (this.isAuthenticated || this.environmentService.getEnvironmentType() === 'selfHosted') {
       // User is logged in, show authenticated nav links
       this.items = authenticatedNavLinks as MenuItem[];
