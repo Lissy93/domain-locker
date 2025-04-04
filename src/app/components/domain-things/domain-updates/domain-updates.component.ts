@@ -16,7 +16,7 @@ import { ErrorHandlerService } from '~/app/services/error-handler.service';
   selector: 'app-domain-updates',
   templateUrl: './domain-updates.component.html',
   styleUrls: ['./domain-updates.component.scss'],
-  imports: [NgIf, NgFor, PrimeNgModule, PaginatorModule, DropdownModule, InputTextModule, SelectButtonModule, CommonModule],
+  imports: [NgIf, PrimeNgModule, PaginatorModule, DropdownModule, InputTextModule, SelectButtonModule, CommonModule],
 })
 export class DomainUpdatesComponent implements OnInit {
   @Input() domainName?: string;
@@ -53,7 +53,7 @@ export class DomainUpdatesComponent implements OnInit {
     const limit = 25;
     const from = page * limit;
     const to = from + limit - 1;
-    
+
     this.databaseService.instance.historyQueries
       .getDomainUpdates(this.domainName, from, to, this.selectedCategory, this.selectedChangeType, this.filterDomain)
       .subscribe({
@@ -72,7 +72,7 @@ export class DomainUpdatesComponent implements OnInit {
         }
       });
   }
-  
+
 
   private fetchTotalCount() {
     this.databaseService.instance.historyQueries.getTotalUpdateCount(this.domainName).subscribe({
