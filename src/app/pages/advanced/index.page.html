@@ -1,60 +1,35 @@
-<h2 class="my-4">Advanced</h2>
 
-<ul class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 list-none p-0">
-  <li>
-    <a routerLink="/advanced/database-connection"
-      class="p-card flex p-3 no-underline transition ease-in duration-300 border-transparent border-3 hover:border-primary-300 h-full">
-      <i class="pi pi-database mr-3"></i>
-      <h4 class="m-0">Database Connection</h4>
-    </a>
-  </li>
-  <li>
-    <a routerLink="/advanced/debug-info"
-      class="p-card flex p-3 no-underline transition ease-in duration-300 border-transparent border-3 hover:border-primary-300 h-full">
-      <i class="pi pi-stop mr-3"></i>
-      <h4 class="m-0">Debug Info</h4>
-    </a>
-  </li>
-  <li>
-    <a routerLink="/advanced/delete-data"
-      class="p-card flex p-3 no-underline transition ease-in duration-300 border-transparent border-3 hover:border-primary-300 h-full">
-      <i class="pi pi-trash mr-3"></i>
-      <h4 class="m-0">Data Deletion</h4>
-    </a>
-  </li>
-  <li>
-    <a routerLink="/domains/export"
-      class="p-card flex p-3 no-underline transition ease-in duration-300 border-transparent border-3 hover:border-primary-300 h-full">
-      <i class="pi pi-file-export mr-3"></i>
-      <h4 class="m-0">Data Export</h4>
-    </a>
-  </li>
-  <li>
-    <a routerLink="/settings/developer-options"
-      class="p-card flex p-3 no-underline transition ease-in duration-300 border-transparent border-3 hover:border-primary-300 h-full">
-      <i class="pi pi-arrows-h mr-3"></i>
-      <h4 class="m-0">Data Interoperability</h4>
-    </a>
-  </li>
-  <li>
-    <a routerLink="/settings"
-      class="p-card flex p-3 no-underline transition ease-in duration-300 border-transparent border-3 hover:border-primary-300 h-full">
-      <i class="pi pi-cog mr-3"></i>
-      <h4 class="m-0">User Settings</h4>
-    </a>
-  </li>
-  <li>
-    <a routerLink="/about/developing"
-      class="p-card flex p-3 no-underline transition ease-in duration-300 border-transparent border-3 hover:border-primary-300 h-full">
-      <i class="pi pi-code mr-3"></i>
-      <h4 class="m-0">Developer Docs</h4>
-    </a>
-  </li>
-  <li>
-    <a href="https://github.com/lissy93/domain-locker"
-      class="p-card flex p-3 no-underline transition ease-in duration-300 border-transparent border-3 hover:border-primary-300 h-full">
-      <i class="pi pi-github mr-3"></i>
-      <h4 class="m-0">GitHub</h4>
-    </a>
-  </li>
-</ul>
+<h1>Advanced</h1>
+<div>
+  <blockquote class="border-solid border-0 border-l-4 border-primary-300 m-0 pl-2 italic">
+      These options are intended for developers, self-hosted instances, and when instructed to visit by our support.
+    </blockquote>
+</div>
+
+<ng-container *ngFor="let section of sections">
+  <h2 class="my-4">{{ section.heading }}</h2>
+
+  <ul class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-3 list-none p-0">
+    <li *ngFor="let item of section.items">
+      <a
+        *ngIf="item.external; else internalLink"
+        [href]="item.link"
+        target="_blank"
+        rel="noopener"
+        class="p-card flex p-3 no-underline transition ease-in duration-300 border-transparent border-3 hover:border-primary-300 h-full"
+      >
+        <i [class]="item.icon + ' mr-3'"></i>
+        <h4 class="m-0">{{ item.title }}</h4>
+      </a>
+      <ng-template #internalLink>
+        <a
+          [routerLink]="item.link"
+          class="p-card flex p-3 no-underline transition ease-in duration-300 border-transparent border-3 hover:border-primary-300 h-full"
+        >
+          <i [class]="item.icon + ' mr-3'"></i>
+          <h4 class="m-0">{{ item.title }}</h4>
+        </a>
+      </ng-template>
+    </li>
+  </ul>
+</ng-container>

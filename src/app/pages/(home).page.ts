@@ -1,5 +1,5 @@
 // src/app/pages/home.page.ts
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PrimeNgModule } from '../prime-ng.module';
 import DatabaseService from '~/app/services/database.service';
@@ -83,6 +83,7 @@ export default class HomePageComponent implements OnInit {
     private environmentService: EnvService,
     private errorHandlerService: ErrorHandlerService,
     private router: Router,
+    private cdr: ChangeDetectorRef,
   ) {}
 
   ngOnInit() {
@@ -109,6 +110,7 @@ export default class HomePageComponent implements OnInit {
       next: (domains) => {
         this.domains = domains;
         this.loading = false;
+        this.cdr.detectChanges();
       },
       error: (error) => {
         this.errorHandlerService.handleError({

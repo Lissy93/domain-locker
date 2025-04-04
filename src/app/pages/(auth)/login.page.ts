@@ -10,7 +10,7 @@ import { GlobalMessageService } from '~/app/services/messaging.service';
 import { ErrorHandlerService } from '~/app/services/error-handler.service';
 import { FeatureService } from '~/app/services/features.service';
 import { EnvService } from '~/app/services/environment.service';
-import { LogoComponent} from '~/app/components/home-things/logo/logo.component';
+import { LogoComponent } from '~/app/components/home-things/logo/logo.component';
 import { NgxTurnstileModule, NgxTurnstileComponent } from 'ngx-turnstile';
 
 @Component({
@@ -43,6 +43,8 @@ export default class LoginPageComponent implements OnInit {
   showWelcomeCard = false;
   isAuthenticated: boolean = false;
   showResendEmail = false;
+  showPasswordResetForm = false;
+  showNewPasswordSetForm = false;
   disabled = false;
   modes = [
     { label: 'Login', value: true },
@@ -51,7 +53,7 @@ export default class LoginPageComponent implements OnInit {
 
   requireMFA = false;
   factorId: string | null = null;
-  challengeId: string | null = null
+  challengeId: string | null = null;
   partialSession: any;
   isDemoInstance = false;
 
@@ -102,11 +104,19 @@ export default class LoginPageComponent implements OnInit {
     // If demo instance, show banner and auto-fill credentials
     this.checkIfDemoInstance();
 
+    // Show signup form and welcome immediately if newUser query param is present
     const isNewSignup = this.route.snapshot.queryParamMap.get('newUser');
     if (isNewSignup !== null) {
       this.isLogin = false;
       this.showWelcomeCard = true;
       this.checkIfSignupDisabled();
+    }
+
+    // Show enter new password form if reset password query param is present
+    const isResetPassword = this.route.snapshot.queryParamMap.get('reset');
+    if (isResetPassword) {
+      this.showPasswordResetForm = true;
+      this.showNewPasswordSetForm = true;
     }
 
     this.route.queryParams.subscribe(async params => {
@@ -130,6 +140,38 @@ export default class LoginPageComponent implements OnInit {
 
   ngOnDestroy() {
     this.subscriptions.unsubscribe();
+  }
+
+  togglePasswordResetForm() {
+    this.showPasswordResetForm = !this.showPasswordResetForm;
+    this.resetMessages();
+  }
+
+  /**
+   * Complete the password reset flow by setting the new password.
+   * This method was updated to call SupabaseService.setPassword(...) 
+   * and handle success/error messages appropriately.
+   */
+  async saveUpdatedPassword() {
+    this.resetMessages();
+    this.showLoader = true;
+    const newPassword = this.form.get('password')?.value;
+
+    if (!newPassword) {
+      this.errorMessage = 'Please enter a valid new password.';
+      this.showLoader = false;
+      return;
+    }
+
+    try {
+      await this.supabaseService.setPassword(newPassword);
+      this.successMessage = 'Your password has been updated. Please log in with your new password.';
+      this.showNewPasswordSetForm = false;
+    } catch (error: any) {
+      this.errorMessage = error.message || 'Failed to set new password. Please try again.';
+    } finally {
+      this.showLoader = false;
+    }
   }
 
   sendCaptchaResponse(captchaResponse: string | null) {
@@ -211,6 +253,7 @@ export default class LoginPageComponent implements OnInit {
       this.errorHandlerService.handleError({ error, message: 'Failed to sign in with GitHub', showToast: true, location: 'login' });
     }
   }
+
   async loginWithGoogle(): Promise<void> {
     try {
       await this.supabaseService.signInWithGoogle();
@@ -234,6 +277,26 @@ export default class LoginPageComponent implements OnInit {
         showToast: true,
         location: 'loginWithFacebook'
       });
+    }
+  }
+
+  async sendPasswordResetEmail() {
+    this.resetMessages();
+    this.showLoader = true;
+    try {
+      const email = this.form.get('email')?.value;
+      if (!email) {
+        throw new Error('Email is required.');
+      }
+      await this.supabaseService.sendPasswordResetEmail(email);
+      this.successMessage = 'Password reset email sent successfully.';
+      this.errorMessage = '';
+      this.showPasswordResetForm = false;
+    } catch (error: any) {
+      this.errorMessage = error.message || 'Failed to send password reset email. Please try again.';
+      this.successMessage = '';
+    } finally {
+      this.showLoader = false;
     }
   }
 
@@ -348,7 +411,7 @@ export default class LoginPageComponent implements OnInit {
 
   private handleSuccess() {
     if (this.requireMFA) {
-      this.successMessage = '2FA verification is enabled. Please enter your code when prompted';
+      this.successMessage = '2FA verification is enabled. Please enter your code when prompted.';
     } else if (this.isLogin) {
       this.successMessage = 'Login successful! Redirecting...';
       this.router.navigate(['/']);

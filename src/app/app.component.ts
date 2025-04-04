@@ -106,6 +106,7 @@ export class AppComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.errorHandler.printInitialDetails();
     this.errorHandler.initializeGlitchTip();
+    this.errorHandler.initializeWindowCatching();
 
     // Set meta tags on route change
     this.router.events
