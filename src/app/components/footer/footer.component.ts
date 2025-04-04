@@ -65,8 +65,8 @@ export class FooterComponent {
           { label: translations['FOOTER.LINKS.LEFT.ALTERNATIVES'], link: '/about/alternatives' },
         ],
         middle: [
-          { label: translations['FOOTER.LINKS.MIDDLE.GITHUB'], link: 'https://github.com/lissy93/domain-locker' },
-          { label: translations['FOOTER.LINKS.MIDDLE.MORE_APPS'], link: 'https://as93.net' },
+          { label: translations['FOOTER.LINKS.MIDDLE.GITHUB'], href: 'https://github.com/lissy93/domain-locker' },
+          { label: translations['FOOTER.LINKS.MIDDLE.MORE_APPS'], href: 'https://as93.net' },
           { label: translations['FOOTER.LINKS.MIDDLE.SUPPORT'], link: '/about/support' },
           { label: translations['FOOTER.LINKS.MIDDLE.ATTRIBUTIONS'], link: '/about/attributions' },
         ],

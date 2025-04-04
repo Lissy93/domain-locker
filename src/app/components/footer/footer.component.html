@@ -25,28 +25,31 @@
       <div>
         <ul class="list-none pl-0">
           <li *ngFor="let item of fc.left">
-            <a routerLink="{{ item.link }}" class="text-primary">{{ item.label }}</a>
+            <a *ngIf="item.link" routerLink="{{ item.link }}" class="text-primary">{{ item.label }}</a>
+            <a *ngIf="item.href" href="{{ item.href }}" class="text-primary">{{ item.label }}</a>
           </li>
         </ul>
       </div>
       <div>
         <ul class="list-none pl-0">
           <li *ngFor="let item of fc.middle">
-            <a routerLink="{{ item.link }}" class="text-primary">{{ item.label }}</a>
+            <a *ngIf="item.link" routerLink="{{ item.link }}" class="text-primary">{{ item.label }}</a>
+            <a *ngIf="item.href" href="{{ item.href }}" class="text-primary">{{ item.label }}</a>
           </li>
         </ul>
       </div>
       <div>
         <ul class="list-none pl-0">
           <li *ngFor="let item of fc.right">
-            <a routerLink="{{ item.link }}" class="text-primary">{{ item.label }}</a>
+            <a *ngIf="item.link" routerLink="{{ item.link }}" class="text-primary">{{ item.label }}</a>
+            <a *ngIf="item.href" href="{{ item.href }}" class="text-primary">{{ item.label }}</a>
           </li>
         </ul>
       </div>
     </div>
   </footer>
 } @else {
-  <footer class="w-full bg-highlight py-1 opacity-60">  
+  <footer class="w-full bg-highlight py-1 opacity-60">
     <div class="w-full flex items-center align-center px-4 flex-wrap justify-center md:justify-between">
       <p class="m-0 text-xs opacity-90">
         <a href="#" class="text-default hover:text-primary">Domain Locker</a> V.{{appVersion}},
