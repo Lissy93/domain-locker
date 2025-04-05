@@ -186,7 +186,7 @@ export class DlIconComponent implements OnChanges {
   }
 
   /**
-   * The viewBox for the icon. 
+   * The viewBox for the icon.
    * If the icon object defines a 'viewbox', use it; otherwise use the default.
    */
   get computedViewBox(): string {
