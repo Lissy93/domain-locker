@@ -1,6 +1,6 @@
 
 @if (!isAuthenticated) {
-  <div class="flex flex-col gap-2">
+  <div class="flex flex-col gap-2 {{ loading ? 'opacity-50' : '' }}">
     <app-hero />
     <p-divider />
     <h3 class="mt-2 mb-0 text-3xl">{{ 'HOME.FEATURES' | translate }}</h3>

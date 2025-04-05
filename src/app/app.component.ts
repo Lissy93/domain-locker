@@ -149,20 +149,27 @@ export class AppComponent implements OnInit, OnDestroy {
           this.metaTagsService.allowRobots(false);
 
           // Auth needed for current route, check if user authenticated
-          this.checkAuthentication().then(() => {
-            this.loading = false;
-            this.showRouterOutlet = true;
-            this.cdr.detectChanges();
+          this.checkAuthentication().then((isAuthenticated) => {
+            if (!isAuthenticated) {
+              this.redirectToLogin();
+              return;
+            }
+            // this.loading = false;
+            // this.cdr.detectChanges();
           }).catch(async (error) => {
-            this.loading = false;
-            this.cdr.detectChanges();
             this.errorHandler.handleError({
               error,
               message: 'Unable to validate auth state',
               showToast: true,
               location: 'app.component',
             });
-          });
+          })
+          .finally(() => {
+            this.showRouterOutlet = true;
+            this.loading = false;
+            this.cdr.detectChanges();
+          })
+          ;
         }
       });
     }
@@ -196,20 +203,23 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   /* Check if user is authenticated, and take appropriate action */
-  private async checkAuthentication(): Promise<void> {
+  private async checkAuthentication(): Promise<boolean> {
+
+    // No need to continue if visiting homepage or public route
+    if (this.isPublicRoute(this.pagePath, true)) {
+      return Promise.resolve(true);
+    }
 
     // Cancel if Supabase auth isn't enabled or setup
     if (!this.environmentService.isSupabaseEnabled()) {
-      return;
+      return Promise.resolve(true);
     }
 
     try {
       // Check if authenticated
       const isAuthenticated = await this.supabaseService.isAuthenticated();
-      if (this.isPublicRoute(this.pagePath, true)) { return; }
       if (!isAuthenticated) { // Not authenticated, redirect to login
-        await this.redirectToLogin();
-        return;
+        return Promise.resolve(false);
       }
 
       // Authenticated, now check if MFA is required
@@ -222,7 +232,7 @@ export class AppComponent implements OnInit, OnDestroy {
           });
         }
       }
-      return Promise.resolve();
+      return Promise.resolve(true);
     } catch (error) {
       this.errorHandler.handleError({
         error,
