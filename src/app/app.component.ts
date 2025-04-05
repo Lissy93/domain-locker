@@ -151,6 +151,7 @@ export class AppComponent implements OnInit, OnDestroy {
           // Auth needed for current route, check if user authenticated
           this.checkAuthentication().then(() => {
             this.loading = false;
+            this.showRouterOutlet = true;
             this.cdr.detectChanges();
           }).catch(async (error) => {
             this.loading = false;
@@ -205,6 +206,7 @@ export class AppComponent implements OnInit, OnDestroy {
     try {
       // Check if authenticated
       const isAuthenticated = await this.supabaseService.isAuthenticated();
+      if (this.isPublicRoute(this.pagePath, true)) { return; }
       if (!isAuthenticated) { // Not authenticated, redirect to login
         await this.redirectToLogin();
         return;
