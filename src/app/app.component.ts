@@ -6,7 +6,6 @@ import { CommonModule, isPlatformBrowser, isPlatformServer } from '@angular/comm
 // Dependencies
 import { MessageService, ConfirmationService } from 'primeng/api';
 import { filter, Subscription } from 'rxjs';
-// import { NgApexchartsModule } from 'ng-apexcharts';
 
 // PrimeNG module importing required components
 import { PrimeNgModule } from '~/app/prime-ng.module';
@@ -34,7 +33,6 @@ import { MetaTagsService } from '~/app/services/meta-tags.service';
   imports: [
     RouterOutlet,
     PrimeNgModule,
-    // NgApexchartsModule,
     CommonModule,
     NavbarComponent,
     FooterComponent,
@@ -55,7 +53,7 @@ import { MetaTagsService } from '~/app/services/meta-tags.service';
         <!-- Create router outlet -->
         <breadcrumbs *ngIf="pagePath" [pagePath]="pagePath" />
         <!-- Router outlet for main content -->
-        <router-outlet *ngIf="showRouterOutlet || !loading" />
+        <router-outlet />
         <!-- Global components -->
         <p-scrollTop />
         <p-toast />
@@ -81,7 +79,6 @@ export class AppComponent implements OnInit, OnDestroy {
   private publicRoutes =  new Set(['/home', '/about', '/login']);
   private fullWidthRoutes: string[] = ['/settings', '/stats'];
 
-  public showRouterOutlet: boolean = true;
   public loading: boolean = true;
   public pagePath: string = '';
   public isFullWidth: boolean = false;
@@ -139,7 +136,6 @@ export class AppComponent implements OnInit, OnDestroy {
 
           // Public route: no auth, set meta tags, and show the outlet
           if (this.isPublicRoute(currentRoute, false)) {
-            this.showRouterOutlet = true;
             this.loading = false;
             this.metaTagsService.allowRobots(true);
             return; // No auth needed for public routes
@@ -154,8 +150,6 @@ export class AppComponent implements OnInit, OnDestroy {
               this.redirectToLogin();
               return;
             }
-            // this.loading = false;
-            // this.cdr.detectChanges();
           }).catch(async (error) => {
             this.errorHandler.handleError({
               error,
@@ -165,7 +159,6 @@ export class AppComponent implements OnInit, OnDestroy {
             });
           })
           .finally(() => {
-            this.showRouterOutlet = true;
             this.loading = false;
             this.cdr.detectChanges();
           })
