@@ -138,7 +138,7 @@ export class AppComponent implements OnInit, OnDestroy {
           this.isFullWidth = this.fullWidthRoutes.some(route => currentRoute.includes(route));
 
           // Public route: no auth, set meta tags, and show the outlet
-          if (this.isPublicRoute(currentRoute)) {
+          if (this.isPublicRoute(currentRoute, false)) {
             this.showRouterOutlet = true;
             this.loading = false;
             this.metaTagsService.allowRobots(true);
@@ -186,8 +186,8 @@ export class AppComponent implements OnInit, OnDestroy {
     }
   }
 
-  private isPublicRoute(route: string): boolean {
-    if (route === '/') return true;
+  private isPublicRoute(route: string, allowHome: boolean = false): boolean {
+    if (route === '/' && allowHome) return true;
     if (this.publicRoutes.has(route)) return true;
     if (route.startsWith('/about')) return true;
     if (route.startsWith('/login')) return true;

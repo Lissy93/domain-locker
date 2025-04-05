@@ -76,7 +76,7 @@ export class DomainFaviconComponent implements OnInit, OnDestroy {
   private startSpinningTimeout() {
     this.timeoutId = setTimeout(() => {
       this.isSpinning = false;
-    }, 1000);
+    }, 500);
   }
 
   private clearSpinningTimeout() {
