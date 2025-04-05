@@ -1,7 +1,7 @@
 // Angular
 import { Component, OnInit, Inject, PLATFORM_ID, OnDestroy, ChangeDetectorRef, ErrorHandler } from '@angular/core';
 import { RouterOutlet, Router, NavigationEnd } from '@angular/router';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { CommonModule, isPlatformBrowser, isPlatformServer } from '@angular/common';
 
 // Dependencies
 import { MessageService, ConfirmationService } from 'primeng/api';
@@ -44,7 +44,7 @@ import { MetaTagsService } from '~/app/services/meta-tags.service';
   providers: [
     MessageService,
     ErrorHandlerService,
-   { provide: ErrorHandler, useClass: GlobalErrorHandler },
+    { provide: ErrorHandler, useClass: GlobalErrorHandler },
   ],
   template: `
     <!-- Navbar -->
@@ -52,12 +52,10 @@ import { MetaTagsService } from '~/app/services/meta-tags.service';
     <div class="main-container">
       <!-- Main content container -->
       <div class="content-container" [ngClass]="{ 'full': isFullWidth }">
-        <!-- While initializing, show loading spinner -->
-        <loading *ngIf="loading" />
         <!-- Create router outlet -->
-        <breadcrumbs *ngIf="!loading && pagePath" [pagePath]="pagePath" />
+        <breadcrumbs *ngIf="pagePath" [pagePath]="pagePath" />
         <!-- Router outlet for main content -->
-        <router-outlet *ngIf="!loading" />
+        <router-outlet *ngIf="showRouterOutlet || !loading" />
         <!-- Global components -->
         <p-scrollTop />
         <p-toast />
@@ -65,6 +63,8 @@ import { MetaTagsService } from '~/app/services/meta-tags.service';
       </div>
       <!-- Footer -->
       <app-footer [big]="isBigFooter" />
+      <!-- While initializing, show loading spinner -->
+      <loading *ngIf="loading" [isAbsolute]="true" />
     </div>
   `,
   styles: [`
@@ -78,9 +78,10 @@ import { MetaTagsService } from '~/app/services/meta-tags.service';
 })
 export class AppComponent implements OnInit, OnDestroy {
   private subscription: Subscription | undefined;
-  private publicRoutes =  new Set(['/', '/home', '/about', '/login']);
+  private publicRoutes =  new Set(['/home', '/about', '/login']);
   private fullWidthRoutes: string[] = ['/settings', '/stats'];
 
+  public showRouterOutlet: boolean = false;
   public loading: boolean = true;
   public pagePath: string = '';
   public isFullWidth: boolean = false;
@@ -104,6 +105,7 @@ export class AppComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+    // Setup error handling, and pretty console
     this.errorHandler.printInitialDetails();
     this.errorHandler.initializeGlitchTip();
     this.errorHandler.initializeWindowCatching();
@@ -135,8 +137,9 @@ export class AppComponent implements OnInit, OnDestroy {
           // Some pages should be full wider (like /settings or /stats), we add a class if they are active
           this.isFullWidth = this.fullWidthRoutes.some(route => currentRoute.includes(route));
 
-          // Public route
-          if (this.publicRoutes.has(currentRoute) || currentRoute.startsWith('/login') || currentRoute.startsWith('/about')) {
+          // Public route: no auth, set meta tags, and show the outlet
+          if (this.isPublicRoute(currentRoute)) {
+            this.showRouterOutlet = true;
             this.loading = false;
             this.metaTagsService.allowRobots(true);
             return; // No auth needed for public routes
@@ -181,6 +184,16 @@ export class AppComponent implements OnInit, OnDestroy {
     if (this.subscription) {
       this.subscription.unsubscribe();
     }
+  }
+
+  private isPublicRoute(route: string): boolean {
+    // simple logic: if route is in the set or startsWith something
+    // e.g. /about could be /about/blah => so check with route.startsWith('/about')
+    if (this.publicRoutes.has(route)) return true;
+    if (route.startsWith('/about')) return true;
+    if (route.startsWith('/login')) return true;
+    // etc.
+    return false;
   }
 
   /* Check if user is authenticated, and take appropriate action */

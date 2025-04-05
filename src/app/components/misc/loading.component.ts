@@ -14,9 +14,18 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
   standalone: true,
   selector: 'loading',
   imports: [CommonModule, PrimeNgModule, TranslateModule],
+  styles: `
+    ::ng-deep .is-absolute {
+      background: var(--surface-0);
+      position: fixed;
+      width: 100%;
+      top: 0vh;
+      z-index: 2;
+    }
+  `,
   template: `
     <div
-      class="flex justify-center flex-col items-center h-full min-h-80 gap-4 w-fit mx-auto scale-1 md:scale-125 xl:scale-150 mt-2 md:mt-4 lg:mt-8 xl:mt-16 animate-fade-in"
+      class="flex justify-center flex-col items-center h-full min-h-80 gap-4 mx-auto scale-1 md:mt-[-3rem] lg:mt-[-5rem] md:scale-125 xl:scale-150 animate-fade-in overflow-hidden {{ isAbsolute ? 'is-absolute' : ''}}"
     >
       <!-- Title -->
       <p class="m-0 text-4xl font-extrabold text-default tracking-widest">
@@ -51,7 +60,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
         </p>
       </div>
 
-      <div *ngIf="showError" class="flex gap-2">
+      <div *ngIf="showError" class="flex gap-2 flex-wrap justify-center">
         <a routerLink="/">
           <p-button
             size="small"
@@ -81,6 +90,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 export class LoadingComponent implements AfterViewInit, OnDestroy {
   @Input() loadingTitle?: string;
   @Input() loadingDescription?: string;
+  @Input() isAbsolute?: boolean = false;
   public showError: boolean = false;
 
   // Fallback strings
