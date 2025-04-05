@@ -81,7 +81,7 @@ export class AppComponent implements OnInit, OnDestroy {
   private publicRoutes =  new Set(['/home', '/about', '/login']);
   private fullWidthRoutes: string[] = ['/settings', '/stats'];
 
-  public showRouterOutlet: boolean = false;
+  public showRouterOutlet: boolean = true;
   public loading: boolean = true;
   public pagePath: string = '';
   public isFullWidth: boolean = false;

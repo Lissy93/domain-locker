@@ -1,7 +1,7 @@
-import { Component, Input, OnChanges } from '@angular/core';
+import { Component, Inject, Input, OnChanges, PLATFORM_ID } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { Pipe, PipeTransform } from '@angular/core';
-import { NgStyle } from '@angular/common';
+import { isPlatformBrowser, NgStyle, CommonModule, NgOptimizedImage } from '@angular/common';
 
 // SafeHtml pipe to bypass Angular's sanitization
 @Pipe({ name: 'safeHtml', standalone: true })
@@ -16,7 +16,7 @@ export class SafeHtmlPipe implements PipeTransform {
 @Component({
   selector: 'dl-icon',
   standalone: true,
-  imports: [NgStyle, SafeHtmlPipe],
+  imports: [NgStyle, SafeHtmlPipe, CommonModule],
   template: `
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -27,7 +27,7 @@ export class SafeHtmlPipe implements PipeTransform {
       role="img"
       focusable="false"
     >
-      <g [innerHTML]="iconSvg | safeHtml"></g>
+      <g *ngIf="isBrowser" [innerHTML]="iconSvg | safeHtml"></g>
     </svg>
   `,
 })
@@ -40,6 +40,16 @@ export class DlIconComponent implements OnChanges {
   @Input() viewBox: string = '0 0 512 512'; // Default viewBox
 
   mergedStyles: any = {};
+
+  isBrowser: boolean = false;
+
+  constructor(
+    @Inject(PLATFORM_ID) private platformId: Object,
+  ) {}
+
+  ngOnInit(): void {
+    this.isBrowser = isPlatformBrowser(this.platformId);
+  }
 
   ngOnChanges(): void {
     // Merge the fill color (defaulting to currentColor) with user-provided styles
@@ -172,6 +182,9 @@ export class DlIconComponent implements OnChanges {
    * The raw SVG path data (or <path> etc.) for the current icon.
    */
   get iconSvg(): string {
+    if (!isPlatformBrowser(this.platformId)) {
+      return '';
+    }
     const iconDef = this.icons[this.icon];
     if (!iconDef) {
       return '';
