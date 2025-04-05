@@ -1,6 +1,6 @@
 // src/app/pages/home.page.ts
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { ChangeDetectorRef, Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { PrimeNgModule } from '../prime-ng.module';
 import DatabaseService from '~/app/services/database.service';
 import { SupabaseService } from '~/app/services/supabase.service';
@@ -73,6 +73,7 @@ export default class HomePageComponent implements OnInit {
   isDemoInstance: boolean = false;
   isDevInstance: boolean = false;
   showInsights: boolean = false;
+  isBrowser: boolean = false;
 
   private subscriptions: Subscription = new Subscription();
 
@@ -84,12 +85,16 @@ export default class HomePageComponent implements OnInit {
     private errorHandlerService: ErrorHandlerService,
     private router: Router,
     private cdr: ChangeDetectorRef,
+    @Inject(PLATFORM_ID) private platformId: Object,
   ) {}
 
   ngOnInit() {
     this.setAuthState();
     this.loadDomains();
     this.demoInstanceLoginRedirect();
+    if (isPlatformBrowser(this.platformId)) {
+      this.isBrowser = true;
+    }
   }
 
   setAuthState() {

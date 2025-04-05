@@ -21,13 +21,13 @@
   </div>
 }
 
-@if (isAuthenticated) {
+@if (isAuthenticated && isBrowser) {
 
   <app-demo-welcome *ngIf="isDemoInstance" [isDemoInstance]="true" />
   <app-demo-welcome *ngIf="isDevInstance" [isDevInstance]="true" />
-  
+
   <loading *ngIf="loading" [loadingTitle]="'HOME.LOADING_TITLE' | translate" [loadingDescription]="'HOME.LOADING_DESCRIPTION' | translate" />
-  
+
   @if (!loading && domains.length === 0) {
     <welcome />
   } @else if (!loading) {
