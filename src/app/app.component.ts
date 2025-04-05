@@ -187,12 +187,10 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   private isPublicRoute(route: string): boolean {
-    // simple logic: if route is in the set or startsWith something
-    // e.g. /about could be /about/blah => so check with route.startsWith('/about')
+    if (route === '/') return true;
     if (this.publicRoutes.has(route)) return true;
     if (route.startsWith('/about')) return true;
     if (route.startsWith('/login')) return true;
-    // etc.
     return false;
   }
 
