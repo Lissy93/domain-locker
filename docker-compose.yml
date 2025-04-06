@@ -21,12 +21,6 @@ services:
     networks:
       - domain_locker_network
 
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DL_PG_USER}"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
   app:
     image: lissy93/domain-locker:latest # or ghcr.io/lissy93/domain-locker:latest
     container_name: domain-locker-app
@@ -34,7 +28,7 @@ services:
     # Environmental variables for database connection and other config
     environment:
       DL_ENV_TYPE: ${DL_ENV_TYPE:-selfHosted}
-      DL_PG_HOST: ${DL_PG_HOST:-localhost}
+      DL_PG_HOST: ${DL_PG_HOST:-postgres}
       DL_PG_PORT: ${DL_PG_PORT:-5432}
       DL_PG_USER: ${DL_PG_USER:-postgres}
       DL_PG_PASSWORD: ${DL_PG_PASSWORD:-changeme2420}
@@ -45,10 +39,6 @@ services:
     # Connection to the Postgres container
     networks:
       - domain_locker_network
-    # To wait until Postgres is up and running
-    depends_on:
-      postgres:
-        condition: service_healthy
 
 volumes:
   postgres_data:
