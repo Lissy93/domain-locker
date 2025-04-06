@@ -3,7 +3,7 @@
   "version": "0.0.5",
   "type": "module",
   "engines": {
-    "node": ">=22.13.0"
+    "node": ">=20.0.0"
   },
   "author": "Alicia Sykes",
   "license": "MIT",
