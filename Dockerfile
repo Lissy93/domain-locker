@@ -1,5 +1,5 @@
 # ──────────────────────────────────────────────────────────────
-# Stage 1: Build Angular/Analog App
+# Stage 1 - build: Compiles the frontend and API code
 # ──────────────────────────────────────────────────────────────
 FROM node:20.12.0-alpine AS builder
 
@@ -19,27 +19,26 @@ ENV DL_ENV_TYPE="selfHosted"
 RUN npm run build
 
 # ──────────────────────────────────────────────────────────────
-# Stage 2: Minimal Alpine-based Runtime
+# Stage 2 - run: Alpine-based runtime to serve the app
 # ──────────────────────────────────────────────────────────────
 FROM node:20.12.0-alpine AS runner
 
-# Install PostgreSQL client
-# RUN apk add --no-cache postgresql-client
+# Create non-root app user
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 
 # Set working directory
 WORKDIR /app
 
-# Copy only the essential build artifacts and scripts
-COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/package.json ./package.json
-COPY --from=builder /app/check.js ./check.js
+# Copy required build artifacts and scripts
+COPY --chown=appuser:appgroup --from=builder /app/dist ./dist
+COPY --chown=appuser:appgroup --from=builder /app/package.json ./package.json
+COPY --chown=appuser:appgroup --from=builder /app/check.js ./check.js
 
 # Install only production dependencies
 RUN npm install --omit=dev --legacy-peer-deps
 
-# Create a non-root user for security
-# RUN addgroup -S appgroup && adduser -S appuser -G appgroup
-# USER appuser
+# Switch to da user
+USER appuser
 
 # Expose application port
 EXPOSE 3000
