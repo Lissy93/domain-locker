@@ -17,36 +17,43 @@ services:
     # Mount volume and init scripts
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./db/setup-postgres.sh:/docker-entrypoint-initdb.d/00-setup-postgres.sh:ro
-      - ./db/schema.sql:/docker-entrypoint-initdb.d/schema.sql:ro
-
+      - ./db/schema.sql:/docker-entrypoint-initdb.d/init-schema.sql:ro
     networks:
       - domain_locker_network
 
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DL_PG_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   app:
-    image: lissy93/domain-locker:latest
+    image: lissy93/domain-locker:latest # or ghcr.io/lissy93/domain-locker:latest
     container_name: domain-locker-app
     restart: unless-stopped
-    depends_on:
-      - postgres
-
+    # Environmental variables for database connection and other config
     environment:
       DL_ENV_TYPE: ${DL_ENV_TYPE:-selfHosted}
-
-      # DB Connection Settings
-      DL_PG_HOST: postgres
-      DL_PG_PORT: 5432
+      DL_PG_HOST: ${DL_PG_HOST:-localhost}
+      DL_PG_PORT: ${DL_PG_PORT:-5432}
       DL_PG_USER: ${DL_PG_USER:-postgres}
       DL_PG_PASSWORD: ${DL_PG_PASSWORD:-changeme2420}
       DL_PG_NAME: ${DL_PG_NAME:-domain_locker}
-
+    # Port mapping
     ports:
       - "3000:3000"
+    # Connection to the Postgres container
     networks:
       - domain_locker_network
+    # To wait until Postgres is up and running
+    depends_on:
+      postgres:
+        condition: service_healthy
 
 volumes:
   postgres_data:
+    name: domain_locker_postgres_data
+    external: false
 
 networks:
   domain_locker_network:
