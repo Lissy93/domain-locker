@@ -108,7 +108,7 @@ export class BillingService {
 
   async cancelSubscription(subscriptionId: string): Promise<any> {
     const userId = (await this.supabaseService.getCurrentUser())?.id;
-    const endpoint = this.envService.getEnvVar('DL_STRIPE_CANCEL_URL', '/api/stripe/cancel-subscription');
+    const endpoint = this.envService.getEnvVar('DL_STRIPE_CANCEL_URL');
     try {
       const body = { userId, subscriptionId };
       const res = await fetch(endpoint, {
