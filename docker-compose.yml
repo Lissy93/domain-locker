@@ -25,7 +25,6 @@ services:
     image: lissy93/domain-locker:latest # or ghcr.io/lissy93/domain-locker:latest
     container_name: domain-locker-app
     restart: unless-stopped
-    # Environmental variables for database connection and other config
     environment:
       DL_ENV_TYPE: ${DL_ENV_TYPE:-selfHosted}
       DL_PG_HOST: ${DL_PG_HOST:-postgres}
@@ -33,10 +32,10 @@ services:
       DL_PG_USER: ${DL_PG_USER:-postgres}
       DL_PG_PASSWORD: ${DL_PG_PASSWORD:-changeme2420}
       DL_PG_NAME: ${DL_PG_NAME:-domain_locker}
-    # Port mapping
     ports:
       - "3000:3000"
-    # Connection to the Postgres container
+    depends_on:
+      - postgres
     networks:
       - domain_locker_network
 
