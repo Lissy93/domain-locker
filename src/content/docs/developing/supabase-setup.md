@@ -1,7 +1,7 @@
 ---
 slug: supabase-setup
 title: Supabase Setup
-description: Out Supabase setup and architecture
+description: Configuring a self-hosted Supabase instance for Domain Locker
 coverImage: 
 ---
 
