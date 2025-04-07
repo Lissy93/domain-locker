@@ -76,6 +76,51 @@ export interface DocAttributes {
     }
     img { border-radius: 4px; display: flex; margin: 0 auto; max-width: 100%; }
     .sticky-nav { transition: top 0.3s ease; }
+    table {
+      width: 100%;
+      border: 1px solid var(--surface-200);
+      border-radius: 0.75rem;
+      border-collapse: separate;
+      border-spacing: 0;
+      overflow: hidden;
+      font-size: 0.875rem;
+    }
+    thead {
+      background-color: var(--surface-100);
+      color: var(--surface-700);
+    }
+    thead tr th {
+      padding: 0.75rem;
+      text-align: left;
+      font-weight: 600;
+      border-bottom: 1px solid var(--surface-200);
+    }
+    tbody tr {
+      background-color: var(--surface-0);
+    }
+    tbody tr:nth-child(even) {
+      background-color: var(--surface-50);
+    }
+    tbody td {
+      padding: 0.75rem;
+      border-bottom: 1px solid var(--surface-200);
+      overflow-wrap: anywhere;
+    }
+    .markdown-alert.markdown-alert-note {
+      background-color: var(--yellow-200);
+      color: var(--yellow-800);
+      border: 1px solid var(--yellow-600);
+      border-radius: 0.25rem;
+      padding: 0.5rem;
+      margin: 0.25rem 0 1rem 0;
+      font-size: 0.8rem;
+      line-height: 1rem;
+      p {
+        margin: 0.2rem 0 0 0;
+        display: block;
+        &::first-line { color: var(--yellow-400); }
+      }
+    }
   `]
 })
 export class DocsViewerComponent {
