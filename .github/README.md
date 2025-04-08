@@ -46,7 +46,7 @@ You'll never again loose track of your domains, miss an expiration, or forget wh
 </p>
 
 <details>
-<summary>More...</summary>
+<summary>More screenshots...</summary>
 <p align="center">
 <img width="800" src="/.github/screenshots/domain-locker-viz-screenshots.png" />
 <img width="800" src="/.github/screenshots/domain-locker-settings-screenshots.png" />
@@ -66,6 +66,42 @@ You'll never again loose track of your domains, miss an expiration, or forget wh
 - 💹 Keep record of purchase prices and renewal costs
 - 🔖 Add categories, and link related resources to domains
 - 🎨 Multi-language support, dark/light/custom themes
+
+<details>
+<summary>More features...</summary>
+
+```mermaid
+%%{init: {"theme": "default"}}%%
+kanban
+    🌐 Domain Data
+        🛰️ Auto-fetch assets: SSL, hosts, registrars, IPs, DNS, subdomains
+        🔎 Detailed domain data like SSL, hosts, registrars, IPs and more
+        🏷️ Enrich data with tags, notes, costs, and other metadata to track
+        🖇️ Connection with external tools for more data
+    📊 Metrics
+        🗂️ Breakdown of domain providers: registrars, SSL, hosts
+        🕒 Timeline of registrations and upcoming expirations
+        📶 Monitor domain uptime, performance and health
+        💹 Record valuation, purchase prices and renewal costs
+    🔔 Notifications
+        ⏱️ Get notified before your domain is due to expire
+        📲 Configurable alerts for monitoring changes in domain config
+        📬 Multiple channels: webhook, email, SMS, Slack, Telegram, WhatsApp and more
+        🛤️ Track change history of each domain
+    🛡️ Data
+        💽 Own your data: Export, import, delte at any time
+        ⌨️ Programatic access via a REST or GraphQL API, or with RSS, iCal, Prometheus integrations
+        📈 Keep detailed change logs of all domain updates
+        🔐 Transparent privacy policy
+    🛠️ Customization
+        👤 SSO and 2FA supported
+        🎨 Custom themes, fonts, light/dark mode
+        🌍 Multi-language support
+        💻 Open-source and self-hostable
+        ✅ Accessible, responsive, and well-documented
+```
+
+</details>
 
 ### Demo
 
@@ -108,6 +144,32 @@ TODO
 - **Example**:
   - Putting it all together, you can use our [`docker-compose.yml`](https://github.com/Lissy93/domain-locker/blob/main/docker-compose.yml) file.
   - For more details, view the [Self-Hosting Docs](https://domain-locker.com/about/self-hosting)
+
+```mermaid
+flowchart TB
+  subgraph Volume Mounts
+    direction TB
+    Vpostgresdata([📦 postgres_data]) x-. /var/lib/postgresql/data .-x postgres[(🐘 PostgreSQL DB)]
+    Vdbschemasql{{📄 ./db/schema.sql}} -. Mounted on Init .-> postgres
+  end
+
+  subgraph Network
+    direction TB
+    domainlockernetwork[/🌐 domain_locker_network/]
+  end
+
+  postgres -.- domainlockernetwork
+
+  subgraph app[⚙️ App Container]
+    SSR[HTTP Server]
+    CLIENT[Client App]
+    API[API Endpoints]
+    SSR --> CLIENT
+    SSR --> API
+  end
+
+  app -.- domainlockernetwork
+```
 
 ---
 
