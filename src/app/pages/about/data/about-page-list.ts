@@ -35,12 +35,21 @@ export const aboutPages: AboutPage[] = [
     ],
   },
   {
+    title: 'Guides',
+    svgIcon: 'guides',
+    dirSlug: 'guides',
+    description: 'Get started with Domain Locker, and learn how to use it to manage your domains',
+    links: [
+
+    ],
+  },
+  {
     title: 'Articles',
     svgIcon: 'articles',
     description: 'In-depth articles to help you get the most out of Domain Locker',
     links: [
       { title: 'Useful tools and resources', description: 'Free and/or open source tools, utils and services for managing domains', link: '/about/external-tools', icon: '' },
-      
+
     ],
   },
   {

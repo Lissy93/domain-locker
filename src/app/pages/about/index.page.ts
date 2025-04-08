@@ -26,6 +26,9 @@ export default class AboutPageComponent {
     articles: injectContentFiles<DocAttributes>((contentFile) =>
       contentFile.filename.includes('/articles/')
     ),
+    guides: injectContentFiles<DocAttributes>((contentFile) =>
+      contentFile.filename.includes('/guides/')
+    ),
   };
 
   makeId(title: string): string {
