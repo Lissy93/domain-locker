@@ -41,6 +41,21 @@ export default class AdvancedIndexPage {
           icon: 'pi pi-hammer',
           link: '/advanced/diagnostic-actions',
         },
+        {
+          title: 'Error Logs',
+          icon: 'pi pi-exclamation-triangle',
+          link: '/advanced/error-logs',
+        },
+        {
+          title: 'Service Status',
+          icon: 'pi pi-wave-pulse',
+          link: '/advanced/status0-check',
+        },
+        {
+          title: 'Admin Links',
+          icon: 'pi pi-cog',
+          link: '/advanced/admin-links',
+        },
       ],
     },
     {
@@ -60,6 +75,21 @@ export default class AdvancedIndexPage {
           title: 'Data Interoperability',
           icon: 'pi pi-arrows-h',
           link: '/settings/developer-options',
+        },
+        {
+          title: 'Data Deep Search',
+          icon: 'pi pi-search',
+          link: '/search',
+        },
+        {
+          title: 'Bulk Import',
+          icon: 'pi pi-file-import',
+          link: '/domains/add/bulk-add',
+        },
+        {
+          title: 'Privacy Policy',
+          icon: 'pi pi-key',
+          link: '/about/legal/privacy-policy',
         },
       ],
     },
