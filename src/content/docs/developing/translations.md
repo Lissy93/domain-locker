@@ -119,3 +119,45 @@ console.log(message); // Outputs: "Showing 5 tags -"
 - **Dynamic Language Switching**: Changes take effect immediately after calling `switchLanguage`.
 - **Fallback Mechanism**: Missing translations return the key wrapped in square brackets (e.g., `[MISSING.KEY]`).
 - **Default Language**: Ensure a default language (`en`) is always available in `TranslationService`.
+
+```mermaid
+flowchart TD
+  subgraph Init_Translation
+    Start["App Start (Client/Server)"] --> LanguageInit["languageInitializerFactory"]
+    LanguageInit -->|Platform: Browser| GetLocalStorageLang["localStorage.getItem('language')"]
+    LanguageInit -->|Platform: Server| SetDefaultLang["translate.setDefaultLang('en')"]
+    GetLocalStorageLang --> SetLang["translate.use(savedLanguage)"]
+  end
+
+  subgraph TranslateLoader
+    TranslateService --> ServerSafeTranslateLoader
+    ServerSafeTranslateLoader -->|isPlatformBrowser| HTTPFetch["HttpClient GET /i18n/{lang}.json"]
+    ServerSafeTranslateLoader -->|isPlatformServer| FSRead["fs.readFileSync('/assets/i18n/{lang}.json')"]
+    HTTPFetch --> TranslationsLoaded
+    FSRead --> TranslationsLoaded
+  end
+
+  subgraph TranslationService
+    ComponentUsesTranslate --> TranslationServiceSwitch["switchLanguage(code)"]
+    TranslationServiceSwitch -->|Valid Code| UseTranslate["translate.use(code)"]
+    UseTranslate --> StoreLang["localStorage.setItem('language')"]
+    ComponentTS --> InstantTranslate["translateService.instant('KEY')"]
+    InstantWithParams["instant('TAGS.SUMMARY', { count })"] --> InstantTranslate
+  end
+
+  subgraph Fallbacks
+    MissingKey["Missing Translation Key"] --> CustomHandler["CustomMissingTranslationHandler"]
+    CustomHandler --> ShowFallback["Return '[KEY]' and warn"]
+  end
+
+  subgraph Template_Usage
+    TranslatePipe["{{ 'HOME.SUBHEADINGS.DOMAINS' | translate }}"] --> TranslateService
+  end
+
+  Start --> TranslateService
+  TranslateService --> TranslatePipe
+  TranslateService --> ComponentTS
+  TranslateService --> ComponentUsesTranslate
+  TranslationsLoaded --> TranslateService
+  TranslateService --> MissingKey
+```

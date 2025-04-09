@@ -118,5 +118,70 @@ Analog follows **file-based routing**, meaning the structure determines the URL:
 - **Lazy Loading**: Components can be loaded dynamically for performance (`*ngIf` or `appLazyLoad`).
 - **Observables & RXJS**: Used for async state management in services (`BehaviorSubject`).
 
+### Example
+
+```mermaid
+flowchart TD
+  A[Domain Locker App Structure]
+
+  A --> C1[components/]
+  C1 --> C1a[charts/]
+  C1a --> C1a1[domain-valuation/]
+  C1 --> C1b[domain-things/]
+  C1b --> C1b1[domain-card.component.ts]
+  C1 --> C1c[misc/]
+  C1c --> C1c1[loading.component.ts]
+  C1 --> C1d[monitor/]
+  C1d --> C1d1[sparklines/]
+  C1 --> C1e[forms/]
+  C1e --> C1e1[tag-editor/]
+
+  A --> C2[pages/]
+  C2a --> C2a1[Login or Signup]
+  C2a --> C2a1[login.page.ts]
+  C2 --> C2b[about/]
+  C2b --> C2b1[about.page.ts]
+  C2 --> C2c[domains/]
+  C2c --> C2c1[add/]
+  C2 --> C2d[tools/]
+  C2d --> C2d1[availability-search.page.ts]
+  C2 --> C2e[stats/]
+  C2e --> C2e1[domain-providers.page.ts]
+
+  A --> C3[services/]
+  C3 --> C3a[features.service.ts]
+  C3 --> C3b[translation.service.ts]
+  C3 --> C3c[error-handler.service.ts]
+
+  A --> C4[constants/]
+  C4 --> C4a[feature-options.ts]
+
+  A --> C5[utils/]
+  C5 --> C5a[lazy.directive.ts]
+  C5 --> C5b[safe-date.pipe.ts]
+
+  A --> C6[prime-ng.module.ts]
+  A --> C7[styles/]
+  A --> C8[types/]
+  A --> C9[main.ts]
+  A --> C10[main.server.ts]
+
+  %% Notes
+  subgraph N[Notes]
+    N1[📁 components = reusable UI]
+    N2[📁 pages = routed views]
+    N3[📁 services = logic & APIs]
+    N4[✅ standalone components]
+    N5[🧠 analog uses file-based routing]
+    N6[💡 use .page.ts and .component.ts]
+  end
+
+  C1 --> N1
+  C2 --> N2
+  C3 --> N3
+  C1b1 --> N4
+  C2c1 --> N5
+  C1b1 --> N6
+```
 
 

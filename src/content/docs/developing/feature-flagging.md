@@ -129,3 +129,37 @@ if (!(await this.featureService.isFeatureEnabledPromise('writePermissions'))) {
 - **Dynamic Feature Updates**: Features are resolved reactively based on user plan and environment.
 - **Default Behavior**: Features without specific configuration fallback to the `default` value.
 - **Error Logging**: If a feature's value cannot be resolved correctly, an error is logged, and the feature is disabled.
+
+```mermaid
+flowchart TD
+  subgraph App_Init
+    EnvService["EnvService.getEnvironmentType"] --> FeatureService
+    BillingService["BillingService.getUserPlan"] --> FeatureService
+    FeatureService --> ResolveFeatures
+    ResolveFeatures --> ActiveFeatures["activeFeatures$ (BehaviorSubject)"]
+  end
+
+  subgraph Feature_Service
+    ActiveFeatures --> GetFeatureValue["getFeatureValue"]
+    GetFeatureValue --> IsFeatureEnabled["isFeatureEnabled"]
+    IsFeatureEnabled -->|if not boolean| ErrorHandler["ErrorHandlerService.handleError"]
+    IsFeatureEnabled -->|if boolean| FeatureFlagResult["Observable: boolean"]
+    IsFeatureEnabled --> IsFeatureEnabledPromise["isFeatureEnabledPromise (Promise)"]
+  end
+
+  subgraph Component_Usage
+    FeatureFlagResult --> AsyncPipe["*ngIf (async pipe)"]
+    AsyncPipe -->|false| Placeholder["FeatureNotEnabledComponent"]
+    IsFeatureEnabledPromise --> AwaitCheck["if (!featureEnabled) { ... }"]
+  end
+
+  subgraph Feature_Config
+    FeatureOptions["feature-options.ts"] --> ResolveFeatures
+    FeatureDescriptions --> Placeholder
+  end
+
+  style Feature_Service fill:#eef7ff,stroke:#93c5fd
+  style Component_Usage fill:#fef3c7,stroke:#facc15
+  style App_Init fill:#e7f9ed,stroke:#34d399
+  style Feature_Config fill:#f3e8ff,stroke:#c084fc
+```

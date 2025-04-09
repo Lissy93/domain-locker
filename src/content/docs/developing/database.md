@@ -47,12 +47,12 @@ graph TD
     DatabaseService -->|Checks Env Variables| EnvService
     EnvService -->|Supabase enabled?| SupabaseService
     EnvService -->|Postgres enabled?| PgDatabaseService
-    SupabaseService -->|Executes query| Supabase DB
+    SupabaseService -->|Executes query| SupabaseDB
     PgDatabaseService -->|Executes query| PgApiUtilService
     PgApiUtilService -->|Sends request| PgExecuter
-    PgExecuter -->|Executes SQL| Postgres DB
-    Postgres DB -->|Returns Data| PgExecuter
-    Supabase DB -->|Returns Data| SupabaseService
+    PgExecuter -->|Executes SQL| PostgresDB
+    PostgresDB -->|Returns Data| PgExecuter
+    SupabaseDB -->|Returns Data| SupabaseService
     DatabaseService -->|Returns Data| Angular_Component
     Angular_Component -->|Displays data| User
 ```
