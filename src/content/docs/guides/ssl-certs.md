@@ -18,11 +18,11 @@ It also helps with trust — modern browsers now show scary warnings if a site d
 
 ### How Domain Locker Tracks SSL
 
-As soon as you add a domain to Domain Locker, we’ll automatically check if it has an SSL certificate. If it does, we’ll fetch the details and store them for you — no action needed.
+As soon as you add a domain to Domain Locker, we’ll automatically check if it has an SSL certificate. If it does, we’ll fetch the details and store them f  or you — no action needed.
 
 We keep this data up to date, so if your certificate changes or is about to expire, you’ll know about it.
 
-You can view all your SSL certificates at [**/assets/certs**](/assets/certs), and see:
+You can view all your SSL certificates at [assets → certs](/assets/certs), and see:
 
 - The domain(s) it covers  
 - Expiry date  

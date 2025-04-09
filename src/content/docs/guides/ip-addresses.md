@@ -66,7 +66,7 @@ Want to get notified if an IP changes? Just enable the "IP Change" alert on the 
 
 ### View your IP Address Portfolio
 
-You can view all your IP addresses, sorted either by IP or Domain, by navigating to [assets --> ips](/assets/ips)
+You can view all your IP addresses, sorted either by IP or Domain, by navigating to [assets → ips](/assets/ips)
 
 ![](https://storage.googleapis.com/as93-screenshots/domain-locker/Screenshot%202025-04-08%20at%2020.14.21.png)
 

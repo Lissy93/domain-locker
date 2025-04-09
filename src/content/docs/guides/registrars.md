@@ -63,7 +63,7 @@ Because registrar data is automatically fetched from public records, it’s **no
 
 ### Viewing Registrars in Domain Locker
 
-In Domain Locker, you can see all your registrars in one place, by navigating to [assets --> registrars](/assets/registrars). Clicking a registrar will show you all domains you have registered with them.
+In Domain Locker, you can see all your registrars in one place, by navigating to [assets → registrars](/assets/registrars). Clicking a registrar will show you all domains you have registered with them.
 
 <img src="https://storage.googleapis.com/as93-screenshots/domain-locker/registrars.png" />
 
