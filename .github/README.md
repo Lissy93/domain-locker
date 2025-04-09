@@ -18,7 +18,8 @@
 	- [Features](#features)
 	- [Live Demo](#demo)
 - [Get Started](#get-started)
-	- [Self-Hosting](#self-hosting)
+	- [Domain-Locker.com](#option-1-domain-lockercom)
+	- [Self-Hosting](#option-2-self-hosting)
 - [Developing](#developing)
   - [App Setup](#project-setup)
   - [Architecture](#architecture)
@@ -510,6 +511,47 @@ If you're new to Git, the general flow of contributing, is as follows:
 - Checkout a branch, with `git checkout -b feature-branch`, then `git add` your changes and `git commit` using conventional commits, before `git push`ing to your branch
 - Head back to GitHub, and you can then open up a PR against our `main` branch. Don't forget to include what you changed, why and link to any associated issues.
 - We'll then review, feedback, and merge, and once released your changes will go live to prod, as well as be available in the latest Docker image.
+
+<details>
+	<summary>Git Branch Example</summary>
+
+```mermaid
+gitGraph
+    commit id: "Initial commit"
+    branch trunk
+    commit id: "Feature A"
+    commit id: "Feature B"
+    commit id: "v1.0.0 (Tag)"
+    branch demo
+    checkout main
+    commit id: "Feature C"
+    commit id: "v1.1.0 (Tag)"
+    checkout demo
+    merge main id: "Merge main into demo"
+    checkout main
+    commit id: "Feature D"
+    commit id: "v1.2.0 (Tag)"
+    checkout demo
+    merge main id: "Merge main into demo (v1.2.0)"
+    checkout main
+    branch feature-branch-1
+    commit id: "Contributor Feature 1"
+    checkout main
+    merge feature-branch-1 id: "Merge contributor feature 1"
+    commit id: "v1.3.0 (Tag)"
+    checkout demo
+    merge main id: "Merge main into demo (v1.3.0)"
+    checkout main
+    branch feature-branch-2
+    commit id: "Contributor Feature 2"
+    checkout main
+    merge feature-branch-2 id: "Merge contributor feature 2"
+    commit id: "v1.4.0 (Tag)"
+    checkout demo
+    merge main id: "Merge main into demo (v1.4.0)"
+```
+
+</details>
 
 ---
 
