@@ -18,6 +18,7 @@ export interface DocAttributes {
   modifiedDate?: string;
   category?: string;
   noShowInContents?: boolean;
+  index?: number;
 }
 
 @Component({
@@ -37,7 +38,7 @@ export interface DocAttributes {
           <h2 class="capitalize mx-4">{{ categoryName }} Docs</h2>
         </a>
         <ul class="list-none p-0 mx-0 mt-4 flex flex-col">
-          <li *ngFor="let file of allDocs; index as index" class="border-x-0 border-b-0 border-t-2 border-solid border-surface-200">
+          <li *ngFor="let file of sortedDocs; index as index" class="border-x-0 border-b-0 border-t-2 border-solid border-surface-200">
             <a
               *ngIf="!file.attributes.noShowInContents"
               [routerLink]="['/about', categoryName, file.slug]"
@@ -150,6 +151,7 @@ export class DocsViewerComponent {
   ) {}
 
   ngOnInit() {
+
     this.docSub = this.doc$.subscribe({
       next: (doc) => {
         // Set current doc when it resolves
@@ -160,7 +162,7 @@ export class DocsViewerComponent {
 
           // Set meta tags
           this.metaTagsService.setCustomMeta(title, description, undefined, coverImage || this.getFallbackImage(title));
-          
+
           // Set JSON-LD structured data
           this.metaTagsService.addStructuredData('article', {
             title: title,
@@ -223,6 +225,19 @@ export class DocsViewerComponent {
       this.loadAndRenderMermaid();
       this.hasRenderedMermaid = true;
     }
+  }
+
+  public get sortedDocs(): ContentFile<DocAttributes>[] {
+    return [...this.allDocs].sort((a, b) => {
+      const aIndex = typeof a.attributes.index === 'number' ? a.attributes.index : Infinity;
+      const bIndex = typeof b.attributes.index === 'number' ? b.attributes.index : Infinity;
+
+      if (aIndex !== bIndex) {
+        return aIndex - bIndex;
+      } else {
+        return a.attributes.title.localeCompare(b.attributes.title);
+      }
+    });
   }
 
   /** Called on window scroll. If user scrolled > 7rem => fix nav top at 7rem. Otherwise 0. */
