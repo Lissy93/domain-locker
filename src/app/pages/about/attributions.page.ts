@@ -1,7 +1,7 @@
-import { AfterViewInit, Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { AfterViewInit, Component, Inject, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { PrimeNgModule } from '~/app/prime-ng.module';
-import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   standalone: true,
@@ -53,6 +53,9 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
         <a *ngIf="section.badge" [href]="section.badge.click" target="_blank">
           <img [src]="section.badge.img" alt="{{ section.label }}" class="badge" />
         </a>
+      </div>
+      <div class="my-4 p-card p-3 pb-5">
+        <h2 class="mb-3 text-purple-400">Dependencies</h2>
       </div>
     </div>
   `,
@@ -135,9 +138,13 @@ export default class AttributionsPage implements AfterViewInit {
     // },
   ];
 
-  constructor(private sanitizer: DomSanitizer) {}
+  constructor(
+    private sanitizer: DomSanitizer,
+    @Inject(PLATFORM_ID) private platformId: Object,
+  ) {}
 
   ngAfterViewInit() {
+    if (isPlatformBrowser(this.platformId)) {
     // Build URLs for each section
     const bg = this.getColorVar('--surface-50', 'transparent').replace('#','');
     const fg = this.getColorVar('--text-color', '#000').replace('#','');
@@ -148,7 +155,7 @@ export default class AttributionsPage implements AfterViewInit {
       s.url = builtUrl;
       s.safeUrl = this.sanitizer.bypassSecurityTrustResourceUrl(builtUrl) as string;
     });
-
+    }
     this.loading = false;
   }
 
