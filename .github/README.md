@@ -5,7 +5,7 @@
   <b>🌐<a href="https://domain-locker.com">domain-locker.com</a></b>
 </p>
 <p align="center">
-  <img width="48" src="https://i.ibb.co/Zp8mm1kp/dl-square.png" />
+  <img width="48" src="https://github.com/Lissy93/domain-locker/blob/main/src/assets/logo.png?raw=true" />
 </p>
 
 ---
