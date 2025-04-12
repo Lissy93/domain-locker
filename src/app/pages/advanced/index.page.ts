@@ -27,9 +27,9 @@ export default class AdvancedIndexPage {
       heading: 'Troubleshooting',
       items: [
         {
-          title: 'Database Connection',
-          icon: 'pi pi-database',
-          link: '/advanced/database-connection',
+          title: 'Service Status',
+          icon: 'pi pi-wave-pulse',
+          link: '/advanced/status',
         },
         {
           title: 'Debug Info',
@@ -47,9 +47,9 @@ export default class AdvancedIndexPage {
           link: '/advanced/error-logs',
         },
         {
-          title: 'Service Status',
-          icon: 'pi pi-wave-pulse',
-          link: '/advanced/status0-check',
+          title: 'Database Connection',
+          icon: 'pi pi-database',
+          link: '/advanced/database-connection',
         },
         {
           title: 'Admin Links',
