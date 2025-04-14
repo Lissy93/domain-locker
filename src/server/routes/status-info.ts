@@ -101,12 +101,13 @@ async function fetchRSS(rssUrl: string): Promise<any[]> {
  * or 'unknown' if nothing decisive is found.
  */
 function getSeverityType(item: { title: string; description?: string }): Severity {
+  const infoWords = ['scheduled', 'maintenance', 'planned'];
   const criticalWords = ['major', 'outage', 'down', 'severe', 'broken', 'failure', 'unavailable'];
   const minorWords = [
     'partial', 'degraded', 'intermittent', 'slow', 'delays', 'issues', 'issue',
     'latency', 'temporarily', 'disruption', 'degradation', 'performance', 'some',
+    'queued',
   ];
-  const infoWords = ['scheduled', 'maintenance'];
   const goodWords = ['operational', 'all systems operational', 'no issues'];
 
   const text = (item.title + ' ' + (item.description || '')).toLowerCase();
@@ -134,7 +135,7 @@ function mapSeverity(severityType: Severity): SeverityIcon {
  * Items older than 24h (if critical) or 12h (if minor/unknown) are considered resolved.
  * If no unresolved items remain, returns All good (✅).
  */
-function getServiceSummary(pastItems: any[]): { status: Severity; details: string } {
+function getServiceSummary(pastItems: any[]): { status: Severity; details: string, link?: string } {
   if (pastItems.length === 0) {
     return { status: 'operational', details: 'Operational' };
   }
@@ -158,7 +159,7 @@ function getServiceSummary(pastItems: any[]): { status: Severity; details: strin
     if (hoursSince > threshold) continue;
 
     // Return summary based on the issue
-    return { status: severityType, details: item.title };
+    return { status: severityType, details: item.title, link: item.link };
   }
   
   return { status: 'operational', details: 'Operational' };
@@ -231,7 +232,7 @@ export default defineEventHandler(async (event) => {
 
   // Combine all scheduled logs (future items) and sort by date (most recent first).
   let scheduled: HistoryItem[] = serviceResults.flatMap(result => result.scheduledItems);
-  scheduled.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  scheduled.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
   if (scheduled.length > 100) {
     scheduled = scheduled.slice(0, 100);
   }
