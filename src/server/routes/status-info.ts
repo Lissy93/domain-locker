@@ -220,7 +220,7 @@ export default defineEventHandler(async (event) => {
   const summary = serviceResults.map(result => ({
     service: result.service,
     status: result.status,
-    details: result.details
+    details: result.details,
   }));
 
   // Combine all history logs (past items) and sort by date (most recent first).
