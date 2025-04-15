@@ -3,6 +3,7 @@ slug: static-content
 title: Static Content
 description: Adding documentation, articles or other static content
 coverImage: 
+index: 11
 ---
 
 Domain Locker has some static content (like the page you are viewing right now!), which is intended to provide useful info to the user.

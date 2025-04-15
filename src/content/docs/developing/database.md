@@ -2,7 +2,8 @@
 slug: querying-integration
 title: Querying the Database
 description: How to pull data from the DB in the app
-coverImage: 
+coverImage:
+index: 4
 ---
 
 Domain Locker supports both **Supabase** and **PostgreSQL** as database backends. The application dynamically selects which to use based on the configured environment variables. This guide explains how the database integration works, the request flow, and how to interact with the database.

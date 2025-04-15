@@ -3,6 +3,7 @@ slug: debugging
 title: Debugging Starter
 description: Resolve issues in Domain Locker Self-Hosted
 coverImage: 
+index: 6
 ---
 
 ### Debugging

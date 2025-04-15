@@ -3,6 +3,7 @@ slug: supabase-setup
 title: Supabase Setup
 description: Configuring a self-hosted Supabase instance for Domain Locker
 coverImage: 
+index: 3
 ---
 
 The code for the Supabase setup is at [github.com/Lissy93/dl-sb-iac](https://github.com/Lissy93/dl-sb-iac).

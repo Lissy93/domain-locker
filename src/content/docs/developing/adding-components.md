@@ -3,6 +3,7 @@ slug: adding-components
 title: Components and Routes
 description: Get started with new components, routes and services
 coverImage: 
+index: 8
 ---
 
 This guide explains how to add **new components** and **pages** in Domain Locker, covering Angular, Analog, PrimeNG, and Tailwind.

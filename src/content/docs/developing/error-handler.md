@@ -3,6 +3,7 @@ slug: error-handler
 title: Error Handler
 description: Gracefully handle errors, log them, and show toasts to users
 coverImage: 
+index: 14
 ---
 
 The `ErrorHandlerService` is a centralized utility for handling errors in the Domain Locker app. It supports logging errors to the console, displaying error messages to users via toasts, and reporting errors to GlitchTip (if enabled). All errors should go through the error handler, so they can be managed consistently. 

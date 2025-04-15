@@ -3,6 +3,7 @@ slug: translations
 title: Translations
 description: Adding a language and internationalizationing component text
 coverImage: 
+index: 11
 ---
 
 The Domain Locker app uses `ngx-translate` for translations, enabling multi-language support. This section explains how to implement translations in your components, use translations in TypeScript files, and add new languages.
