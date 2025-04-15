@@ -1,7 +1,7 @@
 // Angular
 import { Component, OnInit, Inject, PLATFORM_ID, OnDestroy, ChangeDetectorRef, ErrorHandler } from '@angular/core';
 import { RouterOutlet, Router, NavigationEnd } from '@angular/router';
-import { CommonModule, isPlatformBrowser, isPlatformServer } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 
 // Dependencies
 import { MessageService, ConfirmationService } from 'primeng/api';
@@ -53,7 +53,7 @@ import { MetaTagsService } from '~/app/services/meta-tags.service';
         <!-- Create router outlet -->
         <breadcrumbs *ngIf="pagePath" [pagePath]="pagePath" />
         <!-- Router outlet for main content -->
-        <!-- <router-outlet /> -->
+        <router-outlet *ngIf="!loading" />
         <!-- Global components -->
         <p-scrollTop />
         <p-toast />
@@ -76,7 +76,7 @@ import { MetaTagsService } from '~/app/services/meta-tags.service';
 })
 export class AppComponent implements OnInit, OnDestroy {
   private subscription: Subscription | undefined;
-  private publicRoutes =  new Set(['/home', '/about', '/login']);
+  private publicRoutes =  new Set(['/home', '/about', '/login', '/advanced']);
   private fullWidthRoutes: string[] = ['/settings', '/stats'];
 
   public loading: boolean = true;
