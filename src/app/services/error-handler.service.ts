@@ -173,6 +173,9 @@ export class ErrorHandlerService {
   }
 
   public getRecentErrorLog(): any[] {
+    if (!isPlatformBrowser(this.platformId) || !(typeof window !== 'undefined')) {
+      return [];
+    }
     return JSON.parse(localStorage.getItem('DL_error_log') || '[]').reverse();
   }
 

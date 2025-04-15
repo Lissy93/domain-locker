@@ -29,6 +29,7 @@ export type FeatureDefinitions = {
   enableBilling: FeatureConfig<boolean>;
   allowLocalDbConfig: FeatureConfig<boolean>;
   enableDeletionTool: FeatureConfig<boolean>;
+  enableAdvancedInfo: FeatureConfig<boolean>;
 };
 
 export const features: FeatureDefinitions = {
@@ -126,6 +127,9 @@ export const features: FeatureDefinitions = {
     selfHosted: true,
     dev: true,
   },
+  enableAdvancedInfo: {
+    default: true,
+  },
   enableDeletionTool: {
     default: import.meta.env['DL_DISABLE_WRITE_METHODS'] ? false : true,
   },
@@ -187,5 +191,9 @@ export const featureDescriptions: Record<keyof FeatureDefinitions, { label: stri
   enableDeletionTool: {
     label: 'Enable Deletion Tool',
     description: 'Allow users to use the tools at /settings/delete-account to selectively and bulk delete data',
+  },
+  enableAdvancedInfo: {
+    label: 'Advanced Info',
+    description: 'Debug tools and settings for advanced users',
   },
 };

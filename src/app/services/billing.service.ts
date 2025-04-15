@@ -9,7 +9,7 @@ import { HttpClient } from '@angular/common/http';
  * Environment Types
  */
 export type BillingPlans = 'free' | 'hobby' | 'pro' | 'enterprise';
-type SpecialPlans = 'sponsor' | 'complimentary' | 'tester' | 'demo' | 'super' | 'local';
+export type SpecialPlans = 'sponsor' | 'complimentary' | 'tester' | 'demo' | 'super' | 'local';
 export type UserType = BillingPlans | SpecialPlans;
 type EnvironmentType = 'dev' | 'managed' | 'selfHosted' | 'demo';
 

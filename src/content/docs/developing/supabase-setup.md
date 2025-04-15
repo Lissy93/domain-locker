@@ -14,7 +14,8 @@ We use Supabase on the managed instance, for it's PostgresDB, auth handling and 
 	
 [!NOTE]<br>
 Setting up Supabase for the first time can be quite tricky, and we cannot offer support for it.<br>
-There is also some reliance on non-free third-parties, such as Google, Twilio, Resend, Turnstile and Stripe.
+There is also some reliance on non-free third-parties, such as Google, Twilio, Resend, Turnstile and Stripe.<br>
+<b>Where possible, we recommend self-hosted user to use Postgres instead.</b>
 </blockquote>
 
 ---
@@ -22,7 +23,7 @@ There is also some reliance on non-free third-parties, such as Google, Twilio, R
 ### File Structure
 
 ```
-domain-locker-edge/
+dl-sb-iac/
 ├─ supabase/
 │  ├─ functions/    # Deno Edge functions
 │  ├─ migrations/   # Database schema
@@ -30,7 +31,7 @@ domain-locker-edge/
 │  ╰─ config.toml   # Supabase configuration
 ├─ .github/         # Repo admin, and GH Actions
 │  ├─ workflows/    # CI/CD files for deployment
-│  ╰─ README.txt    # You're looking at it ;)
+│  ╰─ README.txt    # Documentation
 ├─ Makefile         # Project commands
 ├─ deno.json        # Deno project config
 ╰─ .gitignore       # Stuff to not commit
@@ -46,7 +47,7 @@ domain-locker-edge/
   - Configure all the required environmental variables for services (see below)
 
 #### Project setup:
-- `git clone git@github.com:Lissy93/domain-locker-edge.git`
+- `git clone git@github.com:Lissy93/dl-sb-iac.git`
 - `supabase link --project-ref PROJECT_REF`
 
 #### Development:
@@ -291,5 +292,5 @@ We are not accepting feature requests or bug reports (except security issues) ei
 The difficulty of deploying this project is graded at moderate to hard
 You'll need a solid understanding of Deno, Supabase, Postgres and Docker
 
-It is also possible to run Domain Locker without Supabase, using Postgres only.
+It is also possible to run Domain Locker without Supabase, using Postgres only, which is recommended.
 
