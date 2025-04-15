@@ -5,6 +5,7 @@ export interface AboutLink {
   link?: string;
   href?: string;
   icon: string;
+  index?: number;
 }
 
 export interface AboutPage {
