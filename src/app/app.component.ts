@@ -123,11 +123,11 @@ export class AppComponent implements OnInit, OnDestroy {
           const currentRoute = event.urlAfterRedirects || event.url;
           this.pagePath = currentRoute;
 
-          if (currentRoute.startsWith('/advanced')) {
-            this.loading = false;
-            this.metaTagsService.allowRobots(false);
-            return;
-          }
+          // if (currentRoute.startsWith('/advanced')) {
+          //   this.loading = false;
+          //   this.metaTagsService.allowRobots(false);
+          //   return;
+          // }
 
           // Configuration for docs pages (at /about)
           if (currentRoute.startsWith('/about')) {
