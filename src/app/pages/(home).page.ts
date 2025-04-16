@@ -90,9 +90,9 @@ export default class HomePageComponent implements OnInit {
 
   ngOnInit() {
     this.setAuthState();
-    this.loadDomains();
     this.demoInstanceLoginRedirect();
     if (isPlatformBrowser(this.platformId)) {
+      this.loadDomains();
       this.isBrowser = true;
     }
   }
