@@ -53,7 +53,7 @@ import { MetaTagsService } from '~/app/services/meta-tags.service';
         <!-- Create router outlet -->
         <breadcrumbs *ngIf="pagePath" [pagePath]="pagePath" />
         <!-- Router outlet for main content -->
-        <router-outlet *ngIf="!loading || publicPath" />
+        <router-outlet *ngIf="!loading" />
         <!-- Global components -->
         <p-scrollTop />
         <p-toast />
