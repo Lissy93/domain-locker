@@ -73,7 +73,6 @@ export default class HomePageComponent implements OnInit {
   isDemoInstance: boolean = false;
   isDevInstance: boolean = false;
   showInsights: boolean = false;
-  isBrowser: boolean = false;
 
   private subscriptions: Subscription = new Subscription();
 
@@ -93,7 +92,6 @@ export default class HomePageComponent implements OnInit {
     this.demoInstanceLoginRedirect();
     if (isPlatformBrowser(this.platformId)) {
       this.loadDomains();
-      this.isBrowser = true;
     }
   }
 

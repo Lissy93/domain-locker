@@ -21,7 +21,7 @@
   </div>
 }
 
-@if (isAuthenticated && isBrowser) {
+@if (isAuthenticated) {
 
   <app-demo-welcome *ngIf="isDemoInstance" [isDemoInstance]="true" />
   <app-demo-welcome *ngIf="isDevInstance" [isDevInstance]="true" />
