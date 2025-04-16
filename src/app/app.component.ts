@@ -53,7 +53,7 @@ import { MetaTagsService } from '~/app/services/meta-tags.service';
         <!-- Create router outlet -->
         <breadcrumbs *ngIf="pagePath" [pagePath]="pagePath" />
         <!-- Router outlet for main content -->
-        <router-outlet *ngIf="!loading" />
+        <router-outlet *ngIf="!loading || publicPath" />
         <!-- Global components -->
         <p-scrollTop />
         <p-toast />
@@ -193,7 +193,12 @@ export class AppComponent implements OnInit, OnDestroy {
     }
   }
 
+  get publicPath(): boolean {
+    return this.isPublicRoute(this.pagePath, true);
+  }
+
   private isPublicRoute(route: string, allowHome: boolean = false): boolean {
+    if (!route) return true;
     if (route === '/' && allowHome) return true;
     if (this.publicRoutes.has(route)) return true;
     if (route.startsWith('/about')) return true;
