@@ -3,6 +3,7 @@ import { RouterOutlet } from '@angular/router';
 import { PrimeNgModule } from '~/app/prime-ng.module';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FeatureService } from '../services/features.service';
+import { MetaTagsService } from '~/app/services/meta-tags.service';
 import { FeatureNotEnabledComponent } from '~/app/components/misc/feature-not-enabled.component';
 
 @Component({
@@ -21,7 +22,7 @@ import { FeatureNotEnabledComponent } from '~/app/components/misc/feature-not-en
     }
   } @else {
     <app-feature-not-enabled feature="enableAdvancedInfo" />
-  } 
+  }
   `,
 })
 export default class AdvancedIndexPage {
@@ -30,6 +31,16 @@ export default class AdvancedIndexPage {
 
   constructor(
     private featureService: FeatureService,
+    private metaTagsService: MetaTagsService,
     @Inject(PLATFORM_ID) private platformId: Object,
   ) {}
+
+  ngOnInit() {
+    this.metaTagsService.allowRobots(false);
+    this.metaTagsService.setCustomMeta(
+      'Advanced Developer Options',
+      'Service status, error logs, debug info, diagnostic actions, '
+      + 'admin links, db connectors and advanced settings.',
+    );
+  }
 }
