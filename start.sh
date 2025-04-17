@@ -12,6 +12,25 @@ if { [ -n "$SUPABASE_URL" ] && [ -n "$SUPABASE_ANON_KEY" ]; } || [ "$DL_ENV_TYPE
   exec node ./dist/analog/server/index.mjs
 fi
 
+# Print totally pointless, but kinda cool ASCII art
+echo $'\033[35m
+██████╗  ██████╗ ███╗   ███╗ █████╗ ██╗███╗   ██╗
+██╔══██╗██╔═══██╗████╗ ████║██╔══██╗██║████╗  ██║
+██║  ██║██║   ██║██╔████╔██║███████║██║██╔██╗ ██║
+██║  ██║██║   ██║██║╚██╔╝██║██╔══██║██║██║╚██╗██║
+██████╔╝╚██████╔╝██║ ╚═╝ ██║██║  ██║██║██║ ╚████║
+╚═════╝  ╚═════╝ ╚═╝     ╚═╝╚═╝  ╚═╝╚═╝╚═╝  ╚═══╝
+
+██╗      ██████╗  ██████╗██╗  ██╗███████╗██████╗
+██║     ██╔═══██╗██╔════╝██║ ██╔╝██╔════╝██╔══██╗
+██║     ██║   ██║██║     █████╔╝ █████╗  ██████╔╝
+██║     ██║   ██║██║     ██╔═██╗ ██╔══╝  ██╔══██╗
+███████╗╚██████╔╝╚██████╗██║  ██╗███████╗██║  ██║
+╚══════╝ ╚═════╝  ╚═════╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝
+
+\033[1mSource at https://github.com/lissy93/domain-locker
+\033[0;35mLicensed under MIT. Coded with ☕ and ❤️ by Lissy93'
+
 # ANSI color codes
 ERR=$'\033[0;31m❌'
 WARN=$'\033[1;33m⚠️'
@@ -19,9 +38,17 @@ SUCCESS=$'\033[0;32m✅'
 INFO=$'\nℹ️ \033[90m'
 RESET=$'\033[0m'
 
+# Other vars
 MAX_WAIT=600
 WARNINGS_FOUND=0
 
+# Check current version
+VERSION=$(node -e "console.log(require('./package.json').version)" 2>/dev/null)
+VERSION=${VERSION:-0.0.0}
+echo "${INFO} Checking version...${RESET}"
+echo "${SUCCESS} Domain Locker v${VERSION}${RESET}"
+
+# Start environment checks
 echo "${INFO} Checking environment...${RESET}"
 
 # Check psql and node are installed, and that the app is built
@@ -56,7 +83,11 @@ done
 if [ "$WARNINGS_FOUND" -eq 0 ]; then
   echo "${SUCCESS} All environment checks have passed${RESET}"
 else
-  echo "${ERR} Unable to start app, as issues were found${RESET}"
+  echo "\n${ERR} Unable to start app, as issues were found${RESET}"
+
+  echo "\n\033[94mIf you think this is a false positive, you can set" \
+    "the 'DL_SKIP_INIT' environment variable to true, to skip the" \
+    "checks and initialization, and attempt to start the app anyway.\n"
   exit 1
 fi
 

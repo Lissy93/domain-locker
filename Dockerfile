@@ -1,6 +1,4 @@
-# ──────────────────────────────────────────────────────────────
 # Stage 1 - build: Compiles the frontend and API code
-# ──────────────────────────────────────────────────────────────
 FROM node:20.12.0-alpine AS builder
 
 # Set working directory
@@ -18,10 +16,11 @@ ENV NODE_OPTIONS="--max-old-space-size=8192"
 ENV DL_ENV_TYPE="selfHosted"
 RUN npm run build
 
-# ──────────────────────────────────────────────────────────────
 # Stage 2 - run: Alpine-based runtime to serve the app
-# ──────────────────────────────────────────────────────────────
 FROM node:20.12.0-alpine AS runner
+
+# Install PostgreSQL client to run pg_isready and psql
+RUN apk add --no-cache postgresql-client
 
 # Create non-root app user
 RUN addgroup -S appgroup && adduser -S appuser -G appgroup
@@ -32,23 +31,27 @@ WORKDIR /app
 # Copy required build artifacts and scripts
 COPY --chown=appuser:appgroup --from=builder /app/dist ./dist
 COPY --chown=appuser:appgroup --from=builder /app/package.json ./package.json
-COPY --chown=appuser:appgroup --from=builder /app/check.js ./check.js
+COPY --chown=appuser:appgroup --from=builder /app/db/schema.sql ./schema.sql
+COPY --chown=appuser:appgroup --from=builder /app/start.sh ./start.sh
 
 # Install only production dependencies
 RUN npm install --omit=dev --legacy-peer-deps
 
-# Switch to da user
+# Switch to the app user
 USER appuser
 
 # Expose application port
 EXPOSE 3000
 
-# Set environment variables (example)
+# Set environment variables
 ENV DL_ENV_TYPE="selfHosted"
 
-# Healthcheck to verify the app is running
+# Healthcheck
 HEALTHCHECK --interval=30s --timeout=5s --retries=3 \
   CMD wget --spider -q http://localhost:3000/api/health || exit 1
 
-# Start the container
-CMD ["sh", "-c", "node check.js || true && node ./dist/analog/server/index.mjs"]
+# Run the start script to init the database and start the app server
+CMD ["./start.sh"]
+
+# The app can actually just be started with: node ./dist/analog/server/index.mjs
+# However, we need the init script to wait for the DB and initialize the schema
