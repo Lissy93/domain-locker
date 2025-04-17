@@ -14,10 +14,11 @@ services:
     ports:
       - "${DL_PG_PORT:-5432}:5432"
 
-    # Mount volume and init scripts
     volumes:
+      # This is where the Postgres data will be stored
       - postgres_data:/var/lib/postgresql/data
-      - ./db/schema.sql:/docker-entrypoint-initdb.d/init-schema.sql:ro
+      # If you want to skip the init script, you can use the SQL to seed the db
+      # - ./db/schema.sql:/docker-entrypoint-initdb.d/init-schema.sql:ro
     networks:
       - domain_locker_network
 
