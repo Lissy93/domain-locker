@@ -127,20 +127,27 @@ The starter plan is free, and no setup is required. Just sign in, add your domai
 curl -fsSL https://install.domain-locker.com | bash
 ```
 
+##### Details
+
 - **Prerequisites**:
   - Domain Locker is intended to be run in a container, so you'll need Docker [installed](https://docs.docker.com/engine/install/) on your host system.
 - **Containers**:
   - We have a Docker image published to [`lissy93/domain-locker`](https://hub.docker.com/r/lissy93/domain-locker).
   - You'll also need a Postgres database, such as the [`postgres:15-alpine`](https://hub.docker.com/_/postgres?tab=tags&name=15-alpine) container.
 - **Environment**:
-  - When starting the container, bind `PORT` to `3000`.
-  - Then specify the Postgres environmental variables: `DL_PG_HOST`, `DL_PG_PORT`, `DL_PG_USER`, `DL_PG_PASSWORD` and `DL_PG_NAME`.
+  - When starting the container, bind `3000` in the container, to your host `PORT` (defaults to `3000`).
+  - Then specify the Postgres vars: `DL_PG_HOST`, `DL_PG_PORT`, `DL_PG_USER`, `DL_PG_PASSWORD` and `DL_PG_NAME`.
+- **Volumes**:
+  - Mount a volume to `/var/lib/postgresql/data` to persist your Postgres data
 - **Crons**
   - `/api/domain-updater` - Execute this daily, to keep domain data up-to-date and trigger notifications
   - `/api/uptime-monitor` - Execute this every N minutes, to monitor website uptime and performance
 - **Example**:
   - Putting it all together, you can use our [`docker-compose.yml`](https://github.com/Lissy93/domain-locker/blob/main/docker-compose.yml) file.
   - For more details, view the [Self-Hosting Docs](https://domain-locker.com/about/self-hosting)
+
+<details>
+<summary>Docker Diagram</summary>
 
 ```mermaid
 flowchart TB
@@ -167,6 +174,8 @@ flowchart TB
 
   app -.- domainlockernetwork
 ```
+
+</details>
 
 ---
 
@@ -512,6 +521,7 @@ If you're new to Git, the general flow of contributing, is as follows:
 	<summary>Git Branch Example</summary>
 
 ```mermaid
+%%{init: {"theme": "default"}}%%
 gitGraph
     commit id: "Initial commit"
     branch trunk
