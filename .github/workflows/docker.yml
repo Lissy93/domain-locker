@@ -107,34 +107,3 @@ jobs:
             org.opencontainers.image.version=${{ steps.docker_tags.outputs.tag_name }}
             org.opencontainers.image.revision=${{ github.sha }}
 
-      - name: Extract digest from Docker image
-        id: digest
-        run: |
-          echo "digest=${{ steps.build.outputs.digest }}" >> $GITHUB_OUTPUT
-
-      - name: Generate SBOM (SPDX)
-        if: github.event_name != 'workflow_dispatch' || github.event.inputs.dry_run != 'true'
-        id: sbom
-        uses: anchore/sbom-action@v0.15.4
-        with:
-          image: ${{ matrix.image }}:${{ steps.docker_tags.outputs.tag_name }}
-          format: spdx-json
-          output-file: sbom.spdx.json
-
-      - name: Generate provenance attestation
-        if: github.event_name != 'workflow_dispatch' || github.event.inputs.dry_run != 'true'
-        uses: actions/attest-build-provenance@v2
-        with:
-          subject-name: ${{ matrix.image }}
-          subject-digest: ${{ steps.digest.outputs.digest }}
-          push-to-registry: true
-
-      - name: Attest SBOM to registry
-        if: github.event_name != 'workflow_dispatch' || github.event.inputs.dry_run != 'true'
-        uses: actions/attest-sbom@v1
-        with:
-          subject-name: ${{ matrix.image }}
-          subject-digest: ${{ steps.digest.outputs.digest }}
-          sbom-path: sbom.spdx.json
-          push-to-registry: true
-
