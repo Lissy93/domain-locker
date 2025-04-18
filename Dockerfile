@@ -7,14 +7,14 @@ WORKDIR /app
 # Copy package files and install dependencies
 COPY package.json package-lock.json ./
 
+# Set NPM registry and config
 RUN npm config set registry https://registry.npmmirror.com && \
     npm config set fetch-retries 5 && \
     npm config set fetch-retry-mintimeout 2000 && \
     npm config set fetch-retry-maxtimeout 60000
 
-RUN for i in 1 2 3; do \
-      npm ci --legacy-peer-deps && break || sleep 20; \
-    done
+# Install dependencies, with retry
+RUN for i in 1 2 3; do npm ci --legacy-peer-deps && break || sleep 20; done
 
 # Copy application source code
 COPY . .
@@ -43,7 +43,12 @@ COPY --chown=appuser:appgroup --from=builder /app/db/schema.sql ./schema.sql
 COPY --chown=appuser:appgroup --from=builder /app/start.sh ./start.sh
 
 # Install only production dependencies
-RUN npm install --omit=dev --legacy-peer-deps
+RUN npm config set registry https://registry.npmmirror.com && \
+    npm config set fetch-retries 5 && \
+    npm config set fetch-retry-mintimeout 2000 && \
+    npm config set fetch-retry-maxtimeout 60000 && \
+    for i in 1 2 3; do npm install --omit=dev --legacy-peer-deps && break || sleep 20; done
+
 
 # Switch to the app user
 USER appuser
