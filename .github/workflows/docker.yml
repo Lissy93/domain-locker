@@ -52,23 +52,23 @@ jobs:
             image: ghcr.io/lissy93/domain-locker
 
     steps:
-      - name: Check out repo
+      - name: 🛎️ Check out repo
         uses: actions/checkout@v4
 
-      - name: Set up QEMU
+      - name: 🔌 Set up QEMU
         uses: docker/setup-qemu-action@v3
 
-      - name: Set up Docker Buildx
+      - name: 🔌 Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Login to Docker Hub
+      - name: 🔑 Login to Docker Hub
         if: matrix.target == 'dockerhub'
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Login to GitHub Container Registry
+      - name: 🔑 Login to GitHub Container Registry
         if: matrix.target == 'ghcr'
         uses: docker/login-action@v3
         with:
@@ -76,7 +76,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Determine Docker Tags
+      - name: 🏷️ Determine Docker Tags
         id: docker_tags
         run: |
           if [[ "${GITHUB_REF}" == refs/tags/v* ]]; then
@@ -90,7 +90,7 @@ jobs:
             echo "tags=${{ matrix.image }}:latest" >> $GITHUB_OUTPUT
           fi
 
-      - name: Build & Push Multi-Arch Docker Image
+      - name: 🔨 Build & Push Multi-Arch Docker Image
         id: build
         uses: docker/build-push-action@v5
         with:
@@ -107,19 +107,19 @@ jobs:
             org.opencontainers.image.version=${{ steps.docker_tags.outputs.tag_name }}
             org.opencontainers.image.revision=${{ github.sha }}
 
-      - name: Extract digest from Docker image
+      - name: 🔀 Extract digest from Docker image
         id: digest
         run: |
           echo "digest=${{ steps.build.outputs.digest }}" >> $GITHUB_OUTPUT
 
-      - name: Sanitize tag for artifact names
+      - name: 🧼 Sanitize tag for artifact names
         id: safe_tag
         run: |
           RAW_TAG="${{ steps.docker_tags.outputs.tag_name }}"
           SAFE_TAG=$(echo "$RAW_TAG" | tr -cd '[:alnum:]-')
           echo "safe_tag=${SAFE_TAG}" >> $GITHUB_OUTPUT
 
-      - name: Generate SBOM (SPDX)
+      - name: 🔐 Generate SBOM (SPDX)
         if: github.event_name != 'workflow_dispatch' || github.event.inputs.dry_run != 'true'
         id: sbom
         uses: anchore/sbom-action@v0.15.4
@@ -130,12 +130,14 @@ jobs:
           artifact-name: domain-locker-sbom-${{ steps.safe_tag.outputs.safe_tag }}
           upload-artifact: false
 
-      - name: Attest SBOM to registry
+      - name: 🪪 Attest SBOM to registry
         if: github.event_name != 'workflow_dispatch' || github.event.inputs.dry_run != 'true'
         uses: actions/attest-sbom@v1
+        continue-on-error: true
         with:
           subject-name: ${{ matrix.image }}
           subject-digest: ${{ steps.digest.outputs.digest }}
           sbom-path: sbom.spdx.json
           push-to-registry: true
+          github-token: ${{ secrets.BOT_TOKEN }}
 
