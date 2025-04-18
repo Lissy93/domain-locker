@@ -1,0 +1,60 @@
+.info-wrap {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  a {
+    min-width: 8rem;
+    font-weight: bold;
+  }
+}
+
+main,
+header {
+  display: flex;
+  flex-direction: column;
+  margin: 0 auto;
+  width: 90vw;
+  gap: 1rem;
+}
+
+header {
+  gap: 0;
+  text-align: center;
+  .heading {
+    display: flex;
+    gap: 1rem;
+    align-items: baseline;
+    justify-content: center;
+  }
+}
+
+footer {
+  text-align: center;
+}
+
+.visually-hidden {
+  visibility: hidden;
+}
+
+/* Light scheme (default) */
+[data-theme="light"],
+:root:not([data-theme="dark"]) {
+  --pico-text-selection-color: rgba(153, 0, 36, 0.25);
+  --pico-primary: #8967f1;
+  --pico-primary-background: #8967f1;
+  --pico-primary-hover: #a78bfa;
+  --pico-primary-hover-background: #a78bfa;
+}
+
+/* Dark scheme (auto) */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    --pico-text-selection-color: rgb(167, 139, 250, 0.5);
+    --pico-primary: #8967f1;
+    --pico-primary-background: #8967f1;
+    --pico-primary-hover: #a78bfa;
+    --pico-primary-hover-background: #a78bfa;
+  }
+}
