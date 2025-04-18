@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { PrimeNgModule } from '~/app/prime-ng.module';
 import { DomainFaviconComponent } from '~/app/components/misc/favicon.component';
 
-import { selfHostedLinks, serviceLinks, type LinkItem } from '~/app/constants/admin-links';
+import { selfHostedLinks, serviceLinks, documentationLinks, type LinkItem } from '~/app/constants/admin-links';
 
 @Component({
   standalone: true,
@@ -20,9 +20,15 @@ export default class AdminLinksPage {
     },
     {
       title: 'Self-hosted Services',
-      description: 'These technologies are only used on the self-hosted version '
-        + 'of Domain Locker, where no third-party services are required.',
+      description: 'These are the components of the self-hosted version of Domain Locker. '
+        + 'There\'s no requirement for any third-party services.',
       links: selfHostedLinks,
+    },
+    {
+      title: 'Documentation (for developers)',
+      description: 'If you\'re delving into the codebase, these are the links '
+        + 'for the docs of the technologies we use.',
+      links: documentationLinks,
     },
   ];
 

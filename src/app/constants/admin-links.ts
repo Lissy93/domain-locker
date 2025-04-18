@@ -21,10 +21,11 @@ export const selfHostedLinks: LinkItem[] = [
     description: 'Database server',
   },
   {
-    purpose: 'Framework',
-    provider: 'Angular Analog',
-    url: 'https://analogjs.org/docs',
-    description: 'App client and server library',
+    purpose: 'App',
+    provider: 'Domain Locker',
+    url: 'https://github.com/lissy93/domain-locker',
+    description: 'The client and server-side app for Domain Locker',
+    upstreamSite: 'https://domain-locker.com/',
   },
 ];
 
@@ -112,3 +113,80 @@ export const serviceLinks: LinkItem[] = [
   //   upstreamSite: 'https://grafana.com/',
   // },
 ];
+
+export const documentationLinks: LinkItem[] = [
+  {
+    purpose: 'Language',
+    provider: 'TypeScript',
+    url: 'https://www.typescriptlang.org/docs/',
+    description: 'Typed JavaScript superset',
+  },
+  {
+    purpose: 'Framework',
+    provider: 'Angular',
+    url: 'https://angular.io/docs',
+    description: 'Web application framework',
+  },
+  {
+    purpose: 'Build Tool',
+    provider: 'Vite',
+    url: 'https://vite.dev/',
+    description: 'App bundler and build tool',
+  },
+  {
+    purpose: 'Meta-Framework',
+    provider: 'Analog',
+    url: 'https://analogjs.org/docs',
+    description: 'Full-stack SSR framework',
+  },
+  {
+    purpose: 'Components',
+    provider: 'PrimeNG',
+    url: 'https://primeng.org/',
+    description: 'UI component library',
+  },
+  {
+    purpose: 'Internationalization',
+    provider: 'ngx-translate',
+    url: 'https://ngx-translate.org/',
+    description: 'i18n for translations of in-app copy',
+  },
+  {
+    purpose: 'Styling Classes',
+    provider: 'Tailwind',
+    url: 'https://tailwindcss.com/docs',
+    description: 'Utility-first CSS styles',
+  },
+  {
+    purpose: 'Styling Preprocessor',
+    provider: 'SCSS',
+    url: 'https://sass-lang.com/guide',
+    description: 'CSS preprocessor syntax',
+  },
+  {
+    purpose: 'Async Library',
+    provider: 'RxJS',
+    url: 'https://rxjs.dev/',
+    description: 'For reactive programming using Observables',
+  },
+  {
+    purpose: 'Server Toolkit',
+    provider: 'Nitro',
+    url: 'https://nitro.unjs.io/',
+    description: 'Vendor-agnostic web server',
+  },
+  {
+    purpose: 'Charting',
+    provider: 'D3.js',
+    url: 'https://d3js.org/',
+    description: 'Charting and data visualizations',
+  },
+  {
+    purpose: 'Search',
+    provider: 'Fuse.js',
+    url: 'https://www.fusejs.io/',
+    description: 'Fuzzy searching for filtering',
+  },
+];
+
+
