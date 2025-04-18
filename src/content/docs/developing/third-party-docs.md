@@ -8,6 +8,8 @@ coverImage:
 Domain Locker is made possible thanks to the following libraries and services.
 If you're facing issues with any of these, please refer to their respective documentation for help.
 
+To manage these services, you can find the admin portal for each, under **[Advanced → Admin Links](/advanced/admin-links)**.
+
 ---
 
 ## Self-Hosted

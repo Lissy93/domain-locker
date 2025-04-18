@@ -1,7 +1,7 @@
-import { AfterViewInit, Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { AfterViewInit, Component, Inject, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { PrimeNgModule } from '~/app/prime-ng.module';
-import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   standalone: true,
@@ -15,14 +15,14 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
     <p-progressSpinner *ngIf="loading" class="flex mx-auto my-4"></p-progressSpinner>
 
     <div class="" *ngIf="!loading">
-      <div 
-        *ngFor="let section of sections" 
+      <div
+        *ngFor="let section of sections"
         class="my-4 p-card p-3 pb-5"
       >
         <h2 class="mb-3 text-{{section.badge.color || 'primary'}}-400">{{ section.label }}</h2>
-        
+
         <!-- Fallback image if iframe fails -->
-        <img 
+        <img
           *ngIf="section.showFallback"
           [src]="section.url"
           alt="{{ section.label }}"
@@ -54,6 +54,9 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
           <img [src]="section.badge.img" alt="{{ section.label }}" class="badge" />
         </a>
       </div>
+      <div class="my-4 p-card p-3 pb-5">
+        <h2 class="mb-3 text-purple-400">Dependencies</h2>
+      </div>
     </div>
   `,
   styles: [`
@@ -64,7 +67,7 @@ export default class AttributionsPage implements AfterViewInit {
   loading = true;
 
   user = 'lissy93';
-  repo = 'dashy';
+  repo = 'domain-locker';
   frameHeight = 300;
   githubLink = `https://github.com/${this.user}/${this.repo}`;
 
@@ -135,9 +138,13 @@ export default class AttributionsPage implements AfterViewInit {
     // },
   ];
 
-  constructor(private sanitizer: DomSanitizer) {}
+  constructor(
+    private sanitizer: DomSanitizer,
+    @Inject(PLATFORM_ID) private platformId: Object,
+  ) {}
 
   ngAfterViewInit() {
+    if (isPlatformBrowser(this.platformId)) {
     // Build URLs for each section
     const bg = this.getColorVar('--surface-50', 'transparent').replace('#','');
     const fg = this.getColorVar('--text-color', '#000').replace('#','');
@@ -148,7 +155,7 @@ export default class AttributionsPage implements AfterViewInit {
       s.url = builtUrl;
       s.safeUrl = this.sanitizer.bypassSecurityTrustResourceUrl(builtUrl) as string;
     });
-
+    }
     this.loading = false;
   }
 

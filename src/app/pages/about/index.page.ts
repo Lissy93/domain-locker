@@ -23,8 +23,14 @@ export default class AboutPageComponent {
     developing: injectContentFiles<DocAttributes>((contentFile) =>
       contentFile.filename.includes('/developing/')
     ),
+    articles: injectContentFiles<DocAttributes>((contentFile) =>
+      contentFile.filename.includes('/articles/')
+    ),
+    guides: injectContentFiles<DocAttributes>((contentFile) =>
+      contentFile.filename.includes('/guides/')
+    ),
   };
-  
+
   makeId(title: string): string {
     return title.toLowerCase().replace(/ /g, '-');
   }

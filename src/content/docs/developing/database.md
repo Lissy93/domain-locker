@@ -2,7 +2,8 @@
 slug: querying-integration
 title: Querying the Database
 description: How to pull data from the DB in the app
-coverImage: 
+coverImage:
+index: 4
 ---
 
 Domain Locker supports both **Supabase** and **PostgreSQL** as database backends. The application dynamically selects which to use based on the configured environment variables. This guide explains how the database integration works, the request flow, and how to interact with the database.
@@ -47,12 +48,12 @@ graph TD
     DatabaseService -->|Checks Env Variables| EnvService
     EnvService -->|Supabase enabled?| SupabaseService
     EnvService -->|Postgres enabled?| PgDatabaseService
-    SupabaseService -->|Executes query| Supabase DB
+    SupabaseService -->|Executes query| SupabaseDB
     PgDatabaseService -->|Executes query| PgApiUtilService
     PgApiUtilService -->|Sends request| PgExecuter
-    PgExecuter -->|Executes SQL| Postgres DB
-    Postgres DB -->|Returns Data| PgExecuter
-    Supabase DB -->|Returns Data| SupabaseService
+    PgExecuter -->|Executes SQL| PostgresDB
+    PostgresDB -->|Returns Data| PgExecuter
+    SupabaseDB -->|Returns Data| SupabaseService
     DatabaseService -->|Returns Data| Angular_Component
     Angular_Component -->|Displays data| User
 ```

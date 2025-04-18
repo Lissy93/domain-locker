@@ -6,7 +6,6 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 // Dependencies
 import { MessageService, ConfirmationService } from 'primeng/api';
 import { filter, Subscription } from 'rxjs';
-// import { NgApexchartsModule } from 'ng-apexcharts';
 
 // PrimeNG module importing required components
 import { PrimeNgModule } from '~/app/prime-ng.module';
@@ -34,7 +33,6 @@ import { MetaTagsService } from '~/app/services/meta-tags.service';
   imports: [
     RouterOutlet,
     PrimeNgModule,
-    // NgApexchartsModule,
     CommonModule,
     NavbarComponent,
     FooterComponent,
@@ -44,7 +42,7 @@ import { MetaTagsService } from '~/app/services/meta-tags.service';
   providers: [
     MessageService,
     ErrorHandlerService,
-   { provide: ErrorHandler, useClass: GlobalErrorHandler },
+    { provide: ErrorHandler, useClass: GlobalErrorHandler },
   ],
   template: `
     <!-- Navbar -->
@@ -52,12 +50,10 @@ import { MetaTagsService } from '~/app/services/meta-tags.service';
     <div class="main-container">
       <!-- Main content container -->
       <div class="content-container" [ngClass]="{ 'full': isFullWidth }">
-        <!-- While initializing, show loading spinner -->
-        <loading *ngIf="loading" />
         <!-- Create router outlet -->
-        <breadcrumbs *ngIf="!loading && pagePath" [pagePath]="pagePath" />
+        <breadcrumbs *ngIf="pagePath" [pagePath]="pagePath" />
         <!-- Router outlet for main content -->
-        <router-outlet *ngIf="!loading" />
+        <router-outlet *ngIf="!loading || publicPath" />
         <!-- Global components -->
         <p-scrollTop />
         <p-toast />
@@ -65,6 +61,8 @@ import { MetaTagsService } from '~/app/services/meta-tags.service';
       </div>
       <!-- Footer -->
       <app-footer [big]="isBigFooter" />
+      <!-- While initializing, show loading spinner -->
+      <loading *ngIf="loading" [isAbsolute]="true" />
     </div>
   `,
   styles: [`
@@ -78,7 +76,7 @@ import { MetaTagsService } from '~/app/services/meta-tags.service';
 })
 export class AppComponent implements OnInit, OnDestroy {
   private subscription: Subscription | undefined;
-  private publicRoutes =  new Set(['/', '/home', '/about', '/login']);
+  private publicRoutes =  new Set(['/home', '/about', '/login', '/advanced']);
   private fullWidthRoutes: string[] = ['/settings', '/stats'];
 
   public loading: boolean = true;
@@ -104,6 +102,7 @@ export class AppComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+    // Setup error handling, and pretty console
     this.errorHandler.printInitialDetails();
     this.errorHandler.initializeGlitchTip();
     this.errorHandler.initializeWindowCatching();
@@ -124,6 +123,12 @@ export class AppComponent implements OnInit, OnDestroy {
           const currentRoute = event.urlAfterRedirects || event.url;
           this.pagePath = currentRoute;
 
+          // if (currentRoute.startsWith('/advanced')) {
+          //   this.loading = false;
+          //   this.metaTagsService.allowRobots(false);
+          //   return;
+          // }
+
           // Configuration for docs pages (at /about)
           if (currentRoute.startsWith('/about')) {
             this.checkIfDocsDisabled(currentRoute);
@@ -135,8 +140,8 @@ export class AppComponent implements OnInit, OnDestroy {
           // Some pages should be full wider (like /settings or /stats), we add a class if they are active
           this.isFullWidth = this.fullWidthRoutes.some(route => currentRoute.includes(route));
 
-          // Public route
-          if (this.publicRoutes.has(currentRoute) || currentRoute.startsWith('/login') || currentRoute.startsWith('/about')) {
+          // Public route: no auth, set meta tags, and show the outlet
+          if (this.isPublicRoute(currentRoute, false)) {
             this.loading = false;
             this.metaTagsService.allowRobots(true);
             return; // No auth needed for public routes
@@ -146,19 +151,24 @@ export class AppComponent implements OnInit, OnDestroy {
           this.metaTagsService.allowRobots(false);
 
           // Auth needed for current route, check if user authenticated
-          this.checkAuthentication().then(() => {
-            this.loading = false;
-            this.cdr.detectChanges();
+          this.checkAuthentication().then((isAuthenticated) => {
+            if (!isAuthenticated) {
+              this.redirectToLogin();
+              return;
+            }
           }).catch(async (error) => {
-            this.loading = false;
-            this.cdr.detectChanges();
             this.errorHandler.handleError({
               error,
               message: 'Unable to validate auth state',
               showToast: true,
               location: 'app.component',
             });
-          });
+          })
+          .finally(() => {
+            this.loading = false;
+            this.cdr.detectChanges();
+          })
+          ;
         }
       });
     }
@@ -183,20 +193,37 @@ export class AppComponent implements OnInit, OnDestroy {
     }
   }
 
+  get publicPath(): boolean {
+    return this.isPublicRoute(this.pagePath, true);
+  }
+
+  private isPublicRoute(route: string, allowHome: boolean = false): boolean {
+    if (!route) return true;
+    if (route === '/' && allowHome) return true;
+    if (this.publicRoutes.has(route)) return true;
+    if (route.startsWith('/about')) return true;
+    if (route.startsWith('/login')) return true;
+    return false;
+  }
+
   /* Check if user is authenticated, and take appropriate action */
-  private async checkAuthentication(): Promise<void> {
+  private async checkAuthentication(): Promise<boolean> {
+
+    // No need to continue if visiting homepage or public route
+    if (this.isPublicRoute(this.pagePath, true)) {
+      return Promise.resolve(true);
+    }
 
     // Cancel if Supabase auth isn't enabled or setup
     if (!this.environmentService.isSupabaseEnabled()) {
-      return;
+      return Promise.resolve(true);
     }
 
     try {
       // Check if authenticated
       const isAuthenticated = await this.supabaseService.isAuthenticated();
       if (!isAuthenticated) { // Not authenticated, redirect to login
-        await this.redirectToLogin();
-        return;
+        return Promise.resolve(false);
       }
 
       // Authenticated, now check if MFA is required
@@ -209,7 +236,7 @@ export class AppComponent implements OnInit, OnDestroy {
           });
         }
       }
-      return Promise.resolve();
+      return Promise.resolve(true);
     } catch (error) {
       this.errorHandler.handleError({
         error,

@@ -1,6 +1,10 @@
 
 <div class="max-w-3xl mx-auto" *ngIf="!(dbConfigEnabled$ | async)">
-  <app-feature-not-enabled feature="allowLocalDbConfig" featureName="Connecting to third-party databases" />
+  <app-feature-not-enabled
+    feature="allowLocalDbConfig"
+    featureName="Connecting to third-party databases"
+    overrideText="This feature is only available in self-hosted instances and to enterprise users."
+  />
 </div>
 
 <form [formGroup]="dbForm" class="card max-w-3xl mx-auto p-card relative">
