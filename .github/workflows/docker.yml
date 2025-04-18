@@ -112,6 +112,13 @@ jobs:
         run: |
           echo "digest=${{ steps.build.outputs.digest }}" >> $GITHUB_OUTPUT
 
+      - name: Sanitize tag for artifact names
+        id: safe_tag
+        run: |
+          RAW_TAG="${{ steps.docker_tags.outputs.tag_name }}"
+          SAFE_TAG=$(echo "$RAW_TAG" | tr -cd '[:alnum:]-')
+          echo "safe_tag=${SAFE_TAG}" >> $GITHUB_OUTPUT
+
       - name: Generate SBOM (SPDX)
         if: github.event_name != 'workflow_dispatch' || github.event.inputs.dry_run != 'true'
         id: sbom
@@ -120,16 +127,7 @@ jobs:
           image: ${{ matrix.image }}:${{ steps.docker_tags.outputs.tag_name }}
           format: spdx-json
           output-file: sbom.spdx.json
-          artifact-name: domain-locker-sbom-${{ steps.docker_tags.outputs.tag_name }}
-        
-
-      - name: Generate provenance attestation
-        if: github.event_name != 'workflow_dispatch' || github.event.inputs.dry_run != 'true'
-        uses: actions/attest-build-provenance@v2
-        with:
-          subject-name: ${{ matrix.image }}
-          subject-digest: ${{ steps.digest.outputs.digest }}
-          push-to-registry: true
+          artifact-name: domain-locker-sbom-${{ steps.safe_tag.outputs.safe_tag }}
 
       - name: Attest SBOM to registry
         if: github.event_name != 'workflow_dispatch' || github.event.inputs.dry_run != 'true'
