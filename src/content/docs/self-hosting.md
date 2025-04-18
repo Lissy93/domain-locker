@@ -32,8 +32,9 @@ You may also need a domain name and a valid SSL certificate for that domain.
 ## Deployment
 
 ```
-TODO
+curl -fsSL https://install.domain-locker.com | bash
 ```
+
 - Domain Locker is intended to be run in a container, so you'll need Docker [installed](https://docs.docker.com/engine/install/) on your host system.
 - We have a Docker image published to [`lissy93/domain-locker`](https://hub.docker.com/r/lissy93/domain-locker).
 You'll also need a Postgres database, such as the [`postgres:15-alpine`](https://hub.docker.com/_/postgres?tab=tags&name=15-alpine) container.

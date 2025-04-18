@@ -123,12 +123,8 @@ The starter plan is free, and no setup is required. Just sign in, add your domai
 
 ### Option 2: Self-Hosting
 
-> [!WARNING]
-> The self-hosted version is in Alpha phase, and still under active development
-
-
 ```bash
-TODO
+curl -fsSL https://install.domain-locker.com | bash
 ```
 
 - **Prerequisites**:
