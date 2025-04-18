@@ -6,7 +6,15 @@ WORKDIR /app
 
 # Copy package files and install dependencies
 COPY package.json package-lock.json ./
-RUN npm ci --legacy-peer-deps
+
+RUN npm config set registry https://registry.npmmirror.com && \
+    npm config set fetch-retries 5 && \
+    npm config set fetch-retry-mintimeout 2000 && \
+    npm config set fetch-retry-maxtimeout 60000
+
+RUN for i in 1 2 3; do \
+      npm ci --legacy-peer-deps && break || sleep 20; \
+    done
 
 # Copy application source code
 COPY . .
