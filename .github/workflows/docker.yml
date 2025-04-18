@@ -128,6 +128,7 @@ jobs:
           format: spdx-json
           output-file: sbom.spdx.json
           artifact-name: domain-locker-sbom-${{ steps.safe_tag.outputs.safe_tag }}
+          upload-artifact: false
 
       - name: Attest SBOM to registry
         if: github.event_name != 'workflow_dispatch' || github.event.inputs.dry_run != 'true'
