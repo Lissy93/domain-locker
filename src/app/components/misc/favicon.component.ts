@@ -10,10 +10,10 @@ import { ErrorHandlerService } from '~/app/services/error-handler.service';
     <ng-container *ngIf="!faviconLoaded">
       <i class="pi" [ngClass]="{'pi-spin': isSpinning, 'pi-globe': true}" [style.font-size.px]="size"></i>
     </ng-container>
-    <img 
+    <img
       *ngIf="faviconLoaded !== false"
       [ngSrc]="domainIcon || (apiBaseUrl + sanitizedDomain)"
-      [width]="size" 
+      [width]="size"
       [height]="size"
       (load)="onFaviconLoad()"
       (error)="onFaviconError()"
@@ -39,9 +39,10 @@ export class DomainFaviconComponent implements OnInit, OnDestroy {
   @Input() size: number = 24;
   @Input() styleClass: string = '';
   @Input() domainIcon: string = '';
+  apiBaseUrl = 'https://favicon.im/';
   // apiBaseUrl = 'https://favicon.twenty.com/';
   // apiBaseUrl = 'https://favicone.com/';
-  apiBaseUrl = 'https://icon.horse/icon/';
+  // apiBaseUrl = 'https://icon.horse/icon/';
   // apiBaseUrl = 'http://strong-turquoise-minnow.faviconkit.com/';
   // apiBaseUrl = 'http://f1.allesedv.com/32/';
   // apiBaseUrl = 'https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&size=32&url=http://';
@@ -75,7 +76,7 @@ export class DomainFaviconComponent implements OnInit, OnDestroy {
   private startSpinningTimeout() {
     this.timeoutId = setTimeout(() => {
       this.isSpinning = false;
-    }, 1000);
+    }, 500);
   }
 
   private clearSpinningTimeout() {

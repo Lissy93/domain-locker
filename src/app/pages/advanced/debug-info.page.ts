@@ -125,7 +125,7 @@ export default class DebugInfoPage implements OnInit {
       this.localStorageKeys = Object.keys(window.localStorage).join('\n');
       const authTokenKey = Object.keys(window.localStorage).find(key => key.includes('sb-') && key.includes('-auth-token'));
       this.userInfo = authTokenKey ? (JSON.parse(window.localStorage.getItem(authTokenKey) || '{}'))?.user || {} : {};
-      this.cookies = document.cookie || 'No cookies found';
+      this.cookies = document.cookie ? document.cookie.replaceAll('; ', '\n') : 'No cookies found';
       this.gatherDomainAndBrowserInfo();
       this.gatherExtendedNavigatorInfo();
       this.fetchUserIpAddress();

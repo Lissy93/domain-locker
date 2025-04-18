@@ -14,15 +14,22 @@ import { BillingService } from '~/app/services/billing.service';
     <p-messages severity="warn">
       <ng-template pTemplate>
         <div class="flex justify-between items-center w-full">
-          <span>
+          @if (overrideText) {
+            <span>
             <i class="pi pi-lock"></i>
-            {{ featureName || 'This feature'}} is not available 
-            @if (environment === 'managed') {
-              on the {{ (userPlan$ | async) || 'current' }} plan
-            } @else {
-              in {{ mapEnvironmentToString(environment) }} environments
+            {{ overrideText }}
+            </span>
+          } @else {
+            <span>
+              <i class="pi pi-lock"></i>
+              {{ featureName || 'This feature'}} is not available 
+              @if (environment === 'managed') {
+                on the {{ (userPlan$ | async) || 'current' }} plan
+              } @else {
+                in {{ mapEnvironmentToString(environment) }} environments
+              }
+            </span>
             }
-          </span>
           <p-button
             *ngIf="environment === 'managed'"
             severity="warning"
@@ -41,6 +48,8 @@ export class FeatureNotEnabledComponent {
   @Input() feature!: keyof FeatureDefinitions;
   @Input() featureName?: string;
   featureDescription?: string;
+
+  @Input() overrideText?: string;
 
   environment: EnvironmentType;
   userPlan$: Observable<string | null>;

@@ -1,10 +1,10 @@
 <div #domainCard
-  aria-haspopup="true" 
+  aria-haspopup="true"
   [@cardAnimation]="cardVisible ? 'visible' : 'hidden'"
   pAnimateOnScroll enterClass="fadeIn" leaveClass="fadeOut"
   (click)="onCardClick($event)"
   class="domain-card p-card bg-surface-card text-default px-4 py-2 mb-4 shadow-md border-radius-custom h-full flex flex-col gap-4 relative overflow-hidden">
-  
+
   <!-- Action buttons - visible only on hover -->
   <div class="edit-button-container absolute top-2 right-2 gap-2 align-items-center">
     <a [routerLink]="'/domains/'+domain.domain_name+'/edit'">
@@ -19,19 +19,19 @@
 
   <!-- Domain Name -->
   <h2 *ngIf="isVisible('domainName')" class="m-0">
-    <a [routerLink]="'/domains/'+domain.domain_name" class="no-underline text-default">
+    <a [routerLink]="'/domains/'+domain.domain_name" class="no-underline text-default flex items-center">
       <app-domain-favicon [domain]="domain.domain_name" [size]="24" class="mr-2 mt-2" />
       <span class="text-primary">{{ domainUtils.splitDomain(domain.domain_name).domain }}</span>
       <span class="text-default">.</span>
       <span class="text-secondary">{{ domainUtils.splitDomain(domain.domain_name).tld }}</span>
     </a>
   </h2>
-  
+
   <!-- Core Info: Registrar and Expiry -->
   <div class="flex justify-between align-items-center {{ (domain.expiry_date && !domain.registrar) ? '!justify-end' : ''}}">
     <ng-container *ngIf="domain.registrar && isVisible('registrar')">
       <a [routerLink]="'/assets/registrars/'+domain.registrar.name" class="text-default no-underline hover:underline flex-1 overflow-hidden">
-        <p class="m-0 truncate text-default" 
+        <p class="m-0 truncate text-default"
           [pTooltip]="('DOMAINS.DOMAIN_COLLECTION.GRID.CLICK_VIEW_REGISTRAR' | translate:{registrar: domain.registrar.name})">
           {{ domain.registrar.name }}
         </p>

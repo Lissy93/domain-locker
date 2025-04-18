@@ -8,7 +8,7 @@ import {
   Inject,
   Input
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { PLATFORM_ID } from '@angular/core';
 import { GalleriaModule, Galleria } from 'primeng/galleria';
 import { ButtonModule } from 'primeng/button';
@@ -153,6 +153,9 @@ export class ScreenshotsComponent implements OnInit, OnDestroy {
   }
 
   bindDocumentListeners() {
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
     this.onFullScreenListener = this.onFullScreenChange.bind(this);
     document.addEventListener('fullscreenchange', this.onFullScreenListener);
     document.addEventListener('mozfullscreenchange', this.onFullScreenListener);
@@ -161,6 +164,9 @@ export class ScreenshotsComponent implements OnInit, OnDestroy {
   }
 
   unbindDocumentListeners() {
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
     document.removeEventListener('fullscreenchange', this.onFullScreenListener);
     document.removeEventListener('mozfullscreenchange', this.onFullScreenListener);
     document.removeEventListener('webkitfullscreenchange', this.onFullScreenListener);

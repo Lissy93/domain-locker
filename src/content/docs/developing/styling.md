@@ -3,6 +3,7 @@ slug: styling
 title: App Styling
 description: Applying styles to app components
 coverImage: 
+index: 9
 ---
 
 We try and keep styling to a minimum. We use components from PrimeNG, which are pre-styled and themable. Then Tailwind wherever a specific style is needed. Very occasionally, we use custom CSS.

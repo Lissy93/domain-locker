@@ -53,8 +53,6 @@ export class HitCountingService {
     script.setAttribute('data-domain', plausibleSite as string);
     script.src = `${plausibleUrl}/js/plausible.js`;
     document.head.appendChild(script);
-
-    console.log('Plausible analytics enabled');
   }
 
   /* Track a key event in Plausible */

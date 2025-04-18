@@ -40,10 +40,10 @@ export const features = [
     featureTitle: 'Data',
     icon: 'export',
     featureInfo: [
-      'Access via API, Prometheus, iCal, RSS, or embeddable widgets (coming soon).', 
+      'Access via API, Prometheus, iCal, RSS, or embeddable widgets (coming soon).',
       'Export your data anytime for migration or backup.',
     ],
-    screenshot: 'https://i.postimg.cc/y6XztLwv/domain-grid-open.png', 
+    screenshot: 'https://i.postimg.cc/y6XztLwv/domain-grid-open.png',
   },
   {
     featureTitle: 'Track Changes',
@@ -76,7 +76,7 @@ export const features = [
     featureTitle: 'Security Check',
     icon: 'secure',
     featureInfo: [
-      'Security insights and recommended actions for each domain',  
+      'Security insights and recommended actions for each domain',
       'Ensure your websites and domains have the correct security controls.',
     ],
     screenshot: 'https://i.postimg.cc/mkRWh9FY/statuses.png',
@@ -153,7 +153,7 @@ export const features = [
   },
 ];
 
-// Additional features: Search, 
+// Additional features: Search,
 
 
 // Alternatives: domainLocker, domainMod, domainWatchman, domainPunch
@@ -399,7 +399,7 @@ export const providerInfo: Record<Providers, ProviderInfo> = {
   domainLocker: {
     name: 'Domain Locker',
     url: 'https://domain-locker.com',
-    icon: 'https://i.ibb.co/D7DdmVB/dl-v1.png',
+    icon: 'https://domain-locker.com/icons/android-chrome-192x192.png',
     summary: '',
   },
   domainMod: {
