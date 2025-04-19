@@ -59,10 +59,10 @@ export class EnvService {
     // Local value (only if not managed instance)
     const localStorageValue = import.meta.env['DL_ENV_TYPE'] !== 'managed'
       ? this.getValueFromLocalStorage(key) : null;
-    
+
     // Pick value, based on priority or use fallback
     const value = (localStorageValue || buildtimeValue || runtimeValue) ?? fallback;
-    
+
     // If nothing, and unexpected, throw error to be caught by the caller
     if (!value && throwError) {
       throw new Error(`Environment variable ${key} is not set.`);
@@ -131,9 +131,20 @@ export class EnvService {
     };
   }
 
+  getBaseUrl(): string {
+    const envBase = this.getEnvVar('DL_BASE_URL', '');
+    if (envBase) {
+      return envBase;
+    }
+    if (isPlatformBrowser(this.platformId)) {
+      return window.location.origin;
+    }
+    return '/';
+  }
+
   getPostgresApiUrl(): string {
     const endpoint = '/api/pg-executer/';
-    const baseUrl = this.getEnvVar('DL_BASE_URL', 'http://localhost:5173');
+    const baseUrl = this.getBaseUrl();
     return `${baseUrl}${endpoint}`;
   }
 

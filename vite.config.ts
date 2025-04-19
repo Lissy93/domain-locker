@@ -59,9 +59,9 @@ const themeTargets = [
 export default defineConfig( ({ mode }) => {
 
   const env = loadEnv(mode, process.cwd(), '')
-  const buildPreset = env['BUILD_PRESET'] || env['NITRO_PRESET'] || 'node';
+  const buildPreset = env['BUILD_PRESET'] || env['NITRO_PRESET'] || 'node_server';
   const targetEnv = env['DL_ENV_TYPE'] || 'unspecified/self-hosted';
-  const nitroPreset =  buildPreset || 'node-server';
+  const nitroPreset =  buildPreset || 'node_server';
 
   // Print info message
   const emoji: any = {'vercel': '🔼', 'netlify': '🪁', 'deno': '🦕', 'bun': '🐰'};

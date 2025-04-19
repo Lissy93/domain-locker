@@ -1,6 +1,6 @@
 // src/app/pages/home.page.ts
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { ChangeDetectorRef, Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { PrimeNgModule } from '../prime-ng.module';
 import DatabaseService from '~/app/services/database.service';
 import { SupabaseService } from '~/app/services/supabase.service';
@@ -83,12 +83,16 @@ export default class HomePageComponent implements OnInit {
     private environmentService: EnvService,
     private errorHandlerService: ErrorHandlerService,
     private router: Router,
+    private cdr: ChangeDetectorRef,
+    @Inject(PLATFORM_ID) private platformId: Object,
   ) {}
 
   ngOnInit() {
     this.setAuthState();
-    this.loadDomains();
     this.demoInstanceLoginRedirect();
+    if (isPlatformBrowser(this.platformId)) {
+      this.loadDomains();
+    }
   }
 
   setAuthState() {
@@ -109,6 +113,7 @@ export default class HomePageComponent implements OnInit {
       next: (domains) => {
         this.domains = domains;
         this.loading = false;
+        this.cdr.detectChanges();
       },
       error: (error) => {
         this.errorHandlerService.handleError({

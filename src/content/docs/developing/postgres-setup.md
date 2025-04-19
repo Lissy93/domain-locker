@@ -3,6 +3,7 @@ slug: postgres-setup
 title: Postgres Setup
 description: Setting up Postgres for local development
 coverImage: 
+index: 2
 ---
 
 

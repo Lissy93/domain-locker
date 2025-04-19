@@ -149,6 +149,7 @@ export class BreadcrumbsComponent implements OnInit, OnChanges {
       'demo': 'desktop',
       'support': 'headphones',
       'self-hosted-support': 'server',
+      'guides': 'book',
     };
     const iconName = icons[path];
     if (!iconName) return;
@@ -180,7 +181,7 @@ export class BreadcrumbsComponent implements OnInit, OnChanges {
             .split('-')
             .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
             .join(' ');
-    
+
     path = decodeURIComponent(path);
     return labels[path] || formatLabel(path);
   }

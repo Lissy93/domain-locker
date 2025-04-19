@@ -1,3 +1,20 @@
+# This is a GitHub Actions workflow to make the Docker image
+
+# It's triggered on either:
+# A) Pushes to the main branch, which will update the :latest tag
+# B) The creation of a new git tag, which will create a new version tag :x.x.x
+# C) Manual workflow runs with a custom tag, to publish a temp feature image
+
+# The workflow does the following:
+# 1. Checks out the code
+# 2. Sets up QEMU for multi-arch builds, and Buildx for advanced building
+# 3. Authenticates with registries (DockerHub, GHCR)
+# 4. Determines the Docker tags based on the branch or tag
+# 5. Builds the Docker image for specified architectures
+# 6. Pushes the Docker image to authenticated registries
+# 7. Generates an SBOM in SPDX for the included dependencies
+# 8. Attests and pushes the build provenance and SBOM to registries
+
 name: 🐳 Build & Push Docker Image
 
 on:
@@ -6,51 +23,120 @@ on:
       - main
     tags:
       - 'v*'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Run build without pushing image?'
+        required: false
+        default: 'false'
+
+permissions:
+  id-token: write
+  contents: read
+  attestations: write
+  packages: write
 
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        target: [dockerhub, ghcr]
+        include:
+          - target: dockerhub
+            registry: docker.io
+            image: lissy93/domain-locker
+          - target: ghcr
+            registry: ghcr.io
+            image: ghcr.io/lissy93/domain-locker
+
     steps:
-      - name: Check out repo
+      - name: 🛎️ Check out repo
         uses: actions/checkout@v4
 
-      - name: Set up QEMU
+      - name: 🔌 Set up QEMU
         uses: docker/setup-qemu-action@v3
 
-      - name: Set up Docker Buildx
+      - name: 🔌 Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Login to Docker Hub
+      - name: 🔑 Login to Docker Hub
+        if: matrix.target == 'dockerhub'
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Login to GitHub Container Registry
+      - name: 🔑 Login to GitHub Container Registry
+        if: matrix.target == 'ghcr'
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-          # username: liss-bot
-          # password: ${{ secrets.BOT_TOKEN }}
 
-      - name: Determine Docker Tags
+      - name: 🏷️ Determine Docker Tags
         id: docker_tags
         run: |
           if [[ "${GITHUB_REF}" == refs/tags/v* ]]; then
             RAW_VERSION="${GITHUB_REF#refs/tags/v}"
-            echo "tags=lissy93/domain-locker:${RAW_VERSION},ghcr.io/lissy93/domain-locker:${RAW_VERSION}" >> $GITHUB_OUTPUT
+            echo "tag_name=${RAW_VERSION}" >> $GITHUB_OUTPUT
+            echo "is_tagged=true" >> $GITHUB_OUTPUT
+            echo "tags=${{ matrix.image }}:${RAW_VERSION}" >> $GITHUB_OUTPUT
           else
-            # On main branch
-            echo "tags=lissy93/domain-locker:latest,ghcr.io/lissy93/domain-locker:latest" >> $GITHUB_OUTPUT
+            echo "tag_name=latest" >> $GITHUB_OUTPUT
+            echo "is_tagged=false" >> $GITHUB_OUTPUT
+            echo "tags=${{ matrix.image }}:latest" >> $GITHUB_OUTPUT
           fi
-        
-      - name: Build & Push Multi-Arch Docker Image
+
+      - name: 🔨 Build & Push Multi-Arch Docker Image
+        id: build
         uses: docker/build-push-action@v5
         with:
           context: .
-          push: true
+          push: ${{ github.event_name != 'workflow_dispatch' || github.event.inputs.dry_run != 'true' }}
           tags: ${{ steps.docker_tags.outputs.tags }}
           platforms: linux/amd64,linux/arm64
+          provenance: false
+          outputs: type=registry
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          labels: |
+            org.opencontainers.image.source=https://github.com/${{ github.repository }}
+            org.opencontainers.image.version=${{ steps.docker_tags.outputs.tag_name }}
+            org.opencontainers.image.revision=${{ github.sha }}
+
+      - name: 🧬 Extract digest from Docker image
+        id: digest
+        run: |
+          echo "digest=${{ steps.build.outputs.digest }}" >> $GITHUB_OUTPUT
+
+      - name: 🧼 Sanitize tag for artifact names
+        id: safe_tag
+        run: |
+          RAW_TAG="${{ steps.docker_tags.outputs.tag_name }}"
+          SAFE_TAG=$(echo "$RAW_TAG" | tr -cd '[:alnum:]-')
+          echo "safe_tag=${SAFE_TAG}" >> $GITHUB_OUTPUT
+
+      - name: 🔐 Generate SBOM (SPDX)
+        if: github.event_name != 'workflow_dispatch' || github.event.inputs.dry_run != 'true'
+        id: sbom
+        uses: anchore/sbom-action@v0.15.4
+        with:
+          image: ${{ matrix.image }}:${{ steps.docker_tags.outputs.tag_name }}
+          format: spdx-json
+          output-file: sbom.spdx.json
+          artifact-name: domain-locker-sbom-${{ steps.safe_tag.outputs.safe_tag }}
+          upload-artifact: false
+
+      - name: 🪪 Attest SBOM to registry
+        if: matrix.target == 'ghcr' && (github.event_name != 'workflow_dispatch' || github.event.inputs.dry_run != 'true')
+        uses: actions/attest-sbom@v1
+        continue-on-error: true
+        with:
+          subject-name: ${{ matrix.image }}
+          subject-digest: ${{ steps.digest.outputs.digest }}
+          sbom-path: sbom.spdx.json
+          push-to-registry: true
+          github-token: ${{ secrets.BOT_TOKEN }}

@@ -92,14 +92,24 @@ export class ErrorHandlerService {
     this.glitchTipEnabled = this.shouldEnableGlitchTip();
     if (!this.glitchTipEnabled) return;
     const glitchTipDsn = this.envService.getGlitchTipDsn();
-    Sentry.init({
-      dsn: glitchTipDsn,
-      integrations: [ Sentry.browserTracingIntegration() ],
-      tracesSampleRate: 1.0,
-      release: __APP_VERSION__,
-      environment: this.envService.getEnvironmentType(),
-      denyUrls: ['localhost'],
-    });
+    try {
+      Sentry.init({
+        dsn: glitchTipDsn,
+        integrations: [ Sentry.browserTracingIntegration() ],
+        tracesSampleRate: 1.0,
+        release: __APP_VERSION__,
+        environment: this.envService.getEnvironmentType(),
+        denyUrls: ['localhost'],
+      });
+    } catch (e) {
+      this.handleError({
+        error: e,
+        message: 'Unable to initialize GlitchTip. Possibly due to adblock, invalid DSN, or user\'s privacy preferences',
+        location: 'ErrorHandlerService.initializeGlitchTip',
+        showToast: false,
+      });
+      this.glitchTipEnabled = false;
+    }
   }
 
   /* Gets the user ID from local storage (if available) */
@@ -137,9 +147,10 @@ export class ErrorHandlerService {
 
   /* Entry point for error handler, takes appropriate logging action */
   public handleError(params: ErrorParams): void {
+    if (!isPlatformBrowser(this.platformId)) return;
     const { error, message, location, showToast } = params;
     if (!error && !message) return; // Not much I can do without an error or message!
-    
+
     // Log to console in development mode
     this.printToConsole(message, location, error);
 
@@ -162,7 +173,33 @@ export class ErrorHandlerService {
   }
 
   public getRecentErrorLog(): any[] {
+    if (!isPlatformBrowser(this.platformId) || !(typeof window !== 'undefined')) {
+      return [];
+    }
     return JSON.parse(localStorage.getItem('DL_error_log') || '[]').reverse();
+  }
+
+  public initializeWindowCatching() {
+    if (isPlatformBrowser(this.platformId) && typeof window !== 'undefined') {
+      window.onerror = (message, source, lineno, colno, error) => {
+        this.handleError({
+          message: String(message),
+          location: `window (${source}:${lineno}:${colno})`,
+          error,
+          showToast: false,
+        });
+      };
+
+      window.onunhandledrejection = (event) => {
+        this.handleError({
+          message: 'Unhandled Promise Rejection',
+          location: 'window.onunhandledrejection',
+          error: event.reason,
+          showToast: false,
+        });
+      };
+    }
+    
   }
 
   public printInitialDetails(): void {

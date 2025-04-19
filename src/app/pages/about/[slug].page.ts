@@ -14,6 +14,7 @@ export interface DocAttributes {
   slug: string;
   description: string;
   coverImage: string;
+  index?: number;
 }
 
 @Component({
@@ -55,7 +56,7 @@ export default class DocsComponent implements OnInit {
     private route: ActivatedRoute,
     private metaTagsService: MetaTagsService,
   ) {}
-  
+
   async ngOnInit(): Promise<void> {
     this.doc$.subscribe(doc => {
       if (!doc?.slug) {
@@ -98,7 +99,20 @@ export default class DocsComponent implements OnInit {
           title: doc.attributes.title,
           description: doc.attributes.description,
           icon: '',
-          link: `/about/${this.currentPage}/${doc.attributes.slug}`
+          link: `/about/${this.currentPage}/${doc.attributes.slug}`,
+          index: doc.attributes?.index,
+        });
+
+        // Sort links by index (if defined) or alphabetically
+        this.links = [...this.links].sort((a, b) => {
+          const aIndex = typeof a.index === 'number' ? a.index : Infinity;
+          const bIndex = typeof b.index === 'number' ? b.index : Infinity;
+
+          if (aIndex !== bIndex) {
+            return aIndex - bIndex;
+          } else {
+            return a.title.localeCompare(b.title);
+          }
         });
       }
     });

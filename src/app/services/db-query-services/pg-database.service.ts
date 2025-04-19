@@ -888,6 +888,23 @@ SELECT domains.*, registrars.name AS registrar_name, tags.name AS tag_name, host
       throw error;
     }
   }
+
+  getTotalDomains(): Observable<number> {
+    const query = `
+      SELECT COUNT(*) AS total
+      FROM domains
+    `;
+
+    return this.pgApiUtil.postToPgExecutor<{ total: string }>(query).pipe(
+      map(({ data }) => {
+        if (!data || data.length === 0) {
+          throw new Error('Failed to fetch total domains count');
+        }
+        return parseInt(data[0].total, 10) || 0;
+      }),
+      catchError((error) => this.handleError(error))
+    );
+  }
   
   getDomainsByEppCodes(statuses: string[]): Observable<Record<string, { domainId: string; domainName: string }[]>> {
     const query = `

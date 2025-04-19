@@ -34,7 +34,7 @@
   </p-card>
 
   <!-- Social login options -->
-  <p-card *ngIf="!isAuthenticated && !requireMFA && (enableSocialLogin$ | async)"
+  <p-card *ngIf="!isAuthenticated && !requireMFA && !showPasswordResetForm && (enableSocialLogin$ | async)"
     class="max-w-[500px] w-[calc(100%-0.5rem)]">
     <ng-template pTemplate="title">
       Continue With
@@ -44,6 +44,56 @@
       <p-button class="flex-1" label="Google" [outlined]="true" icon="pi pi-google" styleClass="w-full" (click)="loginWithGoogle()"></p-button>
       <p-button class="flex-1" label="Facebook" [outlined]="true" icon="pi pi-facebook" styleClass="w-full" (click)="loginWithFacebook()"></p-button>
     </div>
+  </p-card>
+
+  <!-- Reset Password -->
+  <p-card *ngIf="showPasswordResetForm"
+    class="max-w-[500px] w-[calc(100%-0.5rem)]">
+    <ng-template pTemplate="title">
+      Reset Password
+    </ng-template>
+
+    <form *ngIf="showNewPasswordSetForm" [formGroup]="form" (ngSubmit)="saveUpdatedPassword()" class="p-fluid">
+      <p>
+        Enter your new password below. This will be used to sign in to your account.
+      </p>
+      <div class="mb-4">
+        <label for="password" class="block">New Password</label>
+        <p-password id="password" formControlName="password" [toggleMask]="true"
+                    [promptLabel]="'Enter new password'"
+                    weakLabel="Too simple" mediumLabel="Average complexity" strongLabel="Complex password"
+                    [feedback]="true"></p-password>
+        <p-message *ngIf="form.get('password')?.invalid && form.get('password')?.touched" severity="error"
+                  text="Password is required and must be at least 6 characters long"></p-message>
+      </div>
+
+      <p-button type="submit" label="Set New Password" styleClass="w-full"
+                [disabled]="form.invalid || disabled" [loading]="showLoader"></p-button>
+      <p-message *ngIf="errorMessage" severity="error" [text]="errorMessage" styleClass="w-full mt-4"></p-message>
+      <p-message *ngIf="successMessage" severity="success" [text]="successMessage" styleClass="w-full mt-4"></p-message>
+    </form>
+
+    <form *ngIf="!showNewPasswordSetForm" [formGroup]="form" (ngSubmit)="sendPasswordResetEmail()" class="p-fluid">
+      <p>
+        Enter your email address and we will send you a link to reset your password.
+      </p>
+      <div class="mb-4">
+        <label for="email" class="block">Email</label>
+        <input type="email" pInputText id="email" formControlName="email" />
+        <p-message *ngIf="form.get('email')?.invalid && form.get('email')?.touched" severity="error"
+                  text="Valid email is required"></p-message>
+      </div>
+      <p-button type="submit" label="Send Reset Link" styleClass="w-full"
+                [disabled]="disabled" [loading]="showLoader"></p-button>
+      <p-message *ngIf="errorMessage" severity="error" [text]="errorMessage" styleClass="w-full mt-4"></p-message>
+      <p-message *ngIf="successMessage" severity="success" [text]="successMessage" styleClass="w-full mt-4"></p-message>
+
+      <a (click)="togglePasswordResetForm()"
+        class="flex justify-center mt-3 mx-auto underline cursor-pointer text-sm opacity-70 text-center">
+        Remembered Password?
+      </a>
+    </form>
+
   </p-card>
 
   <!-- Multi-factor auth code input -->
@@ -69,7 +119,7 @@
   </p-card>
 
   <!-- Login and signup form  -->
-  <p-card *ngIf="!isAuthenticated && !requireMFA" class="w-full max-w-[500px] w-[calc(100%-0.5rem)]">
+  <p-card *ngIf="!isAuthenticated && !requireMFA && !showPasswordResetForm" class="w-full max-w-[500px] w-[calc(100%-0.5rem)]">
     <ng-template pTemplate="title">
       {{ isLogin ? 'Login' : 'Sign Up' }}
     </ng-template>
@@ -125,6 +175,13 @@
 
         <p-button type="submit" [label]="isLogin ? 'Login' : 'Sign Up'" styleClass="w-full"
                   [disabled]="form.invalid || disabled" [loading]="showLoader"></p-button>
+
+      
+        <a *ngIf="isLogin" (click)="togglePasswordResetForm()"
+          class="flex justify-center mt-3 mx-auto underline cursor-pointer text-sm opacity-70 text-center">
+          Forgotten Password?
+        </a>
+      
       </form>
       <p-message *ngIf="errorMessage" severity="error" [text]="errorMessage" styleClass="w-full mt-4"></p-message>
       <p-message *ngIf="successMessage" severity="success" [text]="successMessage" styleClass="w-full mt-4"></p-message>

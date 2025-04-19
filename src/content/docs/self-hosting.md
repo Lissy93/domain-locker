@@ -24,7 +24,7 @@ In order to self-host Domain Locker, you will need a server.
 This can be anything from a low-powered SBC like a Raspberry Pi  to a dedicated VPS.
 
 
-Domain Locker is intended to be run as a Docker stack. You will need to have Docker and Docker Compose installed on your server.
+Domain Locker is intended to be run with Docker, so you will need to have Docker and Docker Compose installed on your server.
 You may also need a domain name and a valid SSL certificate for that domain.
 
 ---
@@ -32,12 +32,15 @@ You may also need a domain name and a valid SSL certificate for that domain.
 ## Deployment
 
 ```
-TODO
+curl -fsSL https://install.domain-locker.com | bash
 ```
+
 - Domain Locker is intended to be run in a container, so you'll need Docker [installed](https://docs.docker.com/engine/install/) on your host system.
 - We have a Docker image published to [`lissy93/domain-locker`](https://hub.docker.com/r/lissy93/domain-locker).
 You'll also need a Postgres database, such as the [`postgres:15-alpine`](https://hub.docker.com/_/postgres?tab=tags&name=15-alpine) container.
-- When starting the container, bind `PORT` to `3000`. Then specify the Postgres environmental variables: `DL_PG_HOST`, `DL_PG_PORT`, `DL_PG_USER`, `DL_PG_PASSWORD` and `DL_PG_NAME`.
+- The database is setup with [`db/setup-postgres.sh`](https://github.com/Lissy93/domain-locker/blob/main/db/setup-postgres.sh) which applies the [`schema.sql`](https://github.com/Lissy93/domain-locker/blob/main/db/schema.sql).
+- The database is configured with environmental vairbales for `DL_PG_HOST`, `DL_PG_PORT`, `DL_PG_USER`, `DL_PG_PASSWORD` and `DL_PG_NAME`
+- When starting the container, bind `PORT` to `3000`. Then specify the Postgres environmental variables from above.
 - As an example, you can view our [`docker-compose.yml`](https://github.com/Lissy93/domain-locker/blob/main/docker-compose.yml) file.
 
 ---
@@ -67,7 +70,9 @@ Self-hosted architecture is pretty simple; you have the pre-built app, served wi
 <details>
 <summary>How this differs from the managed instance?</summary>
 
-This differs slightly from the managed instance, as self-hosted is designed to be standalone, and run in a Docker stack. Whereas the managed instance has dependencies on external services. You can switch the version at anytime, using the `DL_ENV_TYPE` environmental variable, which is set to `selfHosted` by default. (but note that you will need to configure the third-party platforms and services if you switch to managed). Either way, you can find the docs for all the services used [here](/about/developing/third-party-docs).
+This differs slightly from the managed instance, as self-hosted is designed to be standalone, and run in an easy docker-compose without being reliant upon external services.
+
+Whereas the managed instance has dependencies on third-parties, which must be configured. You can switch the version at anytime, using the `DL_ENV_TYPE` environmental variable, which is set to `selfHosted` by default. (but note that you will need to configure the third-party platforms and services if you switch to managed). Either way, you can find the docs for all the services used [here](/about/developing/third-party-docs).
 
 <div class="screenshots-wrap">
 <img src="/articles/domain-locker-arch-self-hosted.svg" >

@@ -18,6 +18,7 @@ export interface DocAttributes {
   modifiedDate?: string;
   category?: string;
   noShowInContents?: boolean;
+  index?: number;
 }
 
 @Component({
@@ -37,7 +38,7 @@ export interface DocAttributes {
           <h2 class="capitalize mx-4">{{ categoryName }} Docs</h2>
         </a>
         <ul class="list-none p-0 mx-0 mt-4 flex flex-col">
-          <li *ngFor="let file of allDocs; index as index" class="border-x-0 border-b-0 border-t-2 border-solid border-surface-200">
+          <li *ngFor="let file of sortedDocs; index as index" class="border-x-0 border-b-0 border-t-2 border-solid border-surface-200">
             <a
               *ngIf="!file.attributes.noShowInContents"
               [routerLink]="['/about', categoryName, file.slug]"
@@ -76,6 +77,51 @@ export interface DocAttributes {
     }
     img { border-radius: 4px; display: flex; margin: 0 auto; max-width: 100%; }
     .sticky-nav { transition: top 0.3s ease; }
+    table {
+      width: 100%;
+      border: 1px solid var(--surface-200);
+      border-radius: 0.75rem;
+      border-collapse: separate;
+      border-spacing: 0;
+      overflow: hidden;
+      font-size: 0.875rem;
+    }
+    thead {
+      background-color: var(--surface-100);
+      color: var(--surface-700);
+    }
+    thead tr th {
+      padding: 0.75rem;
+      text-align: left;
+      font-weight: 600;
+      border-bottom: 1px solid var(--surface-200);
+    }
+    tbody tr {
+      background-color: var(--surface-0);
+    }
+    tbody tr:nth-child(even) {
+      background-color: var(--surface-50);
+    }
+    tbody td {
+      padding: 0.75rem;
+      border-bottom: 1px solid var(--surface-200);
+      overflow-wrap: anywhere;
+    }
+    .markdown-alert.markdown-alert-note {
+      background-color: var(--yellow-200);
+      color: var(--yellow-800);
+      border: 1px solid var(--yellow-600);
+      border-radius: 0.25rem;
+      padding: 0.5rem;
+      margin: 0.25rem 0 1rem 0;
+      font-size: 0.8rem;
+      line-height: 1rem;
+      p {
+        margin: 0.2rem 0 0 0;
+        display: block;
+        &::first-line { color: var(--yellow-400); }
+      }
+    }
   `]
 })
 export class DocsViewerComponent {
@@ -105,6 +151,7 @@ export class DocsViewerComponent {
   ) {}
 
   ngOnInit() {
+
     this.docSub = this.doc$.subscribe({
       next: (doc) => {
         // Set current doc when it resolves
@@ -115,7 +162,7 @@ export class DocsViewerComponent {
 
           // Set meta tags
           this.metaTagsService.setCustomMeta(title, description, undefined, coverImage || this.getFallbackImage(title));
-          
+
           // Set JSON-LD structured data
           this.metaTagsService.addStructuredData('article', {
             title: title,
@@ -178,6 +225,19 @@ export class DocsViewerComponent {
       this.loadAndRenderMermaid();
       this.hasRenderedMermaid = true;
     }
+  }
+
+  public get sortedDocs(): ContentFile<DocAttributes>[] {
+    return [...this.allDocs].sort((a, b) => {
+      const aIndex = typeof a.attributes.index === 'number' ? a.attributes.index : Infinity;
+      const bIndex = typeof b.attributes.index === 'number' ? b.attributes.index : Infinity;
+
+      if (aIndex !== bIndex) {
+        return aIndex - bIndex;
+      } else {
+        return a.attributes.title.localeCompare(b.attributes.title);
+      }
+    });
   }
 
   /** Called on window scroll. If user scrolled > 7rem => fix nav top at 7rem. Otherwise 0. */

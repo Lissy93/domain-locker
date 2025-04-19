@@ -6,11 +6,13 @@ import { PrimeNgModule } from '~/app/prime-ng.module';
 import DatabaseService from '~/app/services/database.service';
 import { ErrorHandlerService } from '~/app/services/error-handler.service';
 import { Router } from '@angular/router';
-import { catchError, finalize, lastValueFrom, map, Observable, of, switchMap, tap } from 'rxjs';
+import { catchError, finalize, firstValueFrom, lastValueFrom, map, Observable, of, switchMap, tap } from 'rxjs';
 import { GlobalMessageService } from '~/app/services/messaging.service';
 import { autoSubdomainsReadyForSave, filterOutIgnoredSubdomains } from '~/app/pages/assets/subdomains/subdomain-utils';
 import { SaveDomainData } from '~/app/../types/Database';
 import { EnvService } from '~/app/services/environment.service';
+import { FeatureService } from '~/app/services/features.service';
+import { HitCountingService } from '~/app/services/hit-counting.service';
 
 @Component({
   selector: 'app-quick-add-domain',
@@ -43,6 +45,8 @@ export default class QuickAddDomain {
     private router: Router,
     private messagingService: GlobalMessageService,
     private envService: EnvService,
+    private featureService: FeatureService,
+    private hitCountingService: HitCountingService,
   ) {}
 
   async onSubmit(): Promise<void> {
@@ -69,6 +73,25 @@ export default class QuickAddDomain {
         return;
       }
 
+      // Check limit
+      try {
+        const domainLimit = (await firstValueFrom(this.featureService.getFeatureValue('domainLimit'))) as number;
+        const domainCount = (await firstValueFrom(this.databaseService.instance.getTotalDomains())) as number;
+        if (domainLimit && domainCount >= domainLimit) {
+          this.messagingService.showError(
+            'Domain limit reached',
+            `You have reached your domain limit of ${domainLimit}. Please remove some domains before adding new ones.`
+          );
+          return;
+        }
+      } catch (error) {
+        this.errorHandler.handleError({
+          error,
+          message: 'Failed to check domain limit.',
+          location: 'Add Domain',
+        });
+      }
+
       // Fetch domain info
       const domainInfoEndpoint = this.envService.getEnvVar('DL_DOMAIN_INFO_API', '/api/domain-info');
       const domainInfo = (await lastValueFrom(
@@ -93,6 +116,10 @@ export default class QuickAddDomain {
         this.searchForSubdomains(domainName);
       }
       
+      // Track the event
+      this.hitCountingService.trackEvent('add_domain', { location: 'quick' });
+      
+      // Redirect or emit event
       if (this.isInModal) {
         this.$afterSave.emit(domainName);
       } else {

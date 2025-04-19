@@ -3,6 +3,7 @@ slug: api-endpoints
 title: API Endpoints
 description: Running certain logic on the server-side
 coverImage: 
+index: 10
 ---
 
 Sometimes logic needs to run on the server-side, such as when interacting with a database or external API. This is where API endpoints come in. We use H3 and Nitro for this, as it makes it easy to deploy serverless functions in a platform-agnostic way across runtimes.
