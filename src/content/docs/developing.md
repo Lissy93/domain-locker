@@ -48,7 +48,7 @@ DL_PG_NAME='domain_locker'
 
 ### Option 2) Supabase
 
-Deploy a new Supabase instance, apply the config from [dl-edge-config](https://github.com/Lissy93/dl-edge-config) and set the following environmental variables:
+Deploy a new Supabase instance, apply the config from [dl-sb-iac](https://github.com/Lissy93/dl-sb-iac) and set the following environmental variables:
 
 ```
 SUPABASE_URL=xxx

@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { SupabaseService } from '~/app/services/supabase.service';
 import { GlobalMessageService } from '~/app/services/messaging.service';
 import { ErrorHandlerService } from '~/app/services/error-handler.service';
+import { HitCountingService } from '~/app/services/hit-counting.service';
 
 @Component({
   standalone: true,
@@ -14,7 +15,8 @@ export default class AuthCallbackComponent implements OnInit {
     private supabaseService: SupabaseService,
     private router: Router,
     private messagingService: GlobalMessageService,
-    private errorHandlerService: ErrorHandlerService
+    private errorHandlerService: ErrorHandlerService,
+    private hitCountingService: HitCountingService,
   ) {}
 
   private errorHappened(error: Error | any) {
@@ -32,6 +34,7 @@ export default class AuthCallbackComponent implements OnInit {
       this.errorHappened(error);
     }
     // Successfully logged in
+    this.hitCountingService.trackEvent('auth_login_done', { method: 'social' });
     this.messagingService.showSuccess('Authenticated', 'Successfully logged in');
     this.router.navigate(['/']);
 

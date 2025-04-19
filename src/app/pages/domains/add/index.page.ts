@@ -18,6 +18,7 @@ import { Registrar } from '~/app/../types/common';
 import { subdomainsReadyForSave } from '~/app/pages/assets/subdomains/subdomain-utils';
 import { EnvService } from '~/app/services/environment.service';
 import { ErrorHandlerService } from '~/app/services/error-handler.service';
+import { HitCountingService } from '~/app/services/hit-counting.service';
 
 @Component({
   selector: 'app-add-domain',
@@ -67,6 +68,7 @@ export default class AddDomainComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private envService: EnvService,
     private errorHandler: ErrorHandlerService,
+    private hitCountingService: HitCountingService,
   ) {}
 
   ngOnInit(): void {
@@ -363,7 +365,7 @@ export default class AddDomainComponent implements OnInit, OnDestroy {
 
         await this.databaseService.instance.saveDomain(domainData);
         const name = domainData.domain.domain_name;
-
+        this.hitCountingService.trackEvent('add_domain', { location: 'full' });
         this.messageService.add({ severity: 'success', summary: 'Success', detail: `Domain ${name} added successfully` });
         this.router.navigate(['/domains', name]);
       } catch (error) {

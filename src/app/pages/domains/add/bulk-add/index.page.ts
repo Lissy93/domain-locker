@@ -28,7 +28,7 @@ import { notificationTypes } from '~/app/constants/notification-types';
 import { ErrorHandlerService } from '~/app/services/error-handler.service';
 import { GlobalMessageService } from '~/app/services/messaging.service';
 import { EnvService } from '~/app/services/environment.service';
-
+import { HitCountingService } from '~/app/services/hit-counting.service';
 
 /**
  * BulkAddComponent:
@@ -85,6 +85,7 @@ export default class BulkAddComponent implements OnInit, OnDestroy {
     private databaseService: DatabaseService,
     private router: Router,
     private envService: EnvService,
+    private hitCountingService: HitCountingService,
   ) {
     this.bulkAddForm = this.fb.group({
       domainList: ['', Validators.required],
@@ -447,6 +448,7 @@ private extractSubdomainName(fullSubdomain: string, parentDomain: string): strin
     ).subscribe({
       next: ({ domain, success }) => {
         if (success) {
+          this.hitCountingService.trackEvent('add_domain', { location: 'bulk' });
           this.savedDomains.push(domain);
           this.messageService.showSuccess('Success', `${domain} has been added to your account`);
         } else {

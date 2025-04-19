@@ -3,6 +3,7 @@ slug: environmental-variables
 title: Environmental Variables
 description: Configuring the global environment
 coverImage: 
+index: 5
 ---
 
 Environment variables allow Domain Locker to be configured dynamically at build-time without modifying the source code. They define settings such as database connections, API keys, analytics, and occasionally feature flags.

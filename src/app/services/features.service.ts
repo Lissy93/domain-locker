@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, combineLatest, firstValueFrom, map, Observable } from 'rxjs';
-import { BillingService } from '~/app/services/billing.service';
+import { BillingService, type BillingPlans, type SpecialPlans } from '~/app/services/billing.service';
 import { EnvService, type EnvironmentType } from '~/app/services/environment.service';
 import { features, type FeatureDefinitions } from '~/app/constants/feature-options';
 import { ErrorHandlerService } from './error-handler.service';
@@ -25,9 +25,26 @@ export class FeatureService {
 
     // Reactive update for feature configurations
     combineLatest([this.userPlan$]).subscribe(([userPlan]) => {
-      const features = this.resolveFeatures(userPlan || 'free');
+      const userBillingPlan = this.mapSpecialPlansToBillingPlans((userPlan as BillingPlans | SpecialPlans) || 'free');
+      const features = this.resolveFeatures(userBillingPlan || 'free');
       this.activeFeatures$.next(features);
     });
+  }
+
+  private mapSpecialPlansToBillingPlans(currentPlan: BillingPlans | SpecialPlans): BillingPlans {
+    switch (currentPlan) {
+      case 'sponsor':
+      case 'complimentary':
+        return 'hobby';
+      case 'tester':
+        return 'pro';
+      case 'demo':
+        return 'pro';
+      case 'super':
+        return 'enterprise';
+      default:
+        return currentPlan as BillingPlans;
+    }
   }
 
   /**

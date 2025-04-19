@@ -14,3 +14,11 @@ Anyone who owns a domain; whether one or many, can benefit from using Domain Loc
 Sign up is free, quick and easy. You can get all your domains in order within minutes.
 And we're built for good- you are in full control of your data,
 our code is open source (and can be self-hosted) and we are not financially motivated.
+
+---
+
+There's also a pro version, which includes some advanced features, such as:
+- Change notifications,
+so you can get alerted (via mail, webhook, WhatsApp, SMS, Slack, etc) if something important changes.
+- Detailed reports and metrics showing stats about all your domains
+- Domain and website monitoring, for performance, uptime, quality, etc

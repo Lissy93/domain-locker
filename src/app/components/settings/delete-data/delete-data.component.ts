@@ -53,7 +53,7 @@ export class DeleteAccountComponent {
       title: 'Leave Feedback',
       body: 'Considering closing your account, or facing issues with Domain Locker? We\'d love to hear your feedback, so that we can improve.',
       buttonLabel: 'Leave Feedback',
-      buttonLink: '/about/support/contact',
+      buttonLink: '/about/support/feedback',
       buttonIcon: 'pi pi-comment',
       buttonSeverity: 'success',
     },

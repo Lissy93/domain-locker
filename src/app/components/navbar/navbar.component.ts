@@ -47,6 +47,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
   isAuthenticated: boolean = false;
   unreadNotificationsCount: number = 0;
   userPlan: EnvironmentType | UserType | null = null;
+  userPlanName = '';
   planColor: string = 'primary';
 
   settingsEnabled$ = this.featureService.isFeatureEnabled('accountSettings');
@@ -90,6 +91,10 @@ export class NavbarComponent implements OnInit, AfterViewInit {
     const environmentType = this.environmentService.getEnvironmentType();
     const updatePlan = (plan: EnvironmentType | UserType | null) => {
       this.userPlan = plan;
+      this.userPlanName = this.userPlan || 'free';
+      if (this.userPlan === 'sponsor') {
+        this.userPlanName = 'supporter';
+      }
       this.planColor = this.getColorForPlan(plan);
       this.cdr.detectChanges();
     };

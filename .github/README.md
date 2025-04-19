@@ -5,7 +5,7 @@
   <b>🌐<a href="https://domain-locker.com">domain-locker.com</a></b>
 </p>
 <p align="center">
-  <img width="48" src="https://i.ibb.co/Zp8mm1kp/dl-square.png" />
+  <img width="48" src="https://github.com/Lissy93/domain-locker/blob/main/src/assets/logo.png?raw=true" />
 </p>
 
 ---
@@ -18,7 +18,8 @@
 	- [Features](#features)
 	- [Live Demo](#demo)
 - [Get Started](#get-started)
-	- [Self-Hosting](#self-hosting)
+	- [Domain-Locker.com](#option-1-domain-lockercom)
+	- [Self-Hosting](#option-2-self-hosting)
 - [Developing](#developing)
   - [App Setup](#project-setup)
   - [Architecture](#architecture)
@@ -46,7 +47,7 @@ You'll never again loose track of your domains, miss an expiration, or forget wh
 </p>
 
 <details>
-<summary>More...</summary>
+<summary>More screenshots...</summary>
 <p align="center">
 <img width="800" src="/.github/screenshots/domain-locker-viz-screenshots.png" />
 <img width="800" src="/.github/screenshots/domain-locker-settings-screenshots.png" />
@@ -67,6 +68,42 @@ You'll never again loose track of your domains, miss an expiration, or forget wh
 - 🔖 Add categories, and link related resources to domains
 - 🎨 Multi-language support, dark/light/custom themes
 
+<details>
+<summary>More features...</summary>
+
+```mermaid
+%%{init: {"theme": "default"}}%%
+kanban
+    🌐 Domain Data
+        🛰️ Auto-fetch assets: SSL, hosts, registrars, IPs, DNS, subdomains
+        🔎 Detailed domain data like SSL, hosts, registrars, IPs and more
+        🏷️ Enrich data with tags, notes, costs, and other metadata to track
+        🖇️ Connection with external tools for more data
+    📊 Metrics
+        🗂️ Breakdown of domain providers: registrars, SSL, hosts
+        🕒 Timeline of registrations and upcoming expirations
+        📶 Monitor domain uptime, performance and health
+        💹 Record valuation, purchase prices and renewal costs
+    🔔 Notifications
+        ⏱️ Get notified before your domain is due to expire
+        📲 Configurable alerts for monitoring changes in domain config
+        📬 Multiple channels: webhook, email, SMS, Slack, Telegram, WhatsApp and more
+        🛤️ Track change history of each domain
+    🛡️ Data
+        💽 Own your data: Export, import, delte at any time
+        ⌨️ Programatic access via a REST or GraphQL API, or with RSS, iCal, Prometheus integrations
+        📈 Keep detailed change logs of all domain updates
+        🔐 Transparent privacy policy
+    🛠️ Customization
+        👤 SSO and 2FA supported
+        🎨 Custom themes, fonts, light/dark mode
+        🌍 Multi-language support
+        💻 Open-source and self-hostable
+        ✅ Accessible, responsive, and well-documented
+```
+
+</details>
+
 ### Demo
 
 Try the live demo to [demo.domain-locker.com](https://demo.domain-locker.com) <br>
@@ -86,13 +123,11 @@ The starter plan is free, and no setup is required. Just sign in, add your domai
 
 ### Option 2: Self-Hosting
 
-> [!WARNING]
-> The self-hosted version is in Alpha phase, and still under active development
-
-
 ```bash
-TODO
+curl -fsSL https://install.domain-locker.com | bash
 ```
+
+##### Details
 
 - **Prerequisites**:
   - Domain Locker is intended to be run in a container, so you'll need Docker [installed](https://docs.docker.com/engine/install/) on your host system.
@@ -100,14 +135,47 @@ TODO
   - We have a Docker image published to [`lissy93/domain-locker`](https://hub.docker.com/r/lissy93/domain-locker).
   - You'll also need a Postgres database, such as the [`postgres:15-alpine`](https://hub.docker.com/_/postgres?tab=tags&name=15-alpine) container.
 - **Environment**:
-  - When starting the container, bind `PORT` to `3000`.
-  - Then specify the Postgres environmental variables: `DL_PG_HOST`, `DL_PG_PORT`, `DL_PG_USER`, `DL_PG_PASSWORD` and `DL_PG_NAME`.
+  - When starting the container, bind `3000` in the container, to your host `PORT` (defaults to `3000`).
+  - Then specify the Postgres vars: `DL_PG_HOST`, `DL_PG_PORT`, `DL_PG_USER`, `DL_PG_PASSWORD` and `DL_PG_NAME`.
+- **Volumes**:
+  - Mount a volume to `/var/lib/postgresql/data` to persist your Postgres data
 - **Crons**
   - `/api/domain-updater` - Execute this daily, to keep domain data up-to-date and trigger notifications
   - `/api/uptime-monitor` - Execute this every N minutes, to monitor website uptime and performance
 - **Example**:
   - Putting it all together, you can use our [`docker-compose.yml`](https://github.com/Lissy93/domain-locker/blob/main/docker-compose.yml) file.
   - For more details, view the [Self-Hosting Docs](https://domain-locker.com/about/self-hosting)
+
+<details>
+<summary>Docker Diagram</summary>
+
+```mermaid
+flowchart TB
+  subgraph Volume Mounts
+    direction TB
+    Vpostgresdata([📦 postgres_data]) x-. /var/lib/postgresql/data .-x postgres[(🐘 PostgreSQL DB)]
+    Vdbschemasql{{📄 ./db/schema.sql}} -. Mounted on Init .-> postgres
+  end
+
+  subgraph Network
+    direction TB
+    domainlockernetwork[/🌐 domain_locker_network/]
+  end
+
+  postgres -.- domainlockernetwork
+
+  subgraph app[⚙️ App Container]
+    SSR[HTTP Server]
+    CLIENT[Client App]
+    API[API Endpoints]
+    SSR --> CLIENT
+    SSR --> API
+  end
+
+  app -.- domainlockernetwork
+```
+
+</details>
 
 ---
 
@@ -448,6 +516,48 @@ If you're new to Git, the general flow of contributing, is as follows:
 - Checkout a branch, with `git checkout -b feature-branch`, then `git add` your changes and `git commit` using conventional commits, before `git push`ing to your branch
 - Head back to GitHub, and you can then open up a PR against our `main` branch. Don't forget to include what you changed, why and link to any associated issues.
 - We'll then review, feedback, and merge, and once released your changes will go live to prod, as well as be available in the latest Docker image.
+
+<details>
+	<summary>Git Branch Example</summary>
+
+```mermaid
+%%{init: {"theme": "default"}}%%
+gitGraph
+    commit id: "Initial commit"
+    branch trunk
+    commit id: "Feature A"
+    commit id: "Feature B"
+    commit id: "v1.0.0 (Tag)"
+    branch demo
+    checkout main
+    commit id: "Feature C"
+    commit id: "v1.1.0 (Tag)"
+    checkout demo
+    merge main id: "Merge main into demo"
+    checkout main
+    commit id: "Feature D"
+    commit id: "v1.2.0 (Tag)"
+    checkout demo
+    merge main id: "Merge main into demo (v1.2.0)"
+    checkout main
+    branch feature-branch-1
+    commit id: "Contributor Feature 1"
+    checkout main
+    merge feature-branch-1 id: "Merge contributor feature 1"
+    commit id: "v1.3.0 (Tag)"
+    checkout demo
+    merge main id: "Merge main into demo (v1.3.0)"
+    checkout main
+    branch feature-branch-2
+    commit id: "Contributor Feature 2"
+    checkout main
+    merge feature-branch-2 id: "Merge contributor feature 2"
+    commit id: "v1.4.0 (Tag)"
+    checkout demo
+    merge main id: "Merge main into demo (v1.4.0)"
+```
+
+</details>
 
 ---
 

@@ -135,7 +135,6 @@ export const settingsLinks = [
   { label: 'Manage Plan', icon: 'pi pi-shop', routerLink: '/settings/upgrade' },
   { label: 'Developer Options', icon: 'pi pi-code', routerLink: '/settings/developer-options' },
   { label: 'Danger Zone', icon: 'pi pi-exclamation-triangle', routerLink: '/settings/delete-account' },
-  { label: 'Advanced', icon: 'pi pi-microchip', routerLink: '/settings/advanced' },
 ];
 
 export const aboutLinks = [

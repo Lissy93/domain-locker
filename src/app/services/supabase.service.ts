@@ -320,6 +320,20 @@ export class SupabaseService {
     }
   }
 
+  async sendPasswordResetEmail(email: string): Promise<void> {
+    const { error } = await this.supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/login?reset=true`,
+    });
+
+    if (error) {
+      this.errorHandler.handleError({
+        message: 'Failed to send password reset email',
+        error,
+        location: 'SupabaseService.sendPasswordResetEmail',
+      });
+    }
+  }
+
   async verifyEmail() {
     // TODO: Implement email verification logic
     const { error } = await this.supabase.auth.getUser();
@@ -336,7 +350,8 @@ export class SupabaseService {
   /* Set password, used for when users have logged in via a social auth provider */
   async setPassword(newPassword: string): Promise<void> {
     const { error } = await this.supabase.auth.updateUser({ password: newPassword });
-    if (error) { throw error; }
+    if (error) throw error;
+
     // Mark password as set, so we don't prompt user again
     const { error: metadataError } = await this.supabase.auth.updateUser({
       data: { has_password: true },

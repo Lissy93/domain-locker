@@ -1,6 +1,6 @@
 
 @if (!isAuthenticated) {
-  <div class="flex flex-col gap-2">
+  <div class="flex flex-col gap-2 duration-200 transition-all {{ loading ? 'opacity-80' : 'opacity-100' }}">
     <app-hero />
     <p-divider />
     <h3 class="mt-2 mb-0 text-3xl">{{ 'HOME.FEATURES' | translate }}</h3>
@@ -25,9 +25,9 @@
 
   <app-demo-welcome *ngIf="isDemoInstance" [isDemoInstance]="true" />
   <app-demo-welcome *ngIf="isDevInstance" [isDevInstance]="true" />
-  
+
   <loading *ngIf="loading" [loadingTitle]="'HOME.LOADING_TITLE' | translate" [loadingDescription]="'HOME.LOADING_DESCRIPTION' | translate" />
-  
+
   @if (!loading && domains.length === 0) {
     <welcome />
   } @else if (!loading) {
