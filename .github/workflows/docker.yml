@@ -107,7 +107,7 @@ jobs:
             org.opencontainers.image.version=${{ steps.docker_tags.outputs.tag_name }}
             org.opencontainers.image.revision=${{ github.sha }}
 
-      - name: 🔀 Extract digest from Docker image
+      - name: 🧬 Extract digest from Docker image
         id: digest
         run: |
           echo "digest=${{ steps.build.outputs.digest }}" >> $GITHUB_OUTPUT
@@ -131,7 +131,7 @@ jobs:
           upload-artifact: false
 
       - name: 🪪 Attest SBOM to registry
-        if: github.event_name != 'workflow_dispatch' || github.event.inputs.dry_run != 'true'
+        if: matrix.target == 'ghcr' && (github.event_name != 'workflow_dispatch' || github.event.inputs.dry_run != 'true')
         uses: actions/attest-sbom@v1
         continue-on-error: true
         with:
@@ -140,4 +140,3 @@ jobs:
           sbom-path: sbom.spdx.json
           push-to-registry: true
           github-token: ${{ secrets.BOT_TOKEN }}
-
