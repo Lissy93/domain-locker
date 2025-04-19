@@ -10,6 +10,7 @@ import { GlobalMessageService } from '~/app/services/messaging.service';
 import { ErrorHandlerService } from '~/app/services/error-handler.service';
 import { FeatureService } from '~/app/services/features.service';
 import { EnvService } from '~/app/services/environment.service';
+import { HitCountingService } from '~/app/services/hit-counting.service';
 import { LogoComponent } from '~/app/components/home-things/logo/logo.component';
 import { NgxTurnstileModule, NgxTurnstileComponent } from 'ngx-turnstile';
 
@@ -75,6 +76,7 @@ export default class LoginPageComponent implements OnInit {
     private errorHandlerService: ErrorHandlerService,
     private featureService: FeatureService,
     private environmentService: EnvService,
+    private hitCountingService: HitCountingService,
     @Inject(PLATFORM_ID) private platformId: Object,
   ) {
     this.form = this.fb.group({
@@ -238,6 +240,7 @@ export default class LoginPageComponent implements OnInit {
   }
 
   signOut() {
+    this.hitCountingService.trackEvent('auth_logout', { location: 'login' });
     this.supabaseService.signOut();
   }
 
@@ -248,6 +251,7 @@ export default class LoginPageComponent implements OnInit {
 
   async loginWithGitHub(): Promise<void> {
     try {
+      this.hitCountingService.trackEvent('auth_login_start', { method: 'social', provider: 'github' });
       await this.supabaseService.signInWithGitHub();
     } catch (error: any) {
       this.errorHandlerService.handleError({ error, message: 'Failed to sign in with GitHub', showToast: true, location: 'login' });
@@ -256,6 +260,7 @@ export default class LoginPageComponent implements OnInit {
 
   async loginWithGoogle(): Promise<void> {
     try {
+      this.hitCountingService.trackEvent('auth_login_start', { method: 'social', provider: 'google' });
       await this.supabaseService.signInWithGoogle();
     } catch (error: any) {
       this.errorHandlerService.handleError({
@@ -269,6 +274,7 @@ export default class LoginPageComponent implements OnInit {
 
   async loginWithFacebook(): Promise<void> {
     try {
+      this.hitCountingService.trackEvent('auth_login_start', { method: 'social', provider: 'facebook' });
       await this.supabaseService.signInWithFacebook();
     } catch (error: any) {
       this.errorHandlerService.handleError({
@@ -283,6 +289,7 @@ export default class LoginPageComponent implements OnInit {
   async sendPasswordResetEmail() {
     this.resetMessages();
     this.showLoader = true;
+    this.hitCountingService.trackEvent('auth_password_reset_start');
     try {
       const email = this.form.get('email')?.value;
       if (!email) {
@@ -335,6 +342,7 @@ export default class LoginPageComponent implements OnInit {
     password: string;
     mfaCode?: string;
   }): Promise<void> {
+    this.hitCountingService.trackEvent('auth_login_start', { method: 'email' });
     if (this.requireMFA && credentials.mfaCode) {
       await this.verifyMFACode(credentials.mfaCode);
     } else {
@@ -387,6 +395,7 @@ export default class LoginPageComponent implements OnInit {
     email: string;
     password: string;
   }): Promise<void> {
+    this.hitCountingService.trackEvent('auth_signup_start', { method: 'email' });
     const delayTimeout = 15000;
     const authPromise = this.supabaseService.signUp(
       credentials.email,
@@ -413,9 +422,11 @@ export default class LoginPageComponent implements OnInit {
     if (this.requireMFA) {
       this.successMessage = '2FA verification is enabled. Please enter your code when prompted.';
     } else if (this.isLogin) {
+      this.hitCountingService.trackEvent('auth_login_done', { method: 'email' });
       this.successMessage = 'Login successful! Redirecting...';
       this.router.navigate(['/']);
     } else {
+      this.hitCountingService.trackEvent('auth_signup_done', { method: 'email' });
       this.messagingService.showSuccess('Sign Up Successful', 'Awaiting account confirmation...');
       this.successMessage = 'Sign up successful! Please check your email to confirm your account.';
       this.disabled = true;

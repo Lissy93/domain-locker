@@ -12,6 +12,7 @@ import { autoSubdomainsReadyForSave, filterOutIgnoredSubdomains } from '~/app/pa
 import { SaveDomainData } from '~/app/../types/Database';
 import { EnvService } from '~/app/services/environment.service';
 import { FeatureService } from '~/app/services/features.service';
+import { HitCountingService } from '~/app/services/hit-counting.service';
 
 @Component({
   selector: 'app-quick-add-domain',
@@ -45,6 +46,7 @@ export default class QuickAddDomain {
     private messagingService: GlobalMessageService,
     private envService: EnvService,
     private featureService: FeatureService,
+    private hitCountingService: HitCountingService,
   ) {}
 
   async onSubmit(): Promise<void> {
@@ -114,6 +116,10 @@ export default class QuickAddDomain {
         this.searchForSubdomains(domainName);
       }
       
+      // Track the event
+      this.hitCountingService.trackEvent('add_domain', { location: 'quick' });
+      
+      // Redirect or emit event
       if (this.isInModal) {
         this.$afterSave.emit(domainName);
       } else {
