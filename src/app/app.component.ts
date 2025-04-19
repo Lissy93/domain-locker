@@ -76,7 +76,10 @@ import { MetaTagsService } from '~/app/services/meta-tags.service';
 })
 export class AppComponent implements OnInit, OnDestroy {
   private subscription: Subscription | undefined;
-  private publicRoutes =  new Set(['/home', '/about', '/login', '/advanced']);
+  private publicRoutes =  new Set([
+    '/home', '/about', '/login', '/advanced',
+    '/advanced/status', '/advanced/debug-info', '/advanced/admin-links',
+  ]);
   private fullWidthRoutes: string[] = ['/settings', '/stats'];
 
   public loading: boolean = true;
@@ -93,7 +96,7 @@ export class AppComponent implements OnInit, OnDestroy {
     private globalMessageService: GlobalMessageService,
     private errorHandler: ErrorHandlerService,
     public _themeService: ThemeService,
-    public _hitCountingService: HitCountingService,
+    public hitCountingService: HitCountingService,
     private accessibilityService: AccessibilityService,
     private environmentService: EnvService,
     private featureService: FeatureService,
@@ -112,7 +115,10 @@ export class AppComponent implements OnInit, OnDestroy {
       .pipe(filter((e) => e instanceof NavigationEnd))
       .subscribe((event) => {
         const navEndEvent = event as NavigationEnd;
+        // Set meta tags for the current route
         this.metaTagsService.setRouteMeta(navEndEvent.urlAfterRedirects);
+        // Track page view for analytics
+        this.hitCountingService.trackPageView(navEndEvent.urlAfterRedirects);
     });
 
     // Check auth state
@@ -122,12 +128,6 @@ export class AppComponent implements OnInit, OnDestroy {
         if (event instanceof NavigationEnd) {
           const currentRoute = event.urlAfterRedirects || event.url;
           this.pagePath = currentRoute;
-
-          // if (currentRoute.startsWith('/advanced')) {
-          //   this.loading = false;
-          //   this.metaTagsService.allowRobots(false);
-          //   return;
-          // }
 
           // Configuration for docs pages (at /about)
           if (currentRoute.startsWith('/about')) {
