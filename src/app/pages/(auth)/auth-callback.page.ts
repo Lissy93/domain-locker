@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { Router } from '@angular/router';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { SupabaseService } from '~/app/services/supabase.service';
 import { GlobalMessageService } from '~/app/services/messaging.service';
 import { ErrorHandlerService } from '~/app/services/error-handler.service';
@@ -17,6 +18,7 @@ export default class AuthCallbackComponent implements OnInit {
     private messagingService: GlobalMessageService,
     private errorHandlerService: ErrorHandlerService,
     private hitCountingService: HitCountingService,
+    @Inject(PLATFORM_ID) private platformId: Object,
   ) {}
 
   private errorHappened(error: Error | any) {
@@ -29,14 +31,24 @@ export default class AuthCallbackComponent implements OnInit {
   }
 
   async ngOnInit(): Promise<void> {
-    const { data, error } = await this.supabaseService.supabase.auth.exchangeCodeForSession(window.location.href);
-    if (error) {
-      this.errorHappened(error);
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
     }
+    
+    try {
+    const { data, error } = await this.supabaseService.supabase.auth.exchangeCodeForSession(window.location.href);
+      if (error) {
+        this.errorHappened(error);
+        return;
+      }
+    } catch (error) {
+      this.errorHappened(error);
+      return;
+    }
+    
     // Successfully logged in
     this.hitCountingService.trackEvent('auth_login_done', { method: 'social' });
     this.messagingService.showSuccess('Authenticated', 'Successfully logged in');
     this.router.navigate(['/']);
-
   }
 }
