@@ -367,7 +367,7 @@ export default class AddDomainComponent implements OnInit, OnDestroy {
         const name = domainData.domain.domain_name;
         this.hitCountingService.trackEvent('add_domain', { location: 'full' });
         this.messageService.add({ severity: 'success', summary: 'Success', detail: `Domain ${name} added successfully` });
-        this.router.navigate(['/domains', name]);
+        this.router.navigate(['/domains', name], { queryParams: { update: true } });
       } catch (error) {
         this.handleError(error);
       }
@@ -521,7 +521,7 @@ export default class AddDomainComponent implements OnInit, OnDestroy {
    * Handles general errors
    */
   private handleError(error: any): void {
-    
+
     this.errorHandler.handleError({
       error,
       showToast: true,
