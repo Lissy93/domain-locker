@@ -126,7 +126,7 @@ export class BillingService {
       return data;
     } catch (error) {
       throw error;
-    }
+    } 
   }
 
 
@@ -147,7 +147,7 @@ export class BillingService {
         throw new Error(data?.error || 'Failed to create checkout session');
       }
       return data.url;
-    } catch (error) {
+    } catch (error) { 
       throw error;
     }
   }
