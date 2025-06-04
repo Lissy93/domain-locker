@@ -128,7 +128,7 @@ export class BreadcrumbsComponent implements OnInit, OnChanges {
       return this.navLinksMap[path].icon;
     }
     const icons: { [key: string]: string } = {
-      'settings': 'wrench',
+      'settings': 'cog',
       'about': 'lightbulb',
       'contact': 'headphones',
       'notifications': 'bell',
@@ -150,6 +150,9 @@ export class BreadcrumbsComponent implements OnInit, OnChanges {
       'support': 'headphones',
       'self-hosted-support': 'server',
       'guides': 'book',
+      'advanced': 'bolt',
+      'diagnostic-actions': 'wrench',
+      'admin-links': 'link',
     };
     const iconName = icons[path];
     if (!iconName) return;

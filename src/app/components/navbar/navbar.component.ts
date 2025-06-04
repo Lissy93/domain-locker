@@ -158,7 +158,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
       this.items = authenticatedNavLinks as MenuItem[];
       this.itemsWithSettings = [
         ...(authenticatedNavLinks as MenuItem[]),
-        { label: 'Settings', routerLink: '/settings', icon: 'pi pi-wrench',  items: settingsLinks as MenuItem[] },
+        { label: 'Settings', routerLink: '/settings', icon: 'pi pi-cog',  items: settingsLinks as MenuItem[] },
       ];
     } else {
       // User is not logged in, show docs links

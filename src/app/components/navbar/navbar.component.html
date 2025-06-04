@@ -71,7 +71,7 @@
     <a routerLink="/settings"  *ngIf="isAuthenticated && ((settingsEnabled$ | async) && isSupabaseEnabled)">
       <button
         pButton
-        icon="pi pi-wrench"
+        icon="pi pi-cog"
         pTooltip="Settings"
         tooltipPosition="bottom"
         showDelay="500"
@@ -107,7 +107,7 @@
       </p-button>
       <p-button
         routerLink="/settings"
-        icon="pi pi-wrench"
+        icon="pi pi-cog"
         severity="contrast"
         [text]="true"
         aria-label="Settings"
