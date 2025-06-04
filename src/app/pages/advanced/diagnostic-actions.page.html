@@ -1,1 +1,66 @@
-<div></div>
+
+
+
+<div class="flex justify-content-between align-items-center mb-4">
+  <h2>Endpoint Tests</h2>
+  <div>
+    <p-button
+     *ngIf="showReset; else showRunAll"
+      severity="danger"
+      label="Reset"
+      icon="pi pi-refresh"
+      (click)="resetAllEndpointTests()"
+      size="small"
+    />
+    <ng-template #showRunAll>
+      <p-button
+        severity="success"
+        label="Run All"
+        (click)="runAllEndpointTests()"
+        icon="pi pi-play-circle"
+        size="small"
+      />
+    </ng-template>
+  </div>
+</div>
+
+<div class="space-y-4">
+  <!-- Loop over each endpoint -->
+  <div *ngFor="let ep of endpoints" class="p-card px-4 py-3">
+    <div class="flex justify-content-between align-items-center">
+      <div>
+        <h3 class="m-0">{{ ep.label }}</h3>
+        <code class="mb-2 opacity-70 text-sm">
+          <i class="pi pi-chevron-right text-xs"></i>
+          {{ ep.method || 'GET'}}
+          <a [href]="ep.url">{{ ep.url }}</a>
+        </code>
+      </div>
+      <p-button
+        severity="info"
+        label="Run"
+        icon="pi pi-play-circle"
+        [loading]="ep.loading"
+        (click)="testEndpoint(ep)"
+      ></p-button>
+    </div>
+
+    <p class="my-1 opacity-70 italic text-sm">{{ ep.description }}</p>
+
+    <!-- Display result only after run -->
+    <div *ngIf="ep.success === true" class="mt-2 p-2 bg-green-100 border border-green-400 rounded">
+      <p class="m-0 text-green-800 font-semibold">PASS</p>
+      <p class="text-green-700 m-0">Request finished with a response of {{ ep.statusCode }}, returning {{ep.bytesReceived}} bytes in {{ep.timeTaken}}ms</p>
+    </div>
+    <div *ngIf="ep.success === false" class="mt-2 p-2 bg-red-100 border border-red-400 rounded">
+      <p class="m-0 text-red-800 font-semibold">FAIL</p>
+      <p class="text-red-700 m-0">{{ ep.errorMsg }}</p>
+      <p class="text-red-700 m-0 opacity-70">Request finished with a response of {{ ep.statusCode }}, returning {{ep.bytesReceived}} bytes in {{ep.timeTaken}}ms</p>
+    </div>
+
+    <details *ngIf="ep.response" class="mt-2">
+      <summary class="cursor-pointer"><h4 class="inline">Response</h4></summary>
+      <pre class="p-2 bg-bluegray-900 text-bluegray-100 rounded-sm text-xs overflow-x-hidden overflow-y-auto max-h-72">{{ ep.response | json }}</pre>
+    </details>
+  </div>
+</div>
