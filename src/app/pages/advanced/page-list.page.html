@@ -1,0 +1,33 @@
+<!-- page-list.page.html -->
+<div class="p-card p-2">
+  <h2>Page Routes</h2>
+  <ul>
+    <ng-container *ngFor="let route of routeTree">
+      <ng-template
+        [ngTemplateOutlet]="recursiveList"
+        [ngTemplateOutletContext]="{ routes: [route] }"
+      ></ng-template>
+    </ng-container>
+  </ul>
+</div>
+
+<ng-template #recursiveList let-routes="routes">
+  <ul>
+    <li *ngFor="let r of routes" [title]="r.path">
+      <ng-container *ngIf="r.link && !r.link.includes('('); else noLink">
+        <a class="text-primary" [routerLink]="r.link">{{ r.name }}</a>
+      </ng-container>
+      <ng-template #noLink>
+        <span class="text-blue-400">{{ r.name }}</span> *️⃣
+      </ng-template>
+      {{ r.isPublic ? '🔓' : '🔒' }}
+      <a *ngIf="r.path && !r.path.includes('sitemap')" [href]="'https://github.com/Lissy93/domain-locker/blob/HEAD/'+r.path">📄</a>
+      <ng-container *ngIf="r.children?.length">
+        <ng-template
+          [ngTemplateOutlet]="recursiveList"
+          [ngTemplateOutletContext]="{ routes: r.children }"
+        ></ng-template>
+      </ng-container>
+    </li>
+  </ul>
+</ng-template>

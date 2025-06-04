@@ -13,13 +13,11 @@ import { ErrorHandlerService } from '~/app/services/error-handler.service';
   imports: [DomainCollectionComponent, PrimeNgModule, CommonModule, LoadingComponent],
   template: `
     <app-domain-view 
-      *ngIf="!loading; else loadingTemplate" 
+      *ngIf="!loading"
+      [loading]="loading"
       [domains]="domains"
       ($triggerReload)="newDomainAdded()"
     />
-    <ng-template #loadingTemplate>
-      <loading loadingTitle="Loading" loadingDescription="Fetching domains from database" />
-    </ng-template>
   `,
 })
 export default class DomainAllPageComponent implements OnInit {

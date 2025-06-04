@@ -7,7 +7,7 @@
     </div>
     <p *ngIf="error.location" class="m-0 text-sm text-gray-500 font-mono">Occurred in {{error.location}}</p>
     <div>
-      <pre *ngIf="error.error"
+      <pre *ngIf="error.error && (error.error | json) !== '{}'"
       class="p-2 rounded-md text-sm overflow-x-auto bg-surface-0 text-red-400">{{ error.error | json }}</pre>
     </div>
     <p-divider *ngIf="!isLast" />
