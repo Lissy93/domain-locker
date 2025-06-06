@@ -9,6 +9,97 @@
   <span class="text-red-400">Actions performed here may result in unintended changes or irreversible deletion of your saved data.</span>
 </blockquote>
 
+
+<div class="flex flex-col gap-3 mt-3">
+  <h2>App Checks</h2>
+
+  <div class="p-card px-4 py-3">
+    <div class="flex justify-content-between align-items-center">
+      <div>
+        <h3 class="m-0">Check for Updates</h3>
+        <p class="my-1 opacity-70 italic text-sm">Validates that you are running the latest version of Domain Locker</p>
+      </div>
+      <p-button
+        severity="info"
+        label="Run"
+        icon="pi pi-play-circle"
+        (click)="checkAppVersion()"
+      ></p-button>
+    </div>
+
+    <div *ngIf="updateStatus != 'pending'" class="mt-2 p-2 rounded border"
+      [ngClass]="{
+        'border-green-400 bg-green-100': updateStatus === 'up_to_date',
+        'border-blue-400 bg-blue-100': updateStatus === 'update_available',
+        'border-red-400 bg-red-100': updateStatus === 'error'
+      }">
+      <p class="m-0 font-semibold"
+      [ngClass]="{
+        'text-green-800': updateStatus === 'up_to_date',
+        'text-blue-800': updateStatus === 'update_available',
+        'text-red-800': updateStatus === 'error'
+      }">
+        {{ updateStatus === 'update_available' ? 'INFO' : updateStatus === 'up_to_date' ? 'PASS' : updateStatus === 'error' ? 'FAIL' : '' }}
+      </p>
+      <p class="m-0"
+      [ngClass]="{
+        'text-green-700': updateStatus === 'up_to_date',
+        'text-blue-700': updateStatus === 'update_available',
+        'text-red-700': updateStatus === 'error'
+      }">
+        {{ updateMessage }}
+      </p>
+    </div>
+  </div>
+  
+
+  <div class="p-card px-4 py-3">
+    <div class="flex justify-content-between align-items-center">
+      <div>
+        <h3 class="m-0">Verify Database Connection</h3>
+        <p class="my-1 opacity-70 italic text-sm">Validates the database connection, and runs read tests for your data across tables</p>
+      </div>
+      <p-button
+        severity="info"
+        label="Run"
+        icon="pi pi-play-circle"
+        (click)="checkDatabaseConnection()"
+      ></p-button>
+    </div>
+
+    <div *ngIf="databaseSuccess" class="mt-2 p-2 rounded border"
+      [ngClass]="{
+        'border-green-400 bg-green-100': databaseSuccess === 'passed',
+        'border-blue-400 bg-blue-100': databaseSuccess === 'some_errors',
+        'border-red-400 bg-red-100': databaseSuccess === 'errored'
+      }">
+      <p class="m-0 font-semibold"
+      [ngClass]="{
+        'text-green-800': databaseSuccess === 'passed',
+        'text-blue-800': databaseSuccess === 'some_errors',
+        'text-red-800': databaseSuccess === 'errored'
+      }">
+        {{ databaseSuccess === 'passed' ? 'PASS' : 'FAIL' }}
+      </p>
+      <p class="m-0"
+      [ngClass]="{
+        'text-green-700': databaseSuccess === 'passed',
+        'text-blue-700': databaseSuccess === 'some_errors',
+        'text-red-700': databaseSuccess === 'errored'
+      }">
+        {{ databaseSuccess === 'passed' ? 'Database connection is healthy and all read tests passed.' : 'Database check errored' }}
+      </p>
+    </div>
+
+    <pre *ngIf="databaseResults"
+      class="p-2 bg-bluegray-900 text-bluegray-100 rounded-sm text-xs overflow-x-hidden overflow-y-auto max-h-72">{{ databaseResults }}</pre>
+  </div>
+
+
+</div>
+
+<p-divider class="my-2 flex" />
+
 <div *ngFor="let group of endpointGroup">
   <div class="flex justify-content-between align-items-center my-3">
     <h2>{{ group.title }}</h2>

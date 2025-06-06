@@ -6,6 +6,7 @@ import { GlobalMessageService } from '~/app/services/messaging.service';
 import { EnvService, EnvVar } from '~/app/services/environment.service';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
+import DatabaseService from '~/app/services/database.service';
 
 interface DiagnosticEndpoint {
   label: string;
@@ -29,6 +30,8 @@ interface EndpointGroup {
   showRunAll?: boolean;
 }
 
+declare const __APP_VERSION__: string;
+
 @Component({
   standalone: true,
   imports: [CommonModule, PrimeNgModule],
@@ -43,11 +46,18 @@ export default class ErrorPage implements OnInit {
   endpoints: DiagnosticEndpoint[] = [];
   resolutionEndpoints: DiagnosticEndpoint[] = [];
 
+  appVersion = typeof __APP_VERSION__ !== 'undefined' ? __APP_VERSION__ : '0.0.0';
+  updateStatus = 'pending';
+  updateMessage = '';
+
+  databaseResults = '';
+  databaseSuccess = '';
+
   constructor(
     private http: HttpClient,
     private route: ActivatedRoute,
-    private messagingService: GlobalMessageService,
     private envService: EnvService,
+    private databaseService: DatabaseService,
   ) {}
 
   ngOnInit(): void {
@@ -156,30 +166,59 @@ export default class ErrorPage implements OnInit {
         showReset: false,
         showRunAll: true,
       },
-      {
-        title: 'Remote Endpoint Tests',
-        endpoints: [],
-        showReset: false,
-        showRunAll: true,
-      },
     ];
   }
 
-  reload() {
-    this.messagingService.showInfo('Reloading...', '');
-    window.location.href = '/';
+  checkDatabaseConnection(): void {
+    this.databaseResults = 'Loading...';
+    this.databaseSuccess = '';
+    try {
+    this.databaseService.instance.checkAllTables().subscribe({
+      next: (results) => {
+        this.databaseResults = '';
+        if (!results || !results.length) {
+          throw new Error('No tables found in the database.');
+        }
+        this.databaseSuccess = 'passed';
+        results.forEach((table) => {
+          this.databaseResults += `${table.success} ${table.table} (${table.count} records)\n`;
+          if (table.success !== '✅') {
+            this.databaseSuccess = 'some_errors';
+          };
+        });
+      },
+      error: (err) => {
+        this.databaseResults = `Error checking tables: ${err.message || err}`;
+        this.databaseSuccess = 'errored';
+      },
+    });
+    } catch (err: any) {
+      this.databaseResults = `Error checking tables: ${err.message || err}`;
+      this.databaseSuccess = 'errored';
+    }
   }
 
-  clearStorage() {
-    this.messagingService.showInfo('Clearing Session Data', '');
-    localStorage.clear();
-    sessionStorage.clear();
-    this.reload();
+  checkAppVersion(): void {
+    const currentVersion = this.appVersion;
+    this.http.get<{ version: string }>('https://raw.githubusercontent.com/Lissy93/domain-locker/refs/heads/main/package.json')
+      .subscribe({
+        next: (data) => {
+          const latestVersion = data.version;
+          if (latestVersion && latestVersion !== currentVersion) {
+            this.updateStatus = 'update_available';
+            this.updateMessage = `A new version (${latestVersion}) is available. You are running ${currentVersion}.`;
+          } else {
+            this.updateStatus = 'up_to_date';
+            this.updateMessage = `You are running the latest version (${currentVersion}).`;
+          }
+        },
+        error: () => {
+          this.updateStatus = 'error';
+          this.updateMessage = 'Could not check for updates. Please try again later.';
+        }
+      });
   }
 
-  enableDebugging() {
-    this.messagingService.showInfo('Enabling Debug Mode', 'Error logs and diagnostics will be send to us');
-  }
 
   getEnvValue(key: EnvVar, fallback?: string): string {
     return this.envService.getEnvVar(key, fallback) || fallback || '';
