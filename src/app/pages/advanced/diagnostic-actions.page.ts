@@ -22,6 +22,13 @@ interface DiagnosticEndpoint {
   params?: Record<string, any>;
 }
 
+interface EndpointGroup {
+  title: string;
+  endpoints: DiagnosticEndpoint[];
+  showReset: boolean;
+  showRunAll?: boolean;
+}
+
 @Component({
   standalone: true,
   imports: [CommonModule, PrimeNgModule],
@@ -30,9 +37,11 @@ interface DiagnosticEndpoint {
 })
 export default class ErrorPage implements OnInit {
   errorMessage?: string;
-  endpoints: DiagnosticEndpoint[] = [];
 
-  showReset = false;
+  endpointGroup: EndpointGroup[] = [];
+
+  endpoints: DiagnosticEndpoint[] = [];
+  resolutionEndpoints: DiagnosticEndpoint[] = [];
 
   constructor(
     private http: HttpClient,
@@ -43,6 +52,33 @@ export default class ErrorPage implements OnInit {
 
   ngOnInit(): void {
     this.errorMessage = this.route.snapshot.queryParamMap.get('errorMessage') || undefined;
+
+    this.resolutionEndpoints = [
+      {
+        label: 'Billing Check',
+        description: 'Checks for valid payment and billing status, and updates plan accordingly.',
+        url: '',
+        loading: false,
+        success: null,
+        method: 'GET',
+      },
+      {
+        label: 'Update Domains',
+        description: 'Triggers updates of all your domains, finding changes and updating the database.',
+        url: '',
+        loading: false,
+        success: null,
+        method: 'GET',
+      },
+      {
+        label: 'Dispatch Notifications',
+        description: 'Triggers all pending notifications to be sent, according to your notification preferences.',
+        url: '',
+        loading: false,
+        success: null,
+        method: 'GET',
+      },
+    ];
 
      this.endpoints = [
       {
@@ -106,6 +142,27 @@ export default class ErrorPage implements OnInit {
         success: null,
       },
     ];
+
+    
+    this.endpointGroup = [
+      {
+        title: 'Account Checks',
+        endpoints: this.resolutionEndpoints,
+        showReset: false,
+      },
+      {
+        title: 'Local Endpoint Tests',
+        endpoints: this.endpoints,
+        showReset: false,
+        showRunAll: true,
+      },
+      {
+        title: 'Remote Endpoint Tests',
+        endpoints: [],
+        showReset: false,
+        showRunAll: true,
+      },
+    ];
   }
 
   reload() {
@@ -128,18 +185,18 @@ export default class ErrorPage implements OnInit {
     return this.envService.getEnvVar(key, fallback) || fallback || '';
   }
 
-  runAllEndpointTests(): void {
-    this.showReset = true;
-    this.endpoints.forEach(ep => {
+  runAllEndpointTests(targetGroup: EndpointGroup): void {
+    targetGroup.showReset = true;
+    targetGroup.endpoints.forEach(ep => {
       if (!ep.loading) {
         this.testEndpoint(ep);
       }
     });
   }
 
-  resetAllEndpointTests(): void {
-    this.showReset = false;
-    this.endpoints.forEach(ep => {
+  resetAllEndpointTests(targetGroup: EndpointGroup): void {
+    targetGroup.showReset = false;
+    targetGroup.endpoints.forEach(ep => {
       ep.loading = false;
       ep.success = null;
       ep.response = undefined;
@@ -158,8 +215,10 @@ export default class ErrorPage implements OnInit {
    *  3) record success/response or failure/message,
    *  4) set loading=false.
    */
-  testEndpoint(ep: DiagnosticEndpoint): void {
-    this.showReset = true;
+  testEndpoint(ep: DiagnosticEndpoint, group?: EndpointGroup): void {
+    if (group) {
+      group.showReset = true;
+    }
 
     ep.loading = true;
     ep.success = null;

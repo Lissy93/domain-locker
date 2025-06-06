@@ -33,12 +33,12 @@ export default class AdvancedIndexPage {
         },
         {
           title: 'Debug Info',
-          icon: 'pi pi-stop',
+          icon: 'pi pi-receipt',
           link: '/advanced/debug-info',
         },
         {
           title: 'Diagnostic Actions',
-          icon: 'pi pi-hammer',
+          icon: 'pi pi-wrench',
           link: '/advanced/diagnostic-actions',
         },
         {
@@ -53,7 +53,7 @@ export default class AdvancedIndexPage {
         },
         {
           title: 'Admin Links',
-          icon: 'pi pi-cog',
+          icon: 'pi pi-link',
           link: '/advanced/admin-links',
         },
       ],
