@@ -153,6 +153,9 @@ export class BreadcrumbsComponent implements OnInit, OnChanges {
       'advanced': 'bolt',
       'diagnostic-actions': 'wrench',
       'admin-links': 'link',
+      'error-logs': 'exclamation-triangle',
+      'debug-info': 'receipt',
+      'status': 'wave-pulse',
     };
     const iconName = icons[path];
     if (!iconName) return;
