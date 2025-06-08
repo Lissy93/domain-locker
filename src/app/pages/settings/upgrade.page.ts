@@ -5,7 +5,7 @@ import { BillingService } from '~/app/services/billing.service';
 import { pricingFeatures } from '~/app/constants/pricing-features';
 import { Observable } from 'rxjs';
 import { ErrorHandlerService } from '~/app/services/error-handler.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { ConfirmationService } from 'primeng/api';
 import { GlobalMessageService } from '~/app/services/messaging.service';
@@ -39,11 +39,10 @@ export default class UpgradePage implements OnInit {
     private billingService: BillingService,
     private errorHandler: ErrorHandlerService,
     private route: ActivatedRoute,
-    private http: HttpClient,
     private confirmationService: ConfirmationService,
     private messagingService: GlobalMessageService,
-    private envService: EnvService,
     private featureService: FeatureService,
+    private router: Router,
   ) {
     this.currentPlan$ = this.billingService.getUserPlan();
   }
@@ -54,6 +53,8 @@ export default class UpgradePage implements OnInit {
       this.errorHandler.handleError({ error, message: 'Failed to fetch user plan', showToast: true }),
     );
 
+    const shouldRefresh = this.route.snapshot.queryParamMap.get('refresh');
+
     const sessionId = this.route.snapshot.queryParamMap.get('session_id');
     const success = this.route.snapshot.queryParamMap.get('success');
     const cancelled = this.route.snapshot.queryParamMap.get('canceled');
@@ -62,6 +63,20 @@ export default class UpgradePage implements OnInit {
       this.status = 'success';
     } else if (cancelled) {
       this.status = 'failed';
+    }
+
+    if (shouldRefresh) {
+        setTimeout(() => {
+          this.billingService.getBillingData().subscribe((data) => {
+            this.billingInfo = data;
+          });
+          this.router.navigate([], {
+            relativeTo: this.route,
+            queryParams: { refresh: null },
+            queryParamsHandling: 'merge',
+            replaceUrl: true
+          });
+        }, 500);
     }
 
     this.billingService.getBillingData().subscribe((data) => {
@@ -121,6 +136,9 @@ export default class UpgradePage implements OnInit {
               'Subscription Canceled',
               'Your subscription has been successfully canceled.',
             );
+            setTimeout(() => {
+              window.location.reload();
+            }, 500);
           })
           .catch((error) => {
             this.errorHandler.handleError({ error, message: 'Failed to cancel subscription', showToast: true });
