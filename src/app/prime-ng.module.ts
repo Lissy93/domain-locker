@@ -62,6 +62,7 @@ import { TimelineModule } from 'primeng/timeline';
 import { ToggleButtonModule } from 'primeng/togglebutton';
 import { ToastModule } from 'primeng/toast';
 import { TooltipModule } from 'primeng/tooltip';
+import { TableModule } from 'primeng/table';
 
 @NgModule({
   exports: [
@@ -122,7 +123,7 @@ import { TooltipModule } from 'primeng/tooltip';
     SplitterModule,
     StepsModule,
     StyleClassModule,
-    // TableModule,
+    TableModule,
     TabViewModule,
     TagModule,
     TimelineModule,

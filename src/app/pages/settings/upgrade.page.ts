@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, Inject, OnInit, PLATFORM_ID, NgZone } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { PrimeNgModule } from '~/app/prime-ng.module';
 import { BillingService } from '~/app/services/billing.service';
 import { pricingFeatures } from '~/app/constants/pricing-features';
@@ -12,18 +12,56 @@ import { GlobalMessageService } from '~/app/services/messaging.service';
 import { EnvService } from '~/app/services/environment.service';
 import { FeatureNotEnabledComponent } from '~/app/components/misc/feature-not-enabled.component';
 import { FeatureService } from '~/app/services/features.service';
+import { SupabaseService } from '~/app/services/supabase.service';
+
+interface SubscriptionData {
+  customer_id: string;
+  status: string;
+  subscription_id: string;
+  plan: string;
+  current_period_start: string; // ISO 8601 Date string
+  current_period_end: string;   // ISO 8601 Date string
+  cancel_at: string | null;     // Nullable ISO 8601 Date string
+  cancel_at_period_end: boolean;
+  discount?: {
+    percent_off: number;
+    name: string;
+    duration: string;
+  };
+  invoices: Array<{
+    amount_paid: number;
+    currency: string;
+    status: string;
+    number: string;
+    hosted_invoice_url: string;
+    invoice_pdf: string;
+    date: string; // ISO 8601 Date string
+  }>;
+  payment_method: {
+    brand: string;
+    last4: string;
+    exp_month: number;
+    exp_year: number;
+  };
+}
+
 
 @Component({
   selector: 'app-upgrade',
   standalone: true,
   imports: [CommonModule, PrimeNgModule, FeatureNotEnabledComponent],
   templateUrl: './upgrade.page.html',
-  styles: ['::ng-deep .p-confirm-dialog { max-width: 600px; }'],
+  styles: [`
+    ::ng-deep .p-confirm-dialog { max-width: 600px; }
+    ::ng-deep .p-datatable .p-datatable-tbody > tr > td { padding: 0.5rem; }
+  `],
 })
 export default class UpgradePage implements OnInit {
   currentPlan$: Observable<string | null>;
   public availablePlans = pricingFeatures;
   public billingInfo: any;
+
+  public subscriptionData: SubscriptionData | null = null;
 
   public isAnnual = true;
   public billingCycleOptions = [
@@ -43,6 +81,10 @@ export default class UpgradePage implements OnInit {
     private messagingService: GlobalMessageService,
     private featureService: FeatureService,
     private router: Router,
+    private supabaseService: SupabaseService,
+    private envService: EnvService,
+    @Inject(PLATFORM_ID) private platformId: Object,
+    private ngZone: NgZone,
   ) {
     this.currentPlan$ = this.billingService.getUserPlan();
   }
@@ -52,6 +94,8 @@ export default class UpgradePage implements OnInit {
     this.billingService.fetchUserPlan().catch((error) =>
       this.errorHandler.handleError({ error, message: 'Failed to fetch user plan', showToast: true }),
     );
+
+    this.getBillingInfo();
 
     const shouldRefresh = this.route.snapshot.queryParamMap.get('refresh');
 
@@ -145,5 +189,48 @@ export default class UpgradePage implements OnInit {
           });
       },
     });
+  }
+
+  async getBillingInfo() {
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
+    const accessToken = await this.supabaseService.getSessionToken();
+    const userId = (await this.supabaseService.getCurrentUser())?.id;
+    const endpoint = this.envService.getEnvVar('DL_STRIPE_INFO_URL');
+    if (!endpoint) {
+      this.errorHandler.handleError({
+        message: 'Stripe info endpoint is not configured.',
+        location: 'Upgrade Page',
+      });
+      return;
+    }
+    fetch(endpoint, {
+      method: 'POST',
+      headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify({ userId }),
+    })
+    .then(response => response.json())
+    .then(result => {
+      if (!result.error) {
+        this.ngZone.run(() => {
+          this.subscriptionData = result as SubscriptionData;
+          console.log('Subscription Data:', this.subscriptionData);
+        });
+      } else {
+        throw new Error(result.error);
+      }
+    })
+    .catch(error => {
+      this.errorHandler.handleError({
+        error,
+        message: 'Failed to fetch Stripe details',
+        location: 'Upgrade Page',
+      });
+    });
+
   }
 }
