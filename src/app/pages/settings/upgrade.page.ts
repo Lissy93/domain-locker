@@ -172,9 +172,8 @@ export default class UpgradePage implements OnInit {
       rejectIcon:'pi pi-check-circle mr-2',
       acceptButtonStyleClass:'p-button-sm p-button-danger p-button-text',
       closeOnEscape: true,
-      accept: () => {
-        const subscriptionId = this.billingInfo?.meta?.subscription_id;
-        this.billingService.cancelSubscription(subscriptionId)
+      accept: async () => {
+        this.billingService.cancelSubscription()
           .then(() => {
             this.messagingService.showSuccess(
               'Subscription Canceled',
@@ -218,7 +217,6 @@ export default class UpgradePage implements OnInit {
       if (!result.error) {
         this.ngZone.run(() => {
           this.subscriptionData = result as SubscriptionData;
-          console.log('Subscription Data:', this.subscriptionData);
         });
       } else {
         throw new Error(result.error);

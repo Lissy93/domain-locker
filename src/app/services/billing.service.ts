@@ -106,14 +106,18 @@ export class BillingService {
     );
   }
 
-  async cancelSubscription(subscriptionId: string): Promise<any> {
+  async cancelSubscription(): Promise<any> {
     const userId = (await this.supabaseService.getCurrentUser())?.id;
     const endpoint = this.envService.getEnvVar('DL_STRIPE_CANCEL_URL');
+    const accessToken = await this.supabaseService.getSessionToken();
     try {
-      const body = { userId, subscriptionId };
+      const body = { userId };
       const res = await fetch(endpoint, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${accessToken}`,
+        },
         body: JSON.stringify(body),
       });
       const data = await res.json();

@@ -26,7 +26,7 @@
 
   <h2 class="my-4">Subscription Details</h2>
 
-  <div *ngIf="subscriptionData.payment_method" class="flex flex-col w-full p-3 mb-2 p-card">
+  <div *ngIf="subscriptionData.status !== 'none'" class="flex flex-col w-full p-3 mb-2 p-card">
     <h3>Info</h3>
     <ul class="list-none p-0 m-0">
       <li>
@@ -74,7 +74,7 @@
             <span class="capitalize">{{ invoice.status }}</span>
           </td>
           <td>
-            <a [href]="invoice.invoice_pdf" target="_blank">
+            <a [href]="invoice.invoice_pdf" target="_blank" *ngIf="invoice.invoice_pdf">
               <p-button icon="pi pi-file-pdf" label="Download" severity="info" size="small"></p-button>
             </a>
           </td>
@@ -84,7 +84,7 @@
   </div>
 
   
-  <div *ngIf="subscriptionData.payment_method" class="flex flex-col w-full p-3 mb-2 p-card">
+  <div *ngIf="subscriptionData.payment_method && subscriptionData.status !== 'none'" class="flex flex-col w-full p-3 mb-2 p-card">
     <h3>Payment Method</h3>
     <p *ngIf="subscriptionData.payment_method.brand" class="m-0">
       Paid with {{ subscriptionData.payment_method.brand }} card ending in {{ subscriptionData.payment_method.last4 }},
@@ -101,7 +101,7 @@
     </p>
   </div>
 
-  <div class="flex flex-col w-full p-3 mb-2 p-card">
+  <div class="flex flex-col w-full p-3 mb-2 p-card" *ngIf="(currentPlan$ | async) !== 'free'">
     <h3>Manage Plan</h3>
     <div class="flex gap-3 justify-end">
       <p-button
@@ -112,7 +112,6 @@
         routerLink="/about/support"
       />
       <p-button
-        *ngIf="(currentPlan$ | async) !== 'free'"
         label="Cancel Plan"
         severity="danger"
         icon="pi pi-times-circle"
