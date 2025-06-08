@@ -26,6 +26,7 @@ export type EnvVar =
 | 'DL_DOMAIN_SUBS_API'  // API endpoint for /api/domain-subs
 | 'DL_STRIPE_CHECKOUT_URL'    // Endpoint for creating a Stripe Checkout session
 | 'DL_STRIPE_CANCEL_URL'      // Endpoint for cancelling subscription, + refunding via Stripe
+| 'DL_STRIPE_INFO_URL'        // Endpoint for getting user's Stripe subscription info
 | 'DL_DISABLE_WRITE_METHODS'  // Disable write methods (only used for demo instance)
 ;
 
