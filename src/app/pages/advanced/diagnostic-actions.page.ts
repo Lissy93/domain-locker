@@ -2,9 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PrimeNgModule } from '~/app/prime-ng.module';
 import { ActivatedRoute } from '@angular/router';
-import { GlobalMessageService } from '~/app/services/messaging.service';
 import { EnvService, EnvVar } from '~/app/services/environment.service';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import DatabaseService from '~/app/services/database.service';
 
@@ -45,6 +44,7 @@ export default class ErrorPage implements OnInit {
 
   endpoints: DiagnosticEndpoint[] = [];
   resolutionEndpoints: DiagnosticEndpoint[] = [];
+  remoteEndpoints: DiagnosticEndpoint[] = [];
 
   appVersion = typeof __APP_VERSION__ !== 'undefined' ? __APP_VERSION__ : '0.0.0';
   updateStatus = 'pending';
@@ -52,6 +52,8 @@ export default class ErrorPage implements OnInit {
 
   databaseResults = '';
   databaseSuccess = '';
+
+  sbBase = '';
 
   constructor(
     private http: HttpClient,
@@ -62,6 +64,7 @@ export default class ErrorPage implements OnInit {
 
   ngOnInit(): void {
     this.errorMessage = this.route.snapshot.queryParamMap.get('errorMessage') || undefined;
+    this.sbBase = this.envService.getEnvVar('SUPABASE_URL');
 
     this.resolutionEndpoints = [
       {
@@ -153,6 +156,81 @@ export default class ErrorPage implements OnInit {
       },
     ];
 
+    this.remoteEndpoints = [
+      // - cleanup-notifications
+      // - domain-updater
+      // - expiration-invites
+      // - expiration-reminders
+      // - new-user-billing
+      // - send-notification
+      // - trigger-updates
+      // - website-monitor
+      {
+        label: 'Cleanup Notifications',
+        description: 'Removes notifications 30 days or older, and triggers the sending of any unsent notifications',
+        url: this.sbBase ? `${this.sbBase}/functions/v1/cleanup-notifications` : '',
+        loading: false,
+        success: null,
+        method: 'POST',
+      },
+      {
+        label: 'Domain Updater',
+        description: 'Updates a given domain, finding changes and updating the database.',
+        url: this.sbBase ? `${this.sbBase}/functions/v1/domain-updater` : '',
+        loading: false,
+        success: null,
+        method: 'POST',
+      },
+      {
+        label: 'Expiration Invites',
+        description: 'Creates calendar invites for domain names expiring 90 days from now.',
+        url: this.sbBase ? `${this.sbBase}/functions/v1/expiration-invites` : '',
+        loading: false,
+        success: null,
+        method: 'POST',
+      },
+      {
+        label: 'Expiration Reminders',
+        description: 'Triggers notifications for soon to be expiring domains.',
+        url: this.sbBase ? `${this.sbBase}/functions/v1/expiration-reminders` : '',
+        loading: false,
+        success: null,
+        method: 'POST',
+      },
+      {
+        label: 'Billing Check',
+        description: 'Creates new billing record (if none exists), creates/verifies Stripe customer, and checks for active subscriptions',
+        url: this.sbBase ? `${this.sbBase}/functions/v1/new-user-billing` : '',
+        loading: false,
+        success: null,
+        method: 'POST',
+      },
+      {
+        label: 'Send Notification',
+        description: 'Sends a notification to a user, used by the notification system.',
+        url: this.sbBase ? `${this.sbBase}/functions/v1/send-notification` : '',
+        loading: false,
+        success: null,
+        method: 'POST',
+      },
+      {
+        label: 'Trigger Updates',
+        description: 'Triggers updates for all domains, finding changes and updating the database.',
+        url: this.sbBase ? `${this.sbBase}/functions/v1/trigger-updates` : '',
+        loading: false,
+        success: null,
+        method: 'POST',
+      },
+      {
+        label: 'Website Monitor',
+        description: 'Runs uptime checks on domain names, for monitoring your website\'s availability, health and status.',
+        url: this.sbBase ? `${this.sbBase}/functions/v1/website-monitor` : '',
+        loading: false,
+        success: null,
+        method: 'POST',
+      },
+    ];
+
     
     this.endpointGroup = [
       {
@@ -163,6 +241,12 @@ export default class ErrorPage implements OnInit {
       {
         title: 'Local Endpoint Tests',
         endpoints: this.endpoints,
+        showReset: false,
+        showRunAll: true,
+      },
+      {
+        title: 'Remote Endpoint Tests',
+        endpoints: this.remoteEndpoints,
         showReset: false,
         showRunAll: true,
       },
@@ -255,58 +339,95 @@ export default class ErrorPage implements OnInit {
    *  4) set loading=false.
    */
   testEndpoint(ep: DiagnosticEndpoint, group?: EndpointGroup): void {
-    if (group) {
-      group.showReset = true;
-    }
+  if (group) group.showReset = true;
 
-    ep.loading = true;
-    ep.success = null;
-    ep.response = undefined;
-    ep.errorMsg = undefined;
-    ep.statusCode = undefined;
-    ep.timeTaken = undefined;
+  ep.loading = true;
+  ep.success = null;
+  ep.response  = undefined;
+  ep.errorMsg  = undefined;
+  ep.statusCode = undefined;
+  ep.timeTaken = undefined;
 
-    const httpMethod = ep.method?.toUpperCase() || 'GET';
-    let httpCall;
+  const method = (ep.method || 'GET').toUpperCase();
+  const start = performance.now();
+  let httpCall;
 
-    const startTime = performance.now();
+  if (method === 'GET') {
+    httpCall = this.http.get(ep.url, {
+      observe: 'response',
+      responseType: 'text',
+      params: ep.params
+    });
+  } else if (method === 'POST') {
+    httpCall = this.http.post(ep.url, ep.params, {
+      observe: 'response',
+      responseType: 'text'
+    });
+  } else if (method === 'PUT') {
+    httpCall = this.http.put(ep.url, ep.params, {
+      observe: 'response',
+      responseType: 'text'
+    });
+  } else if (method === 'DELETE') {
+    httpCall = this.http.delete(ep.url, {
+      observe: 'response',
+      responseType: 'text',
+      params: ep.params
+    });
+  } else {
+    ep.loading = false;
+    ep.success = false;
+    ep.errorMsg = `Unsupported HTTP method: ${method}`;
+    return;
+  }
 
-    if (httpMethod === 'GET') {
-      httpCall = this.http.get(ep.url, { params: ep.params, observe: 'response' });
-    } else if (httpMethod === 'POST') {
-      httpCall = this.http.post(ep.url, ep.params, { observe: 'response' });
-    } else if (httpMethod === 'PUT') {
-      httpCall = this.http.put(ep.url, ep.params, { observe: 'response' });
-    } else if (httpMethod === 'DELETE') {
-      httpCall = this.http.delete(ep.url, { params: ep.params, observe: 'response' });
-    } else {
-      ep.loading = false;
-      ep.success = false;
-      ep.errorMsg = `Unsupported HTTP method: ${httpMethod}`;
-      return;
-    }
+  firstValueFrom(httpCall)
+    .then((res: HttpResponse<string>) => {
+      ep.timeTaken = Math.round(performance.now() - start);
+      ep.statusCode = res.status;
 
-    firstValueFrom(httpCall)
-      .then(response => {
-        ep.timeTaken = Math.round(performance.now() - startTime);
-        ep.statusCode = (response?.body as any)?.statusCode || response.status;
-        if ((response.body as any)?.error) {
+      const raw = res.body || '';
+      const ct = res.headers.get('Content-Type') || '';
+      let parsed: any = raw;
+
+      if (ct.includes('application/json')) {
+        try { parsed = JSON.parse(raw) } catch {}
+      }
+
+      ep.response = parsed;
+      ep.bytesReceived = Number(res.headers.get('Content-Length')) || undefined;
+
+      if (typeof parsed === 'string') {
+        ep.success = ep.statusCode >= 200 && ep.statusCode < 300;
+        ep.errorMsg = ep.success ? undefined : parsed;
+      } else {
+        if (parsed && parsed.error) {
           ep.success = false;
-          ep.errorMsg = (response.body as any).error || 'Unknown error';
+          ep.errorMsg = parsed.error;
         } else {
           ep.success = true;
         }
-        ep.response = response.body;
-        ep.bytesReceived = response.headers.get('Content-Length') ? parseInt(response.headers.get('Content-Length') || '0', 10) : undefined;
-      })
-      .catch(err => {
-        ep.timeTaken = Math.round(performance.now() - startTime);
-        ep.success = false;
-        ep.statusCode = err.status;
-        ep.errorMsg = err.message || (err.error?.error || JSON.stringify(err.error)) || 'Unknown error';
-      })
-      .finally(() => {
-        ep.loading = false;
-      });
+      }
+    })
+    .catch(err => {
+      ep.timeTaken = Math.round(performance.now() - start);
+      ep.success = false;
+      let parsed = '';
+      ep.errorMsg = err.message || JSON.stringify(err.error);
+      if (err.error !== null && err.error !== undefined) {
+        parsed = err.error;
+        try {
+          parsed = JSON.parse(parsed)
+          if (typeof parsed === 'object' && (parsed as any).message) {
+            ep.errorMsg = (parsed as any).message;
+          }
+        } catch {}
+        ep.response = parsed;
+      }
+      ep.statusCode = err.status;
+    })
+    .finally(() => {
+      ep.loading = false;
+    });
   }
 }

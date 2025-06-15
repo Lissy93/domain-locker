@@ -106,7 +106,7 @@
     <div *ngIf="group.showRunAll || group.showReset">
       <p-button
       *ngIf="group.showReset; else showRunAll"
-        severity="danger"
+        severity="warning"
         label="Reset"
         icon="pi pi-refresh"
         (click)="resetAllEndpointTests(group)"
