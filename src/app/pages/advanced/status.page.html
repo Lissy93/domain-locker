@@ -35,7 +35,7 @@
     <p-divider class="my-4"></p-divider>
     <h3>Third-Party Services</h3>
     <div class="flex flex-col">
-      <div *ngFor="let item of statusInfo.summary" class="flex flex-col sm:flex-row mb-1">
+      <div *ngFor="let item of statusInfo.externalServices.summary" class="flex flex-col sm:flex-row mb-1">
         <div class="flex-shrink-0 w-32 flex items-center space-x-2">
           <app-domain-favicon *ngIf="item.serviceMeta"
             [domain]="item.serviceMeta.upstreamSite || item.serviceMeta.url"
@@ -69,7 +69,7 @@
     <p-divider class="my-4"></p-divider>
     <h3>Recent Incidents</h3>
     <ul class="list-none p-0 transition-all duration-300">
-      <li *ngFor="let item of statusInfo.history | slice:0:(showAllHistory ? statusInfo.history.length : 10)"
+      <li *ngFor="let item of statusInfo.externalServices.history | slice:0:(showAllHistory ? statusInfo.externalServices.history.length : 10)"
           class="flex items-between sm:items-center gap-1 sm:gap-2 mb-1 flex-col sm:flex-row">
         <span class="flex-shrink-0 whitespace-nowrap">
           <i class="pi pi-circle" [ngClass]="{
@@ -110,7 +110,7 @@
 
     <h3>Scheduled Maintenance</h3>
     <ul class="list-none p-0 transition-all duration-300">
-      <li *ngFor="let item of statusInfo.scheduled | slice:0:(showAllScheduled ? statusInfo.scheduled.length : 10)"
+      <li *ngFor="let item of statusInfo.externalServices.scheduled | slice:0:(showAllScheduled ? statusInfo.externalServices.scheduled.length : 10)"
           class="flex items-between sm:items-center gap-1 sm:gap-2 mb-1 flex-col sm:flex-row">
         <span class="flex-shrink-0 whitespace-nowrap">
           <i class="pi pi-history text-purple-400"></i>

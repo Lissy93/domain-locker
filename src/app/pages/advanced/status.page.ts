@@ -27,9 +27,11 @@ export interface StatusLog {
 }
 
 export interface StatusData {
-  summary: StatusSummary[];
-  history: StatusLog[];
-  scheduled: StatusLog[];
+  externalServices: {
+    summary: StatusSummary[];
+    history: StatusLog[];
+    scheduled: StatusLog[];
+  }
 }
 
 @Component({
@@ -64,9 +66,11 @@ export default class StatusPage {
   private fetchStatusData(): Observable<StatusData> {
     return this.http.get<StatusData>('/api/status-info').pipe(
       map(data => ({
-        summary: this.enrichList(data.summary),
-        history: this.enrichList(data.history),
-        scheduled: this.enrichList(data.scheduled),
+        externalServices: {
+          summary: this.enrichList(data.externalServices.summary),
+          history: this.enrichList(data.externalServices.history),
+          scheduled: this.enrichList(data.externalServices.scheduled),
+        }
       })),
       catchError(error => {
         this.errorHandler.handleError({
@@ -75,7 +79,15 @@ export default class StatusPage {
           location: 'status-info',
           showToast: true,
         });
-        return of({ summary: [], history: [], scheduled: [] });
+        return of(
+          {
+            externalServices: {
+              summary: [],
+              history: [],
+              scheduled: [],
+            }
+          },
+        );
       })
     );
   }
@@ -151,7 +163,7 @@ export default class StatusPage {
     };
 
     // Process history items (past and present only).
-    statusData.history.forEach(item => {
+    statusData.externalServices.history.forEach(item => {
       const d = new Date(item.date);
       d.setHours(0, 0, 0, 0);
       const idx = getDayIndex(d);
@@ -168,7 +180,7 @@ export default class StatusPage {
     });
 
     // Process scheduled items (future only).
-    statusData.scheduled.forEach(item => {
+    statusData.externalServices.scheduled.forEach(item => {
       const d = new Date(item.date);
       d.setHours(0, 0, 0, 0);
       const idx = getDayIndex(d);
@@ -274,7 +286,7 @@ export default class StatusPage {
     options?: { title?: string }
   ): any {
     // Combine both history and scheduled items.
-    const allItems = [...statusData.history, ...statusData.scheduled];
+    const allItems = [...statusData.externalServices.history, ...statusData.externalServices.scheduled];
     const counts: { [key: string]: number } = {};
 
     if (breakdownType === 'service') {
