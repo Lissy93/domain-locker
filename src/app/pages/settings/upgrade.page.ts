@@ -3,7 +3,8 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { PrimeNgModule } from '~/app/prime-ng.module';
 import { BillingService } from '~/app/services/billing.service';
 import { pricingFeatures } from '~/app/constants/pricing-features';
-import { Observable } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 import { ErrorHandlerService } from '~/app/services/error-handler.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
@@ -83,6 +84,7 @@ export default class UpgradePage implements OnInit {
     private router: Router,
     private supabaseService: SupabaseService,
     private envService: EnvService,
+    private http: HttpClient,
     @Inject(PLATFORM_ID) private platformId: Object,
     private ngZone: NgZone,
   ) {
@@ -190,45 +192,52 @@ export default class UpgradePage implements OnInit {
     });
   }
 
-  async getBillingInfo() {
+  async getBillingInfo(): Promise<void> {
+    // 1) Guard SSR
     if (!isPlatformBrowser(this.platformId)) {
       return;
     }
-    const accessToken = await this.supabaseService.getSessionToken();
-    const userId = (await this.supabaseService.getCurrentUser())?.id;
+
+    // 2) Resolve endpoint
     const endpoint = this.envService.getEnvVar('DL_STRIPE_INFO_URL');
     if (!endpoint) {
       this.errorHandler.handleError({
         message: 'Stripe info endpoint is not configured.',
         location: 'Upgrade Page',
+        showToast: true,
       });
       return;
     }
-    fetch(endpoint, {
-      method: 'POST',
-      headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${accessToken}`,
-      },
-      body: JSON.stringify({ userId }),
-    })
-    .then(response => response.json())
-    .then(result => {
-      if (!result.error) {
-        this.ngZone.run(() => {
-          this.subscriptionData = result as SubscriptionData;
-        });
-      } else {
-        throw new Error(result.error);
-      }
-    })
-    .catch(error => {
-      this.errorHandler.handleError({
-        error,
-        message: 'Failed to fetch Stripe details',
-        location: 'Upgrade Page',
-      });
-    });
 
+    // 3) Grab user ID (interceptor will handle the token)
+    const user = await this.supabaseService.getCurrentUser();
+    const userId = user?.id;
+    if (!userId) {
+      this.errorHandler.handleError({
+        message: 'Not authenticated',
+        location: 'Upgrade Page',
+        showToast: true,
+      });
+      return;
+    }
+
+    // 4) Fire off the HTTP POST via HttpClient
+    this.http.post<SubscriptionData>(endpoint, { userId }).subscribe({
+      next: data => {
+        // run inside zone to trigger change detection
+        this.ngZone.run(() => {
+          this.subscriptionData = data;
+        });
+      },
+      error: err => {
+        this.errorHandler.handleError({
+          error: err,
+          message: 'Failed to fetch Stripe details',
+          location: 'Upgrade Page',
+          showToast: true,
+        });
+      }
+    });
   }
+
 }

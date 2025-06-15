@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, catchError, from, map, Observable, throwError } from 'rxjs';
+import { BehaviorSubject, catchError, from, lastValueFrom, map, Observable, throwError } from 'rxjs';
 import { SupabaseService } from '~/app/services/supabase.service';
 import { EnvService } from '~/app/services/environment.service';
 import { ErrorHandlerService } from '~/app/services//error-handler.service';
@@ -109,28 +109,28 @@ export class BillingService {
   async cancelSubscription(): Promise<any> {
     const userId = (await this.supabaseService.getCurrentUser())?.id;
     const endpoint = this.envService.getEnvVar('DL_STRIPE_CANCEL_URL');
-    const accessToken = await this.supabaseService.getSessionToken();
+    if (!endpoint) {
+      throw new Error('Stripe cancel endpoint is not configured.');
+    }
+
     try {
-      const body = { userId };
-      const res = await fetch(endpoint, {
-        method: 'POST',
-        headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${accessToken}`,
-        },
-        body: JSON.stringify(body),
-      });
-      const data = await res.json();
-      if (!res.ok) {
-        throw new Error(data?.error || 'Failed to cancel subscription');
-      }
+      // interceptor will add Authorization header for supabase functions
+      const data = await lastValueFrom(
+        this.http.post<any>(endpoint, { userId })
+      );
       if (data.error) {
         throw new Error(data.error);
       }
       return data;
-    } catch (error) {
+    } catch (error: any) {
+      this.errorHandler.handleError({
+        error,
+        message: 'Failed to cancel subscription',
+        showToast: true,
+        location: 'SupabaseService.cancelSubscription'
+      });
       throw error;
-    } 
+    }
   }
 
 
@@ -138,23 +138,31 @@ export class BillingService {
     const userId = (await this.supabaseService.getCurrentUser())?.id;
     const endpoint = this.envService.getEnvVar('DL_STRIPE_CHECKOUT_URL', null, true);
     const host = this.envService.getEnvVar('DL_BASE_URL', 'https://domain-locker.com');
-    const callbackUrl = host ? `${host}/settings/upgrade` : window.location.href;
+    const callbackUrl = host
+      ? `${host}/settings/upgrade`
+      : (typeof window !== 'undefined' ? window.location.href : '');
+
     try {
       const body = { userId, productId, callbackUrl };
-      const res = await fetch(endpoint, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body),
-      });
-      const data = await res.json();
-      if (!res.ok || !data?.url) {
-        throw new Error(data?.error || 'Failed to create checkout session');
+      // interceptor will attach JWT
+      const data = await lastValueFrom(
+        this.http.post<{ url?: string; error?: string }>(endpoint, body)
+      );
+      if (!data.url) {
+        throw new Error(data.error || 'Failed to create checkout session');
       }
       return data.url;
-    } catch (error) { 
+    } catch (error: any) {
+      this.errorHandler.handleError({
+        error,
+        message: 'Failed to create checkout session',
+        showToast: true,
+        location: 'SupabaseService.createCheckoutSession'
+      });
       throw error;
     }
   }
+
 
   verifyStripeSession(sessionId: string) {
     this.http.post('/api/verify-checkout', { sessionId })
