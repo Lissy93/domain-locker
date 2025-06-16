@@ -32,10 +32,9 @@
 
 The aim of Domain Locker, is to give you complete visibility of your domain name portfolio, in once central place.
 
-For each domain you add, we analyse it and fetch all associated data. We then continuously monitor your domains, and notify you (according to your preferences) when something important changes or when it's soon to expire. 
+For each domain you add, we analyse it and fetch all associated data. We then continuously monitor your domains, and notify you (according to your preferences) when something important changes or when it's soon to expire. So you'll get detailed domain analysis, security insights, change history, recent performance, valuation data and much more.
 
-You'll get detailed domain analysis, security insights, change history, recent performance, valuation data and much more.
-You'll never again loose track of your domains, miss an expiration, or forget which registrar and providers each domain uses.
+With Domain Locker, you'll never again loose track of your domains, miss an expiration, or forget which registrar and providers each domain uses.
 
 ### Screenshot
 
@@ -57,6 +56,7 @@ You'll never again loose track of your domains, miss an expiration, or forget wh
 
 ### Features
 
+- 👁️ Total visibility of all your domains and upcoming expirations
 - 📡 Auto-fetched data: SSL certs, hosts, registrars, IPs, subdomains, DNS, etc
 - 🔬 View detailed metrics and analysis for each domain
 - 📊 Visual analytics and breakdowns and trends across your portfolio
@@ -198,7 +198,7 @@ npm run dev                                           # Start the dev server
   - To use alternate db, see the [Database](#database) section below to configure with Postgres
 - **Deploying**
   - You can build with code with `npm run build`, then run with `npm start`
-  - With Docker, you can build the container with `docker build -t domain-locker .`
+  - Or, with Docker building the container with `docker build -t domain-locker .`
   - Don't use the dev Supabase instance in prod, as it's frequently wiped
 
 
