@@ -16,7 +16,7 @@ export default defineEventHandler(async (event) => {
     fetchSupabaseHealth(),
     fetchUptimeStatus(),
   ]);
-  
+
   return { scheduledCrons, databaseStatus, supabaseStatus, uptimeStatus };
 });
 
@@ -53,13 +53,13 @@ async function fetchDatabaseHealth(authHeader?: string): Promise<any> {
 
 
 async function fetchSupabaseHealth(): Promise<{ healthy?: boolean } | undefined> {
-  const apiKey = import.meta.env['SUPABASE_ANON_KEY'];
-  if (!apiKey) return {};
+  const anonKey = import.meta.env['SUPABASE_ANON_KEY'];
+  if (!anonKey) return {};
   try {
     const res = await fetch(`${import.meta.env['SUPABASE_URL']}/health`, {
       headers: {
-        apikey: apiKey,
-        Authorization: `Bearer ${apiKey}`,
+        apikey: anonKey,
+        Authorization: `Bearer ${anonKey}`,
       },
       signal: AbortSignal.timeout(timeout),
     });

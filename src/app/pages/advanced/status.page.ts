@@ -39,6 +39,21 @@ export interface InternalStatus {
   database: any;
 }
 
+interface HeartBeat {
+  status: number,
+  time: string,
+  msg?: string,
+  ping: number,
+}
+
+interface StatusMetrics {
+  uptimePercent: number;
+  averagePing: number;
+  minPing: number;
+  maxPing: number;
+}
+
+
 @Component({
   standalone: true,
   imports: [CommonModule, PrimeNgModule, DomainFaviconComponent],
@@ -56,6 +71,17 @@ export default class StatusPage {
 
   public dlServicesToSetup: string[] = ['App', 'API', 'Database', 'Auth', 'Scheduler'];
 
+  readonly uptimeServiceMap: Record<string, string> = {
+    '5': 'Landing',
+    '6': 'Main App',
+    '7': 'Docs',
+  };
+
+  // public uptimeExtraInfo
+
+  public uptimeChartUrl: string = '';
+  public currentStatuses: { id: string; name: string; status: boolean; latestPing?: number, extraInfo?: any }[] = [];
+
   constructor(
     private http: HttpClient,
     private errorHandler: ErrorHandlerService,
@@ -67,13 +93,15 @@ export default class StatusPage {
       const servicePieConfig = this.generatePieChartConfig(data, 'service',  { title: 'Issues per Service' });
       this.pieChartUrl = 'https://quickchart.io/chart?c=' + encodeURIComponent(JSON.stringify(servicePieConfig));
     });
+
+    this.internalStatusInfo$.subscribe(this.uptimeDataProcess.bind(this));
   }
 
   private fetchInternalStatusData(): Observable<any> {
     return this.http.get<any>('/api/internal-status-info').pipe(
       map(data => ({
         scheduled: data.scheduledCrons || [],
-        supabase: data.supabaseStatus?.healthy || { healthy: false, undetermined: true },
+        supabase: data.supabaseStatus || { healthy: false, undetermined: true },
         uptime: data.uptimeStatus || {},
         database: data.databaseStatus || {},
       })),
@@ -124,6 +152,22 @@ export default class StatusPage {
     const rootStyles = getComputedStyle(document.documentElement);
     const value = rootStyles.getPropertyValue(cssVarName)?.trim();
     return /^#([0-9A-F]{3}){1,2}$/i.test(value) ? value : fallback;
+  }
+
+  private calculateStatusMetrics(heartbeats: HeartBeat[] | undefined): StatusMetrics | null {
+    if (!heartbeats || heartbeats.length === 0) return null;
+
+    const successful = heartbeats.filter(h => h.status === 1);
+    const pings = successful.map(h => h.ping).filter(p => typeof p === 'number');
+
+    if (pings.length === 0) return null;
+
+    const uptimePercent = Math.round((successful.length / heartbeats.length) * 100);
+    const averagePing = Math.round(pings.reduce((a, b) => a + b, 0) / pings.length);
+    const minPing = Math.min(...pings);
+    const maxPing = Math.max(...pings);
+
+    return { uptimePercent, averagePing, minPing, maxPing };
   }
 
   /**
@@ -386,5 +430,88 @@ export default class StatusPage {
     }
     return {};
   }
+
+private uptimeDataProcess(internal: InternalStatus): void {
+  const rawHeartbeats = internal.uptime?.heartbeatList || {};
+  const statusData: typeof this.currentStatuses = [];
+
+  const chartColors = [
+    '--purple-400', '--teal-400', '--pink-400', '--blue-400', '--yellow-400', '--green-400',
+  ];
+
+  const datasets = Object.entries(rawHeartbeats).map(([id, heartbeats], i) => {
+    const serviceName = this.uptimeServiceMap[id] || `Service ${id}`;
+    const latest = (heartbeats as HeartBeat[]).at(-1);
+
+    statusData.push({
+      id,
+      name: serviceName,
+      status: latest?.status === 1,
+      latestPing: latest?.ping,
+      extraInfo: this.calculateStatusMetrics(heartbeats as HeartBeat[]),
+    });
+
+    return {
+      label: serviceName,
+      data: (heartbeats as HeartBeat[]).map(h => ({
+        x: h.time.replace(' ', 'T') + 'Z',
+        y: h.ping
+      })),
+      borderColor: this.getCssVariableColor(chartColors[i % chartColors.length], '#36A2EB'),
+      fill: false,
+      spanGaps: false,
+      tension: 0.4,
+    };
+  });
+
+  this.currentStatuses = statusData;
+
+  // Just using the first dataset's timestamps to generate HH:mm labels
+  const firstDataset = datasets[0]?.data || [];
+  const labels = firstDataset.map((point: any) => {
+    const date = new Date(point.x);
+    return `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
+  });
+
+  const chartConfig = {
+    type: 'line',
+    data: {
+      labels,
+      datasets
+    },
+    options: {
+      title: {
+        display: true,
+        text: 'Domain Locker Uptime',
+        color: this.getCssVariableColor('--text-color', '#333'),
+      },
+      responsive: true,
+      plugins: {
+        title: {
+          display: true,
+          text: 'Service Response Time',
+          color: this.getCssVariableColor('--text-color', '#333'),
+        }
+      },
+      scales: {
+        x: {
+          title: {
+            display: true,
+            text: 'Time'
+          }
+        },
+        y: {
+          title: {
+            display: true,
+            text: 'Ping (ms)'
+          }
+        }
+      }
+    }
+  };
+
+  this.uptimeChartUrl = `https://quickchart.io/chart?c=${encodeURIComponent(JSON.stringify(chartConfig))}`;
+}
+
 
 }

@@ -23,20 +23,32 @@
   <!-- Current Status -->
   <div class="p-card px-4 py-3">
     <h2 class="mb-4">Current Service Status</h2>
-<!--     
-    <div *ngIf="statusInfo$ | async">
-      <p-divider class="my-4" />
-      <h3>Domain Locker Internal</h3>
-      <ul class="list-none p-0 mt-2">
-        <li *ngFor="let s of dlServicesToSetup" class="flex">
-          <span class="font-medium flex-shrink-0 w-56 flex items-center space-x-2">{{s}}</span>
-          <span class="flex items-center"><i class="pi pi-check-circle text-green-400 mr-1"></i> Operational</span>
-        </li>
-      </ul>
-    </div> -->
     
     <div *ngIf="internalStatusInfo$ | async as internal">
-      <!-- <p-divider class="my-4" /> -->
+      <p-divider class="my-4" />
+      <h3>Web Application</h3>
+      <ul class="list-none p-0 mt-2">
+        <li *ngFor="let s of currentStatuses" class="flex">
+          <details>
+            <summary class="flex cursor-pointer hover:bg-surface-100 rounded pr-2">
+              <span class="font-medium flex-shrink-0 w-56 flex items-center space-x-2">{{s.name}}</span>
+              <span *ngIf="s.status; else notOperational" class="flex items-center"><i class="pi pi-check-circle text-green-400 mr-1"></i> Operational</span>
+              <ng-template #notOperational>
+                <span class="flex items-center"><i class="pi pi-times-circle text-red-400 mr-1"></i> Unavailable</span>
+              </ng-template>
+            </summary>
+            <p *ngIf="s.extraInfo" class="mt-0 text-sm opacity-70 italic">
+                Historical uptime is {{ s.extraInfo.uptimePercent }}% with an average ping of {{ s.extraInfo.averagePing }}ms
+                (latency range is {{s.extraInfo.minPing}} to {{s.extraInfo.maxPing}}ms).
+            </p>
+          </details>
+        </li>
+      </ul>
+    </div>
+
+
+    <div *ngIf="internalStatusInfo$ | async as internal">
+      <p-divider class="my-4" />
       <h3>Database</h3>
       <ul class="list-none p-0 mt-2">
         <li class="flex">
@@ -123,6 +135,12 @@
         </div>
       </div>
     </div>
+  </div>
+
+  <!-- App response and uptime chart -->
+  <div *ngIf="uptimeChartUrl" class="p-card px-4 py-3">
+    <h2 class="mt-4">Recent Response Time History</h2>
+    <img [src]="uptimeChartUrl" alt="Uptime response time chart" class="w-full max-w-[48rem] mx-auto flex" />
   </div>
 
   <!-- Recent Incidents -->
