@@ -61,10 +61,10 @@ const services: Service[] = [
     service: 'GitHub',
     rss: 'https://www.githubstatus.com/history.rss',
   },
-  { 
-    service: 'Healthchecks.io',
-    rss: 'https://status.healthchecks.io/updates.rss',
-  },
+  // { 
+  //   service: 'GitHub',
+  //   rss: 'https://www.githubstatus.com/history.rss',
+  // },
 ];
 
 /**
@@ -242,13 +242,13 @@ export default defineEventHandler(async (event) => {
   }
 
   // Prepare the final results object
-  const externalServices = { summary, history, scheduled };
+  const results = { summary, history, scheduled };
 
   // Update cache
   cache.timestamp = now;
-  cache.data = { externalServices };
+  cache.data = results;
 
   // And then return results, and go to bed
-  return cache.data;
+  return results;
 
 });

@@ -150,7 +150,7 @@ export default class ErrorPage implements OnInit {
       {
         label: 'Status Info',
         description: 'Ensures that services relied upon by the Domain Locker public instance are running well.',
-        url: '/api/status-info',
+        url: '/api/external-status-info',
         loading: false,
         success: null,
       },

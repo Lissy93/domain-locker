@@ -18,49 +18,115 @@
 
 <p-divider class="my-4"></p-divider>
 
-<div *ngIf="statusInfo$ | async as statusInfo; else loading" class="flex flex-col gap-4 mt-4">
+<div class="flex flex-col gap-4 mt-4">
 
   <!-- Current Status -->
   <div class="p-card px-4 py-3">
     <h2 class="mb-4">Current Service Status</h2>
-    <p-divider class="my-4" />
-    <h3>Domain Locker Internal</h3>
-    <ul class="list-none p-0 mt-2">
-      <li *ngFor="let s of dlServicesToSetup" class="flex">
-        <span class="font-semibold flex-shrink-0 w-32 flex items-center space-x-2">{{s}}</span>
-        <span class="flex items-center"><i class="pi pi-check-circle text-green-400 mr-1"></i> Operational</span>
-      </li>
-    </ul>
+<!--     
+    <div *ngIf="statusInfo$ | async">
+      <p-divider class="my-4" />
+      <h3>Domain Locker Internal</h3>
+      <ul class="list-none p-0 mt-2">
+        <li *ngFor="let s of dlServicesToSetup" class="flex">
+          <span class="font-medium flex-shrink-0 w-56 flex items-center space-x-2">{{s}}</span>
+          <span class="flex items-center"><i class="pi pi-check-circle text-green-400 mr-1"></i> Operational</span>
+        </li>
+      </ul>
+    </div> -->
+    
+    <div *ngIf="internalStatusInfo$ | async as internal">
+      <!-- <p-divider class="my-4" /> -->
+      <h3>Database</h3>
+      <ul class="list-none p-0 mt-2">
+        <li class="flex">
+          <span class="font-medium flex-shrink-0 w-56 flex items-center space-x-2">Platform</span>
+          <span *ngIf="internal.supabase.undetermined" class="flex items-center"><i class="pi pi-exclamation-circle text-yellow-400 mr-1"></i> Undetermined</span>
+          <span *ngIf="internal.supabase.healthy === true" class="flex items-center"><i class="pi pi-check-circle text-green-400 mr-1"></i> Operational</span>
+          <span *ngIf="!internal.supabase.undetermined && !internal.supabase.healthy" class="flex items-center"><i class="pi pi-times-circle text-red-400 mr-1"></i> Unavailable</span>
+        </li>
+        <li class="flex">
+          <span class="font-medium flex-shrink-0 w-56 flex items-center space-x-2">Serverless Functions</span>
+          <span *ngIf="internal.database.up; else notOperational" class="flex items-center"><i class="pi pi-check-circle text-green-400 mr-1"></i> Operational</span>
+          <ng-template #notOperational>
+            <span class="flex items-center"><i class="pi pi-times-circle text-red-400 mr-1"></i> Unavailable</span>
+          </ng-template>
+        </li>
+        <li class="flex">
+          <span class="font-medium flex-shrink-0 w-56 flex items-center space-x-2">Database</span>
+          <span *ngIf="internal.database.db; else notOperational" class="flex items-center"><i class="pi pi-check-circle text-green-400 mr-1"></i> Operational</span>
+          <ng-template #notOperational>
+            <span class="flex items-center"><i class="pi pi-times-circle text-red-400 mr-1"></i> Unavailable</span>
+          </ng-template>
+        </li>
+        <li class="flex">
+          <span class="font-medium flex-shrink-0 w-56 flex items-center space-x-2">Environment Config</span>
+          <span *ngIf="internal.database.env; else notOperational" class="flex items-center"><i class="pi pi-check-circle text-green-400 mr-1"></i> Operational</span>
+          <ng-template #notOperational>
+            <span class="flex items-center"><i class="pi pi-times-circle text-red-400 mr-1"></i> Unavailable</span>
+          </ng-template>
+        </li>
+      </ul>
+    </div>
 
-    <p-divider class="my-4"></p-divider>
-    <h3>Third-Party Services</h3>
-    <div class="flex flex-col">
-      <div *ngFor="let item of statusInfo.externalServices.summary" class="flex flex-col sm:flex-row mb-1">
-        <div class="flex-shrink-0 w-32 flex items-center space-x-2">
-          <app-domain-favicon *ngIf="item.serviceMeta"
-            [domain]="item.serviceMeta.upstreamSite || item.serviceMeta.url"
-            [size]="20" />
-          <span class="font-semibold">{{ item.service }}</span>
-        </div>
-        <div class="flex-grow">
-          <i class="pi pi-circle" [ngClass]="{
-            'text-red-400 pi-times-circle': item.status === 'critical',
-            'text-yellow-400 pi-exclamation-circle': item.status === 'minor',
-            'text-blue-400 pi-info-circle': item.status === 'info',
-            'text-green-400 pi-check-circle': item.status === 'operational',
-            'text-gray-400 pi-minus-circle': item.status === 'unknown'
-          }"></i>
-          {{ item.details }}
-          <a *ngIf="item.link" title="View incident details" [href]="item.link" target="_blank">
-            <i class="pi pi-external-link text-[10px]"></i>
-          </a>
+    <div *ngIf="internalStatusInfo$ | async as internal">
+      <p-divider class="my-4" />
+      <h3>Scheduled Tasks</h3>
+      <ul class="list-none p-0 mt-2">
+        <li *ngFor="let s of internal.scheduled" class="flex" [title]="s.desc">
+          <details>
+            <summary class="flex cursor-pointer hover:bg-surface-100 rounded pr-2">
+              <span class="font-medium flex-shrink-0 w-56 flex items-center space-x-2">{{s.name}}</span>
+              <span class="flex items-center">
+                <div *ngIf="s.status === 'up'; else downStatus">
+                  <i class="pi pi-check-circle text-green-400 mr-1"></i> Operational
+                </div>
+                <ng-template #downStatus>
+                  <i class="pi pi-times-circle text-red-400 mr-1"></i> Down
+                </ng-template>
+              </span>
+            </summary>
+            <p class="mt-0 text-sm opacity-70 italic">
+              Last ping was at {{ s.last_ping | date:"d MMM 'at' HH:mm" }}, and took {{ s.last_duration }}ms.
+              The next check is scheduled to be completed by {{ s.next_ping ? (s.next_ping | date:"d MMM 'at' HH:mm") : 'tonight' }}.
+              There have been {{ s.n_pings}} pings.
+            </p>
+          </details>
+        </li>
+      </ul>
+    </div>
+
+    <div *ngIf="statusInfo$ | async as statusInfo">
+      <p-divider class="my-4"></p-divider>
+      <h3>Third-Party Services</h3>
+      <div class="flex flex-col">
+        <div *ngFor="let item of statusInfo.summary" class="flex flex-col sm:flex-row mb-1">
+          <div class="flex-shrink-0 w-56 flex items-center space-x-2">
+            <app-domain-favicon *ngIf="item.serviceMeta"
+              [domain]="item.serviceMeta.upstreamSite || item.serviceMeta.url"
+              [size]="20" />
+            <span class="font-medium">{{ item.service }}</span>
+          </div>
+          <div class="flex-grow">
+            <i class="pi pi-circle" [ngClass]="{
+              'text-red-400 pi-times-circle': item.status === 'critical',
+              'text-yellow-400 pi-exclamation-circle': item.status === 'minor',
+              'text-blue-400 pi-info-circle': item.status === 'info',
+              'text-green-400 pi-check-circle': item.status === 'operational',
+              'text-gray-400 pi-minus-circle': item.status === 'unknown'
+            }"></i>
+            {{ item.details }}
+            <a *ngIf="item.link" title="View incident details" [href]="item.link" target="_blank">
+              <i class="pi pi-external-link text-[10px]"></i>
+            </a>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
   <!-- Recent Incidents -->
-  <div class="p-card px-4 py-3">
+  <div class="p-card px-4 py-3" *ngIf="statusInfo$ | async as statusInfo; else loading" >
     <h2 class="mb-4">Third-Party Disruptions</h2>
     <div class="flex items-center justifty-between justify-around gap-4">
       <img *ngIf="historyChartUrl" [src]="historyChartUrl" alt="Incident History Chart" class="max-w-96" />
@@ -69,7 +135,7 @@
     <p-divider class="my-4"></p-divider>
     <h3>Recent Incidents</h3>
     <ul class="list-none p-0 transition-all duration-300">
-      <li *ngFor="let item of statusInfo.externalServices.history | slice:0:(showAllHistory ? statusInfo.externalServices.history.length : 10)"
+      <li *ngFor="let item of statusInfo.history | slice:0:(showAllHistory ? statusInfo.history.length : 10)"
           class="flex items-between sm:items-center gap-1 sm:gap-2 mb-1 flex-col sm:flex-row">
         <span class="flex-shrink-0 whitespace-nowrap">
           <i class="pi pi-circle" [ngClass]="{
@@ -81,7 +147,7 @@
           }"></i>
           {{ item.date | date:"d MMM 'at' HH:mm" }}
         </span>
-        <span class="flex-shrink-0 whitespace-nowrap font-semibold">
+        <span class="flex-shrink-0 whitespace-nowrap font-medium">
           <app-domain-favicon *ngIf="item.serviceMeta"
             [domain]="item.serviceMeta.upstreamSite || item.serviceMeta.url"
             [size]="16" />
@@ -110,13 +176,13 @@
 
     <h3>Scheduled Maintenance</h3>
     <ul class="list-none p-0 transition-all duration-300">
-      <li *ngFor="let item of statusInfo.externalServices.scheduled | slice:0:(showAllScheduled ? statusInfo.externalServices.scheduled.length : 10)"
+      <li *ngFor="let item of statusInfo.scheduled | slice:0:(showAllScheduled ? statusInfo.scheduled.length : 10)"
           class="flex items-between sm:items-center gap-1 sm:gap-2 mb-1 flex-col sm:flex-row">
         <span class="flex-shrink-0 whitespace-nowrap">
           <i class="pi pi-history text-purple-400"></i>
           {{ item.date | date:"d MMM 'at' HH:mm" }}
         </span>
-        <span class="flex-shrink-0 whitespace-nowrap font-semibold">
+        <span class="flex-shrink-0 whitespace-nowrap font-medium">
           <app-domain-favicon *ngIf="item.serviceMeta"
             [domain]="item.serviceMeta.upstreamSite || item.serviceMeta.url"
             [size]="16" />

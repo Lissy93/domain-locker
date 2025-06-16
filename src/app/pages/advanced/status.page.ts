@@ -27,11 +27,16 @@ export interface StatusLog {
 }
 
 export interface StatusData {
-  externalServices: {
-    summary: StatusSummary[];
-    history: StatusLog[];
-    scheduled: StatusLog[];
-  }
+  summary: StatusSummary[];
+  history: StatusLog[];
+  scheduled: StatusLog[];
+}
+
+export interface InternalStatus {
+  scheduled: any[];
+  supabase: { healthy: boolean, undetermined?: boolean };
+  uptime: any;
+  database: any;
 }
 
 @Component({
@@ -41,6 +46,7 @@ export interface StatusData {
 })
 export default class StatusPage {
   readonly statusInfo$: Observable<StatusData> = this.fetchStatusData();
+  readonly internalStatusInfo$: Observable<InternalStatus> = this.fetchInternalStatusData();
   public historyChartUrl: string = '';
   public pieChartUrl: string = '';
 
@@ -63,14 +69,32 @@ export default class StatusPage {
     });
   }
 
-  private fetchStatusData(): Observable<StatusData> {
-    return this.http.get<StatusData>('/api/status-info').pipe(
+  private fetchInternalStatusData(): Observable<any> {
+    return this.http.get<any>('/api/internal-status-info').pipe(
       map(data => ({
-        externalServices: {
-          summary: this.enrichList(data.externalServices.summary),
-          history: this.enrichList(data.externalServices.history),
-          scheduled: this.enrichList(data.externalServices.scheduled),
-        }
+        scheduled: data.scheduledCrons || [],
+        supabase: data.supabaseStatus?.healthy || { healthy: false, undetermined: true },
+        uptime: data.uptimeStatus || {},
+        database: data.databaseStatus || {},
+      })),
+      catchError(error => {
+        this.errorHandler.handleError({
+          error,
+          message: 'Failed to load internal status data',
+          location: 'internal-status-info',
+          showToast: true,
+        });
+        return of({ scheduled: [], supabase: { healthy: false }, uptime: {} });
+      })
+    )
+  }
+
+  private fetchStatusData(): Observable<StatusData> {
+    return this.http.get<StatusData>('/api/external-status-info').pipe(
+      map(data => ({
+        summary: this.enrichList(data.summary),
+        history: this.enrichList(data.history),
+        scheduled: this.enrichList(data.scheduled),
       })),
       catchError(error => {
         this.errorHandler.handleError({
@@ -79,15 +103,7 @@ export default class StatusPage {
           location: 'status-info',
           showToast: true,
         });
-        return of(
-          {
-            externalServices: {
-              summary: [],
-              history: [],
-              scheduled: [],
-            }
-          },
-        );
+        return of({ summary: [], history: [], scheduled: [] });
       })
     );
   }
@@ -163,7 +179,7 @@ export default class StatusPage {
     };
 
     // Process history items (past and present only).
-    statusData.externalServices.history.forEach(item => {
+    statusData.history.forEach(item => {
       const d = new Date(item.date);
       d.setHours(0, 0, 0, 0);
       const idx = getDayIndex(d);
@@ -180,7 +196,7 @@ export default class StatusPage {
     });
 
     // Process scheduled items (future only).
-    statusData.externalServices.scheduled.forEach(item => {
+    statusData.scheduled.forEach(item => {
       const d = new Date(item.date);
       d.setHours(0, 0, 0, 0);
       const idx = getDayIndex(d);
@@ -286,7 +302,7 @@ export default class StatusPage {
     options?: { title?: string }
   ): any {
     // Combine both history and scheduled items.
-    const allItems = [...statusData.externalServices.history, ...statusData.externalServices.scheduled];
+    const allItems = [...statusData.history, ...statusData.scheduled];
     const counts: { [key: string]: number } = {};
 
     if (breakdownType === 'service') {
