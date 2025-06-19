@@ -6,19 +6,25 @@ coverImage:
 index: 6
 ---
 
+<blockquote class="info">
+This guide is aimed at self-hosted users and developers.<br>
+If you're a Pro user using the hosted instance, then
+<a href="/about/support/contact">contact support</a>, and we will resolve the issue for you.
+</blockquote>
+
+
 ### Debugging
 
 1. Confirm that you've correctly followed the setup, either in the [Developing Docs](/about/developing) or [Self-Hosting Docs](/about/self-hosting)
 2. And ensure you are using the latest version of Domain Locker / Docker / Node, etc
-3. Check the logs (in your terminal) for any obvious errors or warnings
+3. Check the logs (see [Checking Logs](/about/developing/checking-logs) for instructions) to deduce if:
+  <br>A) A domain locker issue, in which case check the source code (see below)
+  <br>B) A third-party issue, in which case check the [Third-Party Docs](/about/developing/third-party-docs)
 4. If applicable, check the [Service Status](/advanced/status) for ongoing issues or maintenance
 5. If the web app loads, but data does not work, then check:
   <br>A) The database connection, which can be tested at [`/advanced/database-connection`](/advanced/database-connection)
   <br>B) The backend/API using [`/advanced/diagnostic-actions`](/advanced/diagnostic-actions)
   <br>C) The client app's logs, at [`/advanced/error-logs`](/advanced/error-logs)
-6. Using the info from the logs, deduce if it's:
-  <br>A) A domain locker issue, in which case check the source code [here](https://github.com/lissy93/domain-locker)
-  <br>B) A third-party issue, in which case check the [Third-Party Docs](/about/developing/third-party-docs)
 
 ---
 
@@ -60,6 +66,40 @@ We've taken the time to build out a suit of embedded debugging and diagnostic to
   <br>Path: [`/advanced/admin-links`](/advanced/admin-links)
 
 ---
+
+### Checking Logs
+
+For instructions on how to view and understand the logs, see [Checking Logs](/about/developing/checking-logs).
+
+---
+
+### Checking Service Status
+
+We have a dedicated status page which you can view here: [Status Info](/advanced/status).
+
+Known issues, current outages and scheduled maintenance will be listed here.
+It also has live data on the current health of the app, as well as build info and third-party disruptions.
+
+---
+
+### Source Code
+If you have found a bug, either in Domain Locker, or a related package/service, then the method of finding and fixing the issue will be through reading or editing the source code.
+
+- Client app and API: [github.com/lissy93/domain-locker](https://github.com/lissy93/domain-locker)
+- Supabase config, schema and functions: [github.com/Lissy93/dl-sb-iac](https://github.com/Lissy93/dl-sb-iac/)
+- Dependencies and third-party docs: [Docs](/about/developing/third-party-docs)
+
+---
+
+### Support
+
+Assistance is available for Pro users and GitHub Sponsors.
+But unfortunately we are unable to guarantee individual support for free or self-hosted users, due to resource constraints.
+
+For businesses or teams running self-hosted instances, we offer dedicated paid support packages. If you're interested in tailored support for your organization, please get in touch.
+
+---
+
 
 <a href="/advanced/debug-info" style="text-align:center; display:block; font-size: 0.8rem; max-width: 500px; margin: 0 auto;">
 <img src="https://i.postimg.cc/sx9j7ZJ7/Screenshot-2025-03-12-021627.png" alt="Domain Locker Debug Tool" title="Domain Locker Debug Tool" />
