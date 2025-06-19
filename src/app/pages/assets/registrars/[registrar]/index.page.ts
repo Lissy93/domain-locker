@@ -28,7 +28,7 @@ import { ErrorHandlerService } from '~/app/services/error-handler.service';
       [preFilteredText]="'registered with '+registrarName+''"
       [showAddButton]="false"
     />
-    <p-progressSpinner *ngIf="loading"></p-progressSpinner>
+    <p-progressSpinner *ngIf="loading" />
   `,
 })
 export default class RegistrarDomainsPageComponent implements OnInit {

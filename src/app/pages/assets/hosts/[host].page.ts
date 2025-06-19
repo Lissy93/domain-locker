@@ -15,10 +15,12 @@ import { ErrorHandlerService } from '~/app/services/error-handler.service';
   template: `
     <h1>Domains hosted by "{{ hostIsp }}"</h1>
     <app-domain-view
-    [domains]="domains"
-    [preFilteredText]="'hosted with '+hostIsp+''"
-    [showAddButton]="false"
-    *ngIf="!loading" />
+      [domains]="domains"
+      [preFilteredText]="'hosted with '+hostIsp+''"
+      [showAddButton]="false"
+      [loading]="loading"
+      *ngIf="!loading"
+    />
     <p-progressSpinner *ngIf="loading"></p-progressSpinner>
   `,
 })

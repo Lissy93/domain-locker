@@ -235,8 +235,8 @@ export class ErrorHandlerService {
         console.log('%cLanguage', s, navigator['language']);
       console.groupEnd();
       console.groupCollapsed('🔗 %cHelp Links','color:#dc8bfa;');
-        console.log('%cSupport Docs', s, `${window.origin}/about/support`);
-        console.log('%cDebug Info', s, `${window.origin}/advanced/debug-info`);
+        console.log('%cDebug Tools', s, `${window.origin}/advanced`);  
+        console.log('%cSupport Docs', s, `${window.origin}/about/support`);  
         console.log('%cGitHub', s, `https://github.com/lissy93/domain-locker`);
       console.groupEnd();
     console.groupEnd();

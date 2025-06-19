@@ -22,6 +22,109 @@
   </ng-template>
 </p-messages>
 
+<div *ngIf="subscriptionData && (subscriptionData.status !== 'none' || subscriptionData.invoices.length)" class="mb-4 flex flex-col gap-2">
+
+  <h2 class="my-4">Subscription Details</h2>
+
+  <div *ngIf="subscriptionData.status !== 'none'" class="flex flex-col w-full p-3 mb-2 p-card">
+    <h3>Info</h3>
+    <ul class="list-none p-0 m-0">
+      <li>
+        <strong>Status:</strong> {{ subscriptionData.status | titlecase }}
+      </li>
+      <li>
+        <strong>Billing Start:</strong> {{ subscriptionData.current_period_start | date: 'mediumDate' }}
+      </li>
+      <li>
+        <strong>Billing End:</strong> {{ subscriptionData.current_period_end | date: 'mediumDate' }}
+      </li>
+      <li>
+        <strong>Plan:</strong> {{ subscriptionData.plan }}
+      </li>
+      <li>
+        <strong>Subscription ID: </strong> <code>{{ subscriptionData.subscription_id }}</code>
+      </li>
+    </ul>
+  </div>
+
+  <div *ngIf="subscriptionData.invoices?.length" class="flex flex-col w-full p-3 mb-2 p-card">
+    <h3>Invoices</h3>
+    <p-table [value]="subscriptionData.invoices" class="min-w-[600px] w-full">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Date</th>
+          <th>Amount</th>
+          <th>Number</th>
+          <th>Status</th>
+          <th>PDF</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-invoice>
+        <tr>
+          <td>{{ invoice.date | date: 'mediumDate' }}</td>
+          <td>
+            {{ invoice.amount_paid / 100 | currency: invoice.currency.toUpperCase() }}
+          </td>
+          <td>
+            <a [href]="invoice.hosted_invoice_url" target="_blank" class="text-primary-500 underline">
+              {{ invoice.number }}
+            </a>
+          </td>
+          <td>
+            <span class="capitalize">{{ invoice.status }}</span>
+          </td>
+          <td>
+            <a [href]="invoice.invoice_pdf" target="_blank" *ngIf="invoice.invoice_pdf">
+              <p-button icon="pi pi-file-pdf" label="Download" severity="info" size="small"></p-button>
+            </a>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+
+  
+  <div *ngIf="subscriptionData.payment_method && subscriptionData.status !== 'none'" class="flex flex-col w-full p-3 mb-2 p-card">
+    <h3>Payment Method</h3>
+    <p *ngIf="subscriptionData.payment_method.brand" class="m-0">
+      Paid with {{ subscriptionData.payment_method.brand }} card ending in {{ subscriptionData.payment_method.last4 }},
+      expiring on {{ subscriptionData.payment_method.exp_month }}/{{ subscriptionData.payment_method.exp_year }}.
+    </p>
+  </div>
+
+  <div *ngIf="subscriptionData.discount" class="flex flex-col w-full p-3 mb-2 p-card">
+    <h3>Discount</h3>
+    <p class="m-0">
+      You are currently receiving a <strong>{{ subscriptionData.discount.percent_off }}%</strong> discount
+      with the coupon <strong>{{ subscriptionData.discount.name }}</strong>.
+      This discount is valid for <strong>{{ subscriptionData.discount.duration }}</strong>.
+    </p>
+  </div>
+
+  <div class="flex flex-col w-full p-3 mb-2 p-card" *ngIf="(currentPlan$ | async) !== 'free'">
+    <h3>Manage Plan</h3>
+    <div class="flex gap-3 justify-end">
+      <p-button
+        label="Contact Support"
+        severity="success"
+        icon="pi pi-headphones"
+        size="small"
+        routerLink="/about/support"
+      />
+      <p-button
+        label="Cancel Plan"
+        severity="danger"
+        icon="pi pi-times-circle"
+        size="small"
+        (click)="cancelSubscription()"
+      />
+    </div>
+  </div>
+
+  <p-divider class="my-2 flex" />
+
+</div>
+
 <div class="flex justify-between items-center mb-2">
   <h2>Upgrade</h2>
   <!-- <a routerLink="/about/pricing">

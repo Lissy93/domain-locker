@@ -31,7 +31,7 @@ export class FooterComponent {
       'FOOTER.LINKS.LEFT.PRICING',
       'FOOTER.LINKS.LEFT.SELF_HOSTING',
       'FOOTER.LINKS.LEFT.ALTERNATIVES',
-      'FOOTER.LINKS.MIDDLE.GITHUB',
+      'FOOTER.LINKS.MIDDLE.STATUS',
       'FOOTER.LINKS.MIDDLE.MORE_APPS',
       'FOOTER.LINKS.MIDDLE.SUPPORT',
       'FOOTER.LINKS.MIDDLE.ATTRIBUTIONS',
@@ -65,10 +65,10 @@ export class FooterComponent {
           { label: translations['FOOTER.LINKS.LEFT.ALTERNATIVES'], link: '/about/alternatives' },
         ],
         middle: [
-          { label: translations['FOOTER.LINKS.MIDDLE.GITHUB'], href: 'https://github.com/lissy93/domain-locker' },
-          { label: translations['FOOTER.LINKS.MIDDLE.MORE_APPS'], href: 'https://as93.net' },
+          { label: translations['FOOTER.LINKS.MIDDLE.STATUS'], link: '/advanced/status' },
           { label: translations['FOOTER.LINKS.MIDDLE.SUPPORT'], link: '/about/support' },
           { label: translations['FOOTER.LINKS.MIDDLE.ATTRIBUTIONS'], link: '/about/attributions' },
+          { label: translations['FOOTER.LINKS.MIDDLE.MORE_APPS'], href: 'https://as93.net' },
         ],
         right: [
           { label: translations['FOOTER.LINKS.RIGHT.LICENSE'], link: '/about/legal/license' },

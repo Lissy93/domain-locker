@@ -95,6 +95,21 @@ export class SupabaseService {
     return aal.currentLevel === 'aal2'; // Only consider authenticated if they've completed MFA (AAL2)
   }
 
+  async getSessionToken(): Promise<string | null> {
+    if (!this.isSupabaseEnabled()) {
+      return null;
+    }
+    if (this.token) {
+      return this.token;
+    }
+    const { data: { session } } = await this.supabase.auth.getSession();
+    if (session) {
+      this.token = session.access_token;
+      return this.token;
+    }
+    return null;
+  }
+
   async getSessionData() {
     if (!this.isSupabaseEnabled()) {
       return {};

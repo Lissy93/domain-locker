@@ -1,29 +1,68 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, Inject, OnInit, PLATFORM_ID, NgZone } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { PrimeNgModule } from '~/app/prime-ng.module';
 import { BillingService } from '~/app/services/billing.service';
 import { pricingFeatures } from '~/app/constants/pricing-features';
-import { Observable } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 import { ErrorHandlerService } from '~/app/services/error-handler.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { ConfirmationService } from 'primeng/api';
 import { GlobalMessageService } from '~/app/services/messaging.service';
 import { EnvService } from '~/app/services/environment.service';
 import { FeatureNotEnabledComponent } from '~/app/components/misc/feature-not-enabled.component';
 import { FeatureService } from '~/app/services/features.service';
+import { SupabaseService } from '~/app/services/supabase.service';
+
+interface SubscriptionData {
+  customer_id: string;
+  status: string;
+  subscription_id: string;
+  plan: string;
+  current_period_start: string; // ISO 8601 Date string
+  current_period_end: string;   // ISO 8601 Date string
+  cancel_at: string | null;     // Nullable ISO 8601 Date string
+  cancel_at_period_end: boolean;
+  discount?: {
+    percent_off: number;
+    name: string;
+    duration: string;
+  };
+  invoices: Array<{
+    amount_paid: number;
+    currency: string;
+    status: string;
+    number: string;
+    hosted_invoice_url: string;
+    invoice_pdf: string;
+    date: string; // ISO 8601 Date string
+  }>;
+  payment_method: {
+    brand: string;
+    last4: string;
+    exp_month: number;
+    exp_year: number;
+  };
+}
+
 
 @Component({
   selector: 'app-upgrade',
   standalone: true,
   imports: [CommonModule, PrimeNgModule, FeatureNotEnabledComponent],
   templateUrl: './upgrade.page.html',
-  styles: ['::ng-deep .p-confirm-dialog { max-width: 600px; }'],
+  styles: [`
+    ::ng-deep .p-confirm-dialog { max-width: 600px; }
+    ::ng-deep .p-datatable .p-datatable-tbody > tr > td { padding: 0.5rem; }
+  `],
 })
 export default class UpgradePage implements OnInit {
   currentPlan$: Observable<string | null>;
   public availablePlans = pricingFeatures;
   public billingInfo: any;
+
+  public subscriptionData: SubscriptionData | null = null;
 
   public isAnnual = true;
   public billingCycleOptions = [
@@ -39,11 +78,15 @@ export default class UpgradePage implements OnInit {
     private billingService: BillingService,
     private errorHandler: ErrorHandlerService,
     private route: ActivatedRoute,
-    private http: HttpClient,
     private confirmationService: ConfirmationService,
     private messagingService: GlobalMessageService,
-    private envService: EnvService,
     private featureService: FeatureService,
+    private router: Router,
+    private supabaseService: SupabaseService,
+    private envService: EnvService,
+    private http: HttpClient,
+    @Inject(PLATFORM_ID) private platformId: Object,
+    private ngZone: NgZone,
   ) {
     this.currentPlan$ = this.billingService.getUserPlan();
   }
@@ -54,6 +97,10 @@ export default class UpgradePage implements OnInit {
       this.errorHandler.handleError({ error, message: 'Failed to fetch user plan', showToast: true }),
     );
 
+    this.getBillingInfo();
+
+    const shouldRefresh = this.route.snapshot.queryParamMap.get('refresh');
+
     const sessionId = this.route.snapshot.queryParamMap.get('session_id');
     const success = this.route.snapshot.queryParamMap.get('success');
     const cancelled = this.route.snapshot.queryParamMap.get('canceled');
@@ -62,6 +109,20 @@ export default class UpgradePage implements OnInit {
       this.status = 'success';
     } else if (cancelled) {
       this.status = 'failed';
+    }
+
+    if (shouldRefresh) {
+        setTimeout(() => {
+          this.billingService.getBillingData().subscribe((data) => {
+            this.billingInfo = data;
+          });
+          this.router.navigate([], {
+            relativeTo: this.route,
+            queryParams: { refresh: null },
+            queryParamsHandling: 'merge',
+            replaceUrl: true
+          });
+        }, 500);
     }
 
     this.billingService.getBillingData().subscribe((data) => {
@@ -113,14 +174,16 @@ export default class UpgradePage implements OnInit {
       rejectIcon:'pi pi-check-circle mr-2',
       acceptButtonStyleClass:'p-button-sm p-button-danger p-button-text',
       closeOnEscape: true,
-      accept: () => {
-        const subscriptionId = this.billingInfo?.meta?.subscription_id;
-        this.billingService.cancelSubscription(subscriptionId)
+      accept: async () => {
+        this.billingService.cancelSubscription()
           .then(() => {
             this.messagingService.showSuccess(
               'Subscription Canceled',
               'Your subscription has been successfully canceled.',
             );
+            setTimeout(() => {
+              window.location.reload();
+            }, 500);
           })
           .catch((error) => {
             this.errorHandler.handleError({ error, message: 'Failed to cancel subscription', showToast: true });
@@ -128,4 +191,53 @@ export default class UpgradePage implements OnInit {
       },
     });
   }
+
+  async getBillingInfo(): Promise<void> {
+    // 1) Guard SSR
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
+
+    // 2) Resolve endpoint
+    const endpoint = this.envService.getEnvVar('DL_STRIPE_INFO_URL');
+    if (!endpoint) {
+      this.errorHandler.handleError({
+        message: 'Stripe info endpoint is not configured.',
+        location: 'Upgrade Page',
+        showToast: true,
+      });
+      return;
+    }
+
+    // 3) Grab user ID (interceptor will handle the token)
+    const user = await this.supabaseService.getCurrentUser();
+    const userId = user?.id;
+    if (!userId) {
+      this.errorHandler.handleError({
+        message: 'Not authenticated',
+        location: 'Upgrade Page',
+        showToast: true,
+      });
+      return;
+    }
+
+    // 4) Fire off the HTTP POST via HttpClient
+    this.http.post<SubscriptionData>(endpoint, { userId }).subscribe({
+      next: data => {
+        // run inside zone to trigger change detection
+        this.ngZone.run(() => {
+          this.subscriptionData = data;
+        });
+      },
+      error: err => {
+        this.errorHandler.handleError({
+          error: err,
+          message: 'Failed to fetch Stripe details',
+          location: 'Upgrade Page',
+          showToast: true,
+        });
+      }
+    });
+  }
+
 }

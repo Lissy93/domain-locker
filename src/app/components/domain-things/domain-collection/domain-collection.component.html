@@ -20,6 +20,9 @@
   </div>
 }
 
+
+<ng-container *ngIf="!loading">
+
 <!-- Domain Grid (cards) -->
 <ng-container *ngIf="isGridLayout; else tableLayout">
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -39,6 +42,8 @@
     [visibleColumns]="visibleColumns"
   ></app-domain-list>
 </ng-template>
+
+</ng-container>
 
 <!-- Note (count of visible fields, and usage instructions) -->
 <div *ngIf="showFooter" class="flex space-between justify-between items-center flex-wrap mt-4 text-surface-400">

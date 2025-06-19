@@ -69,6 +69,12 @@ Below is a high-level class-diagram.
 
 ---
 
+## Resolving Issues
+
+If you run into issues, see our [Debugging Guide](/about/developing/debugging).
+
+---
+
 ## Architecture
 
 <div class="screenshots-wrap">
