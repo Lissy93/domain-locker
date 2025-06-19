@@ -5,6 +5,7 @@
   [circular]="true"
   [autoplayInterval]="7000"
   orientation="vertical"
+  styleClass="hidden md:flex"
 >
   <ng-template pTemplate="item" let-feature>
     <div class="flex gap-2 p-card mx-2 p-0 h-full flex-wrap sm:flex-nowrap">
@@ -27,7 +28,7 @@
         </ul>
       </div>
       <!-- Right side: screenshot -->
-      <div *ngIf="feature.screenshot" class="relative w-full sm:w-3/4 flex p-0">
+      <div *ngIf="feature.screenshot" class="relative w-full sm:w-3/4 flex p-0 max-h-[400px]">
         <img
           [src]="feature.screenshot || 'https://placehold.co/600x300/1f2937/fff'"
           [alt]="feature.featureTitle + ' Screenshot'"

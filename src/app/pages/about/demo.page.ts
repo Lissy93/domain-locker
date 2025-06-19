@@ -27,7 +27,7 @@ import { screenshots } from '~/app/pages/about/data/feature-comparison';
     <p-divider />
     <p-card styleClass="mx-2">
       <h3>Try it locally</h3>
-      <pre>TODO: Add quick command for spinning up local instance</pre>
+      <pre>curl -fsSL https://install.domain-locker.com | bash</pre>
     </p-card>
     <p-divider />
     <app-cta />
