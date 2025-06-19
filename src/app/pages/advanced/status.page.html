@@ -6,23 +6,28 @@
   as well as a log of any ongoing incidents or scheduled maintenance.
 </p>
 
-<div class="flex w-full justify-end">
-  <a href="https://uptime.as93.net/status/domain-locker" target="_blank">
-    <p-button
-      severity="info"
-      label="View Public Status Page"
-      icon="pi pi-external-link"
-    />
-  </a>
+
+<!-- Current Status -->
+<div class="p-card px-4 py-3 mt-4">
+  <div class="flex items-center gap-3">
+    <i class="pi pi-check-circle text-green-400 text-6xl"></i>
+    <div>
+      <h4 class="font-medium text-2xl m-0">Domain Locker is Operational</h4>
+      <p class="m-0">
+        All critical systems are functioning normally. There are no major incidents or outages reported at this time.
+      </p>
+    </div>
+  </div>
 </div>
 
-<p-divider class="my-4"></p-divider>
 
 <div class="flex flex-col gap-4 mt-4">
 
   <!-- Current Status -->
   <div class="p-card px-4 py-3">
-    <h2 class="mb-4">Current Service Status</h2>
+    <h2 class="mb-1">Current Service Summary</h2>
+
+    <p class="opacity-70 mt-0">Tip: Click an item to expand details</p>
     
     <div *ngIf="internalStatusInfo$ | async as internal">
       <p-divider class="my-4" />
@@ -91,10 +96,10 @@
               <span class="font-medium flex-shrink-0 w-56 flex items-center space-x-2">{{s.name}}</span>
               <span class="flex items-center">
                 <div *ngIf="s.status === 'up'; else downStatus">
-                  <i class="pi pi-check-circle text-green-400 mr-1"></i> Operational
+                  <i class="pi pi-check-circle text-green-400 mr-1"></i> Completed
                 </div>
                 <ng-template #downStatus>
-                  <i class="pi pi-times-circle text-red-400 mr-1"></i> Down
+                  <i class="pi pi-times-circle text-red-400 mr-1"></i> Behind Schedule
                 </ng-template>
               </span>
             </summary>
@@ -102,6 +107,35 @@
               Last ping was at {{ s.last_ping | date:"d MMM 'at' HH:mm" }}, and took {{ s.last_duration }}ms.
               The next check is scheduled to be completed by {{ s.next_ping ? (s.next_ping | date:"d MMM 'at' HH:mm") : 'tonight' }}.
               There have been {{ s.n_pings}} pings.
+            </p>
+          </details>
+        </li>
+      </ul>
+    </div>
+
+    <div *ngIf="internalStatusInfo$ | async as internal">
+      <p-divider class="my-4" />
+      <h3>CI/CD Jobs</h3>
+      <ul class="list-none p-0 mt-2">
+        <li *ngFor="let s of internal.ghActions" class="flex">
+          <details>
+            <summary class="flex cursor-pointer hover:bg-surface-100 rounded pr-2">
+              <span class="font-medium flex-shrink-0 w-56 flex items-center space-x-2 truncate">{{s.name}}</span>
+              <span class="flex items-center">
+                <div *ngIf="s.conclusion === 'success'; else downStatus">
+                  <i class="pi pi-check-circle text-green-400 mr-1"></i> Passing
+                </div>
+                <ng-template #downStatus>
+                  <i class="pi pi-times-circle text-red-400 mr-1"></i> Down
+                </ng-template>
+              </span>
+            </summary>
+            <p class="mt-0 text-sm opacity-70 italic">
+              This job is currently {{s.state}}.
+              Last run at {{s.created_at | date: 'medium' }} is {{s.status}}
+              against {{s.head_branch}} and was triggered by a {{s.run_event}}.
+              <br>
+              Links: <a [href]="s.html_url">Workflow Source</a> | <a [href]=s.run_html_url>Workflow Logs</a>
             </p>
           </details>
         </li>
@@ -140,7 +174,7 @@
   <!-- App response and uptime chart -->
   <div *ngIf="uptimeChartUrl" class="p-card px-4 py-3">
     <h2 class="mt-4">Recent Response Time History</h2>
-    <img [src]="uptimeChartUrl" alt="Uptime response time chart" class="w-full max-w-[48rem] mx-auto flex" />
+    <img [src]="uptimeChartUrl" alt="Uptime response time chart" class="w-full max-w-[36rem] mx-auto flex" />
   </div>
 
   <!-- Recent Incidents -->

@@ -37,6 +37,22 @@ export interface InternalStatus {
   supabase: { healthy: boolean, undetermined?: boolean };
   uptime: any;
   database: any;
+  ghActions?: {
+    id: number;
+    name: string;
+    path: string;
+    state: string;
+    conclusion: 'success' | 'failure' | 'cancelled' | 'cancelled' | 'skipped' | 'timed_out' | 'action_required' | 'neutral' | 'stale' | 'startup_failure';
+    badge_url: string;
+    html_url: string;
+    created_at: string;
+    updated_at: string;
+    status: 'queued' | 'in_progress' | 'completed';
+    run_id: number;
+    run_html_url: string;
+    head_branch: string;
+    run_event: string;
+  }[]
 }
 
 interface HeartBeat {
@@ -58,6 +74,13 @@ interface StatusMetrics {
   standalone: true,
   imports: [CommonModule, PrimeNgModule, DomainFaviconComponent],
   templateUrl: './status.page.html',
+  styles: [`
+   li details p {
+    border-left: 4px solid var(--primary-300);
+    padding: 0.25rem 0.5rem;
+    margin: 0.25rem 0.5rem 0.75rem 0.5rem !important;
+   }  
+  `],
 })
 export default class StatusPage {
   readonly statusInfo$: Observable<StatusData> = this.fetchStatusData();
@@ -104,6 +127,7 @@ export default class StatusPage {
         supabase: data.supabaseStatus || { healthy: false, undetermined: true },
         uptime: data.uptimeStatus || {},
         database: data.databaseStatus || {},
+        ghActions: data.ghActions || [],
       })),
       catchError(error => {
         this.errorHandler.handleError({

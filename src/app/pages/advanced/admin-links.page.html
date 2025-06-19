@@ -9,7 +9,7 @@
 
 <!-- For each section of links -->
 <div *ngFor="let section of sections; last as isLast">
-  <h2 class="mt-4 mb-2">{{ section.title }}</h2>
+  <h2 class="mt-4 mb-2" [id]="section.id">{{ section.title }}</h2>
   <p class="mt-0 opacity-70 italic text-lg">
     {{ section.description}}
   </p>

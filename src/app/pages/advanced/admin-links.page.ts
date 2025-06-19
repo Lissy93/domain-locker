@@ -11,21 +11,24 @@ import { selfHostedLinks, serviceLinks, documentationLinks, type LinkItem } from
   templateUrl: './admin-links.page.html',
 })
 export default class AdminLinksPage {
-  public sections: { title: string, description: string; links: LinkItem[]}[] = [
+  public sections: { title: string, id: string, description: string; links: LinkItem[]}[] = [
     {
       title: 'Third-Party Services',
+      id: 'third-party',
       description: 'These services are managed by third-party providers, and '
         + 'are used on the Domain-Locker.com managed instance.',
       links: serviceLinks,
     },
     {
       title: 'Self-hosted Services',
+      id: 'self-hosted',
       description: 'These are the components of the self-hosted version of Domain Locker. '
         + 'There\'s no requirement for any third-party services.',
       links: selfHostedLinks,
     },
     {
       title: 'Documentation (for developers)',
+      id: 'documentation',
       description: 'If you\'re delving into the codebase, these are the links '
         + 'for the docs of the technologies we use.',
       links: documentationLinks,

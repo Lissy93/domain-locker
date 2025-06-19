@@ -10,14 +10,15 @@ export default defineEventHandler(async (event) => {
 
   const authHeader = event.node.req.headers['Authorization'] as string | undefined;
 
-  const [scheduledCrons, databaseStatus, supabaseStatus, uptimeStatus] = await Promise.all([
+  const [scheduledCrons, databaseStatus, supabaseStatus, uptimeStatus, ghActions] = await Promise.all([
     fetchHealthchecks(),
     fetchDatabaseHealth(authHeader),
     fetchSupabaseHealth(),
     fetchUptimeStatus(),
+    fetchGitHubCIStatus(),
   ]);
 
-  return { scheduledCrons, databaseStatus, supabaseStatus, uptimeStatus };
+  return { scheduledCrons, databaseStatus, supabaseStatus, uptimeStatus, ghActions };
 });
 
 async function fetchHealthchecks(): Promise<any[]> {
@@ -82,6 +83,20 @@ async function fetchUptimeStatus(): Promise<any | undefined> {
     return res.ok ? await res.json() : undefined;
   } catch (err) {
     console.error('[external-checks] Uptime error:', err);
+    return {};
+  }
+}
+
+async function fetchGitHubCIStatus(): Promise<any | undefined> {
+  const url = 'https://gh-workflows.as93.workers.dev/?user=lissy93&repo=domain-locker';
+  try {
+    const res = await fetch(url, {
+      headers: { 'Content-Type': 'application/json' },
+      signal: AbortSignal.timeout(timeout),
+    });
+    return res.ok ? await res.json() : undefined;
+  } catch (err) {
+    console.error('[external-checks] github actions error:', err);
     return {};
   }
 }
