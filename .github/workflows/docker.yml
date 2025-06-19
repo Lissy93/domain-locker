@@ -122,7 +122,7 @@ jobs:
       - name: 🔐 Generate SBOM (SPDX)
         if: matrix.target == 'ghcr' && (github.event_name != 'workflow_dispatch' || github.event.inputs.dry_run != 'true')
         id: sbom
-        uses: anchore/sbom-action@v0.20.01
+        uses: anchore/sbom-action@v0.20.1
         with:
           image: ${{ matrix.image }}:${{ steps.docker_tags.outputs.tag_name }}
           format: spdx-json
