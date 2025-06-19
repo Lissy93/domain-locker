@@ -37,10 +37,11 @@ import { ErrorHandlerService } from '~/app/services/error-handler.service';
     }
     
     <app-domain-view
-    [domains]="domains"
-    [preFilteredText]="'with status '+statusCode+''"
-    [showAddButton]="false"
-    *ngIf="!loading" />
+      [domains]="domains"
+      [preFilteredText]="'with status '+statusCode+''"
+      [showAddButton]="false"
+      *ngIf="!loading"
+    />
     <p-progressSpinner *ngIf="loading"></p-progressSpinner>
   `,
 })

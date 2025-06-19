@@ -28,24 +28,18 @@ export const hostedSupport: SupportInfo = {
       description: 'Get 1 on 1 help from our support team',
       icon: '',
     },
-    {
-      title: 'Frequently Asked Questions',
-      routerLink: '/about/support/faq',
-      description: 'Common questions, and quick solutions',
-      icon: '',
-    },
+    // {
+    //   title: 'Frequently Asked Questions',
+    //   routerLink: '/about/support/faq',
+    //   description: 'Common questions, and quick solutions',
+    //   icon: '',
+    // },
     {
       title: 'Guides',
       routerLink: '/about/guides',
-      description: 'Tutorials on getting started with Domain Locker, end what everything meand',
+      description: 'Tutorials on getting started with Domain Locker, and what everything means',
       icon: '',
-    },
-    {
-      title: 'Learn',
-      routerLink: '/about/articles',
-      description: 'Everything you need to know about domain names and management',
-      icon: '',
-    },
+    }
   ],
 };
 
@@ -68,9 +62,9 @@ export const selfHostedSupport: SupportInfo = {
       icon: '',
     },
     {
-      title: 'Third-Party Docs',
-      routerLink: '/about/developing/third-party-docs',
-      description: 'Links to help and support for third-party providers',
+      title: 'Resolving a Bug',
+      routerLink: '/about/developing/debugging',
+      description: 'Step-by-step debugging for common issues',
       icon: '',
     },
     {
@@ -80,9 +74,9 @@ export const selfHostedSupport: SupportInfo = {
       icon: '',
     },
     {
-      title: 'Resolving a Bug',
-      routerLink: '/about/developing/debugging',
-      description: 'Step-by-step debugging for common issues',
+      title: 'Third-Party Docs',
+      routerLink: '/about/developing/third-party-docs',
+      description: 'Links to help and support for third-party providers',
       icon: '',
     },
   ],

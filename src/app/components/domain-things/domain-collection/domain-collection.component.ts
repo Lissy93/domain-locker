@@ -26,6 +26,7 @@ export class DomainCollectionComponent implements OnInit {
   @Input() showAddButton: boolean = true;
   @Input() showFooter: boolean = true;
   @Input() preFilteredText: string | undefined;
+  @Input() loading: boolean = false;
   
   @Input() triggerReload: () => void = () => {};
   @Output() $triggerReload = new EventEmitter();
@@ -34,7 +35,6 @@ export class DomainCollectionComponent implements OnInit {
   filtersComp!: FieldVisibilityFilterComponent;
 
   filteredDomains: DbDomain[] = [];
-  loading: boolean = false;
   isGridLayout: boolean = true;
   visibleFields: FieldOption[] = [];
   searchTerm: string = '';

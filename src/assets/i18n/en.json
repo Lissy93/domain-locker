@@ -115,9 +115,10 @@
       },
       "MIDDLE": {
         "GITHUB": "GitHub",
-        "MORE_APPS": "More Apps...",
+        "STATUS": "Service Status",
         "SUPPORT": "Support",
-        "ATTRIBUTIONS": "Attributions"
+        "ATTRIBUTIONS": "Attributions",
+        "MORE_APPS": "More Apps..."
       },
       "RIGHT": {
         "LICENSE": "License",

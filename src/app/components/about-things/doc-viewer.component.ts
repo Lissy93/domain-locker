@@ -122,6 +122,23 @@ export interface DocAttributes {
         &::first-line { color: var(--yellow-400); }
       }
     }
+    .info {
+      background-color: var(--blue-200);
+      color: var(--blue-800);
+      border: 1px solid var(--blue-600);
+      border-radius: 0.25rem;
+      padding: 0.5rem;
+      margin: 0.25rem 0 1rem 0;
+      font-size: 0.8rem;
+      line-height: 1rem;
+      p {
+        margin: 0.2rem 0 0 0;
+      }
+      a {
+        color: var(--blue-800);
+        text-decoration: underline;
+      }
+    }
   `]
 })
 export class DocsViewerComponent {

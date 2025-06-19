@@ -167,7 +167,7 @@ export const documentationLinks: LinkItem[] = [
     purpose: 'Async Library',
     provider: 'RxJS',
     url: 'https://rxjs.dev/',
-    description: 'For reactive programming using Observables',
+    description: 'Reactive data observables',
   },
   {
     purpose: 'Server Toolkit',

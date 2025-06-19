@@ -9,7 +9,7 @@ import { DlIconComponent } from '~/app/components/misc/svg-icon.component';
   standalone: true,
   selector: 'about-links',
   template: `
-  <div class="p-card p-4 mb-4 relative">
+  <div class="p-card p-4 relative">
   <ul class="p-0 m-0 list-none">
     <li *ngFor="let section of sections" class="">
       <a [routerLink]="'/about/' + makeId(section.title)" class="flex flex-wrap gap-2 items-center no-underline text-default">

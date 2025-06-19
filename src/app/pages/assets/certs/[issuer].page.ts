@@ -19,6 +19,7 @@ import { ErrorHandlerService } from '~/app/services/error-handler.service';
       *ngIf="!loading && domains.length > 0"
       [preFilteredText]="'with certificates from '+issuer+''"
       [showAddButton]="false"
+      [loading]="loading"
     />
     <p-message severity="info" text="No domains found for this SSL issuer." *ngIf="!loading && domains.length === 0"></p-message>
     <p-progressSpinner *ngIf="loading"></p-progressSpinner>

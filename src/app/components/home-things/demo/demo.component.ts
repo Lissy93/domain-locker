@@ -24,7 +24,7 @@ import { TranslateModule } from '@ngx-translate/core';
       </a>
     </div>
     <!-- Demo video -->
-    <div class="p-card flex-1 py-4 px-3">
+    <div class="p-card flex-1 py-4 px-3 hidden">
       <h4>{{ 'HOME.DEMO.VIDEO_DEMO_TITLE' | translate }}</h4>
       <p>{{ 'HOME.DEMO.VIDEO_DEMO_DESC' | translate }}</p>
       <a href="#">

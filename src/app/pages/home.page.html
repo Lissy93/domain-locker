@@ -98,6 +98,7 @@
       *ngIf="!loading"
       [domains]="domains"
       [showFooter]="false"
+      [loading]="loading"
       ($triggerReload)="newDomainAdded($event)"
       pAnimateOnScroll enterClass="fadeIn" leaveClass="fadeOut"
     />

@@ -1,12 +1,14 @@
 import { AfterViewInit, Component, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { PrimeNgModule } from '~/app/prime-ng.module';
+import { documentationLinks, type LinkItem } from '~/app/constants/admin-links';
+import { DomainFaviconComponent } from '~/app/components/misc/favicon.component';
 import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   standalone: true,
   selector: 'app-attributions',
-  imports: [CommonModule, PrimeNgModule],
+  imports: [CommonModule, PrimeNgModule, DomainFaviconComponent],
   template: `
     <h1>Attributions</h1>
     <p>The ongoing development of Domain Locker wouldn't be possible without these supporters.</p>
@@ -56,6 +58,26 @@ import { DomSanitizer } from '@angular/platform-browser';
       </div>
       <div class="my-4 p-card p-3 pb-5">
         <h2 class="mb-3 text-purple-400">Dependencies</h2>
+        <p class="my-2 opacity-70 italic">
+          Building Domain Locker would not have been possible, without the amazing
+          open source developers who build and maintain the dependencies we rely upon
+        </p>
+        <div>
+          <ul class="list-none grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3 mb-4">
+            <li *ngFor="let link of documentationLinks" class="flex items-start gap-2">
+              <app-domain-favicon [domain]="link.url" [size]="36" class="mr-2 mt-2 w-[36px] h-[36px]" />
+              <div class="flex flex-col">
+                <div class="flex gap-2 items-baseline">
+                  <a [href]="link.url" target="_blank" rel="noopener noreferrer">
+                    <h3 class="m-0">{{ link.provider }}</h3>
+                  </a>
+                  <span class="opacity-70 italic text-sm">{{ link.purpose}}</span>
+                </div>
+                <span *ngIf="link.description">{{ link.description }}</span>
+              </div>
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
   `,
@@ -70,6 +92,8 @@ export default class AttributionsPage implements AfterViewInit {
   repo = 'domain-locker';
   frameHeight = 300;
   githubLink = `https://github.com/${this.user}/${this.repo}`;
+
+  documentationLinks: LinkItem[] = documentationLinks;
 
   // Array of sections for contributors, sponsors, stargazers, forkers, etc.
   sections = [
