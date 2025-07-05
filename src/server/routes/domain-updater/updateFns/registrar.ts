@@ -2,17 +2,18 @@ import { callPgExecutor } from '../lib/pgExecutor';
 import { recordDomainUpdate } from '../lib/recordUpdate';
 import { normalizeStr } from '../lib/utils';
 
-async function upsertRegistrar(pgExec: string, name: string, url?: string): Promise<string> {
+async function upsertRegistrar(pgExec: string, name: string, url: string | null, userId: string): Promise<string> {
   const res = await callPgExecutor<{ id: string }>(pgExec, `
-    INSERT INTO registrars (name, url)
-    VALUES ($1, $2)
-    ON CONFLICT (name) DO UPDATE SET url = EXCLUDED.url
+    INSERT INTO registrars (name, url, user_id)
+    VALUES ($1, $2, $3)
+    ON CONFLICT (user_id, name) DO UPDATE SET url = EXCLUDED.url
     RETURNING id
-  `, [name, url || null]);
+  `, [name, url, userId]);
 
   if (!res.length) throw new Error(`Failed to upsert registrar: ${name}`);
   return res[0].id;
 }
+
 
 export async function updateRegistrar(
   pgExec: string,
@@ -23,9 +24,11 @@ export async function updateRegistrar(
   const oldName = normalizeStr(domainRow.registrar?.name);
   const newName = normalizeStr(freshInfo?.registrar?.name);
 
+  const userId = domainRow.user_id || 'a0000000-aaaa-42a0-a0a0-00a000000a69';
+
   if (!newName || oldName === newName) return;
 
-  const registrarId = await upsertRegistrar(pgExec, freshInfo.registrar.name, freshInfo.registrar.url);
+  const registrarId = await upsertRegistrar(pgExec, freshInfo.registrar.name, freshInfo.registrar.url ?? null, userId);
 
   await recordDomainUpdate(
     pgExec,
@@ -43,3 +46,4 @@ export async function updateRegistrar(
 
   changes.push('Registrar');
 }
+

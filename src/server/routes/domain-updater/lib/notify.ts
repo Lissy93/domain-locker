@@ -1,24 +1,56 @@
+// server/api/trigger-updates/lib/notifyIfEnabled.ts
+
 import { callPgExecutor } from './pgExecutor';
+// import { Logger } from './logger';
 
-const DEFAULT_USER_ID = 'a0000000-aaaa-42a0-a0a0-00a000000a69';
+// const log = new Logger('notify');
 
+/**
+ * Check if a notification should be sent for a changeType, and insert it if so.
+ */
 export async function notifyUser(
   pgExec: string,
   domainId: string,
+  userId: string,
   changeType: string,
-  message: string
+  message?: string
 ): Promise<void> {
-  const prefs = await callPgExecutor<{ is_enabled: boolean }>(
-    pgExec,
-    `SELECT is_enabled FROM notification_preferences WHERE domain_id = $1 AND notification_type = $2`,
-    [domainId, changeType]
-  );
+  try {
+    const prefs = await callPgExecutor<any>(
+      pgExec,
+      `SELECT notification_type FROM notification_preferences WHERE domain_id = $1 AND is_enabled = true`,
+      [domainId]
+    );
 
-  if (!prefs.length || !prefs[0].is_enabled) return;
+    if (!prefs || prefs.length === 0) return;
 
-  await callPgExecutor(pgExec,
-    `INSERT INTO notifications (user_id, domain_id, change_type, message, sent, read)
-     VALUES ($1, $2, $3, $4, false, false)`,
-    [DEFAULT_USER_ID, domainId, changeType, message]
-  );
+    const enabledTypes = prefs.map((p: any) => p.notification_type);
+
+    const isEnabled = enabledTypes.some((prefix: string) =>
+      changeType.startsWith(prefix)
+    );
+
+    if (!isEnabled) {
+      return;
+    }
+
+    // Insert notification
+    await callPgExecutor(
+      pgExec,
+      `
+      INSERT INTO notifications (user_id, domain_id, change_type, message)
+      VALUES ($1, $2, $3, $4)
+      `,
+      [userId, domainId, changeType, message || null]
+    );
+
+    // Placeholder: Webhook / external dispatch
+    // log.info(`📤 Notification queued: domain=${domainId}, type=${changeType}`);
+
+    console.log(`Notification queued: domain=${domainId}, type=${changeType}`);
+
+    // TODO: Dispatch webhook or send notification to user
+  } catch (err: any) {
+    // log.error(`Failed to insert notification for ${changeType}: ${err.message}`);
+  }
 }

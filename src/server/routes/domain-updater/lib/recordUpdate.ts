@@ -17,5 +17,5 @@ export async function recordDomainUpdate(
     [domainId, DEFAULT_USER_ID, changeDescription, changeType, oldValue, newValue]
   );
 
-  await notifyUser(pgExec, domainId, changeType, `${changeDescription}: ${oldValue} → ${newValue}`);
+  await notifyUser(pgExec, domainId, DEFAULT_USER_ID, changeType, `${changeDescription}: ${oldValue} → ${newValue}`);
 }
