@@ -55,7 +55,7 @@ export default defineEventHandler(async (event) => {
         LEFT JOIN registrars r ON d.registrar_id = r.id
         ORDER BY d.domain_name
       `),
-      10000
+      DOMAIN_FETCH_TIMEOUT
     );
   } catch (err: any) {
     return { error: `Failed to fetch domains: ${err.message}` };
