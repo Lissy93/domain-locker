@@ -19,6 +19,8 @@ export async function sendWebhookNotification(
       method: 'POST',
       headers: {
         'Content-Type': 'text/plain',
+        'X-Title': title,
+        'X-Tags': tags?.join(',') ?? '',
         ...(token ? { Authorization: `Bearer ${token}` } : {})
       },
       body: message
