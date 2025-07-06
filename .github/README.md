@@ -8,10 +8,8 @@
   <img width="48" src="https://github.com/Lissy93/domain-locker/blob/main/src/assets/logo.png?raw=true" />
 </p>
 
----
-
 <details>
-  <summary><h4>Contents</h4></summary>
+  <summary><b>Contents</b></summary>
   
   - [About](#about)
 	- [Screenshot](#screenshot)
@@ -23,7 +21,7 @@
 - [Developing](#developing)
   - [App Setup](#project-setup)
   - [Architecture](#architecture)
-  - [Contributing](#contributing)
+- [Contributing](#contributing)
 - [Attributions](#attributions)
 - [License](#license)
 </details>
@@ -127,8 +125,12 @@ The starter plan is free, and no setup is required. Just sign in, add your domai
 curl -fsSL https://install.domain-locker.com | bash
 ```
 
-##### Details
+Use the one-liner abover, or use the [`docker-compose.yml`](https://github.com/Lissy93/domain-locker/blob/main/docker-compose.yml)
 
+<details>
+	<summary>Details</summary>
+
+ 
 - **Prerequisites**:
   - Domain Locker is intended to be run in a container, so you'll need Docker [installed](https://docs.docker.com/engine/install/) on your host system.
 - **Containers**:
@@ -145,6 +147,7 @@ curl -fsSL https://install.domain-locker.com | bash
 - **Example**:
   - Putting it all together, you can use our [`docker-compose.yml`](https://github.com/Lissy93/domain-locker/blob/main/docker-compose.yml) file.
   - For more details, view the [Self-Hosting Docs](https://domain-locker.com/about/self-hosting)
+
 
 <details>
 <summary>Docker Diagram</summary>
@@ -177,6 +180,10 @@ flowchart TB
 
 </details>
 
+ 
+</details>
+
+
 ---
 
 ## Developing
@@ -201,6 +208,9 @@ npm run dev                                           # Start the dev server
   - Or, with Docker building the container with `docker build -t domain-locker .`
   - Don't use the dev Supabase instance in prod, as it's frequently wiped
 
+---
+
+## App Architecture
 
 #### Tech Stack
 
@@ -504,7 +514,9 @@ classDiagram
 
 <p align="center"><sub>You can download the schema from <a href="https://github.com/Lissy93/domain-locker/blob/main/db/schema.sql"<code>db/schema.sql</code></a></sub></p>
 
-#### Contributing
+---
+
+### Contributing
 
 Contributions, of any kind are always welcome, and very much appreciated! 💗
 

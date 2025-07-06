@@ -73,7 +73,7 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    const baseUrl = getEnvVar('BASE_URL', 'http://localhost:3000');
+    const baseUrl = getEnvVar('DL_BASE_URL', 'http://localhost:3000');
     const pgExecutorEndpoint = `${baseUrl}/api/pg-executer`;
 
     const allDomains = await callPgExecutor<{ id: string; domain_name: string }>(

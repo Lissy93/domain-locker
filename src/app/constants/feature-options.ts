@@ -85,7 +85,7 @@ export const features: FeatureDefinitions = {
   },
   changeHistory: {
     default: true,
-    selfHosted: false,
+    selfHosted: true,
     managed: {
       free: false,
       hobby: true,
