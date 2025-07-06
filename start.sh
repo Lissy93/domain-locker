@@ -137,7 +137,9 @@ echo "${SUCCESS} Postgres is ready (took ${elapsed}s)${RESET}"
 echo "${INFO} Applying schema from schema.sql...${RESET}"
 PGPASSWORD="$DL_PG_PASSWORD" \
   psql -h "$DL_PG_HOST" -p "$DL_PG_PORT" -U "$DL_PG_USER" \
-  -d "$DL_PG_NAME" -f ./schema.sql > /dev/null 2>&1 \
+  -d "$DL_PG_NAME" -f ./schema.sql || {
+    echo "${ERR} Failed to apply schema. See error above.${RESET}"
+  } \
   && echo "${SUCCESS} Schema applied successfully${RESET}" \
   || echo "${ERR} Failed to apply schema${RESET}"
 
