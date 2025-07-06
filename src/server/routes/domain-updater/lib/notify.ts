@@ -1,9 +1,5 @@
-// server/api/trigger-updates/lib/notifyIfEnabled.ts
-
 import { callPgExecutor } from './pgExecutor';
-// import { Logger } from './logger';
-
-// const log = new Logger('notify');
+import { sendWebhookNotification } from './sendWebhookNotification';
 
 /**
  * Check if a notification should be sent for a changeType, and insert it if so.
@@ -31,6 +27,7 @@ export async function notifyUser(
     );
 
     if (!isEnabled) {
+      console.info(`Skipping notification for ${changeType}, because not enabled for this domain`);
       return;
     }
 
@@ -44,13 +41,14 @@ export async function notifyUser(
       [userId, domainId, changeType, message || null]
     );
 
-    // Placeholder: Webhook / external dispatch
-    // log.info(`📤 Notification queued: domain=${domainId}, type=${changeType}`);
+    // Send webhook notification
+    await sendWebhookNotification(
+      message || `Change detected: ${changeType}`,
+      'Domain Locker Update',
+      [changeType]
+    );
 
-    console.log(`Notification queued: domain=${domainId}, type=${changeType}`);
-
-    // TODO: Dispatch webhook or send notification to user
   } catch (err: any) {
-    // log.error(`Failed to insert notification for ${changeType}: ${err.message}`);
+    console.error(`Failed to insert notification for ${changeType}: ${err.message}`);
   }
 }
