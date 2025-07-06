@@ -51,6 +51,22 @@ services:
     - "traefik.http.routers.domainlocker.entrypoints=http"
     - "traefik.http.services.domainlocker.loadbalancer.server.port=3000"
 
+  updater:
+    image: alpine:3.20
+    container_name: domain-locker-updater
+    restart: unless-stopped
+    depends_on:
+      - app
+    networks:
+      - domain_locker_network
+    command: >
+      /bin/sh -c "
+        apk add --no-cache curl &&
+        echo '0 3 * * * /usr/bin/curl -s -X POST http://app:3000/api/domain-updater' > /etc/crontabs/root &&
+        echo '0 4 * * * /usr/bin/curl -s -X POST http://app:3000/api/expiration-reminders' >> /etc/crontabs/root &&
+        crond -f -L /dev/stdout
+      "
+
 volumes:
   postgres_data:
     name: domain_locker_postgres_data
