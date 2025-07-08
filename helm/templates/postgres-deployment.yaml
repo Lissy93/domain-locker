@@ -22,6 +22,8 @@ spec:
               value: {{ .Values.postgres.env.POSTGRES_USER | quote }}
             - name: POSTGRES_PASSWORD
               value: {{ .Values.postgres.env.POSTGRES_PASSWORD | quote }}
+            - name: PGDATA
+              value: /var/lib/postgresql/data/pgdata
           ports:
             - containerPort: {{ .Values.postgres.port }}
           volumeMounts:
