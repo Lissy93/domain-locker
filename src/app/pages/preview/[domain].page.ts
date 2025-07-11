@@ -69,18 +69,19 @@ export default class DomainDetailsPage implements OnInit {
       const domainInfo = (await lastValueFrom(
         this.http.get<any>(`/api/domain-info-preview?domain=${this.name}`)
       ))?.domainInfo;
-      console.log(domainInfo)
       this.ngZone.run(() => {
         if (domainInfo) {
           this.domain = this.formatDomainInfo(domainInfo);
-          console.log(this.domain)
           this.domainNotFound = false;
         } else {
           this.attempts++;
           if (this.attempts < 3) {
             this.fetchDomainInfo();
           }
-          console.log(`No domain info found for "${this.name}". Attempt ${this.attempts}/3`);
+          this.errorHandler.handleError({
+            message: `Sorry, we weren\'t able to fetch info for "${this.name}"`,
+            showToast: true,
+          });
           this.domain = null;
           this.domainNotFound = true;
         }
