@@ -51,7 +51,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
   planColor: string = 'primary';
 
   settingsEnabled$ = this.featureService.isFeatureEnabled('accountSettings');
-  enableSignUp$ = this.featureService.isFeatureEnabled('enableSignUp');
+  enableSignUp = false;
   private subscriptions: Subscription = new Subscription();
 
   public isSupabaseEnabled = this.databaseService.serviceType === 'supabase';
@@ -79,6 +79,12 @@ export class NavbarComponent implements OnInit, AfterViewInit {
         this.cdr.detectChanges();
       })
     );
+
+    // Log the result of enableSignUp feature flag when it's ready
+    this.featureService.isFeatureEnabled('enableSignUp').subscribe(enabled => {
+      this.enableSignUp = enabled;
+      this.cdr.detectChanges();
+    });
   }
 
   ngAfterViewInit() {

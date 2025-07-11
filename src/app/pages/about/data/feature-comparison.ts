@@ -727,3 +727,81 @@ export const alternativeComparison: FeatureComparison[] = [
   },
 ];
 
+export const businessFeatures = [
+  {
+    title: 'Cut Costs, Not Corners',
+    emoji: '💰',
+    subtitle: 'Stop overpaying for forgotten renewals and hidden registrar fees',
+    description: `Track every domain's purchase price, renewal cost, and current value. 
+    Domain Locker gives you full visibility into your domain portfolio's spend, 
+    helping you cut unnecessary costs, avoid double registrations, 
+    and make smarter decisions about what to keep and what to drop.`,
+  },
+  {
+    title: 'Reduce Risk, Stay in Control',
+    emoji: '🔒',
+    subtitle: 'Avoid outages, security gaps, and costly mistakes',
+    description: `SSL expiring? DNS misconfigured? WHOIS data changed without warning? 
+    Domain Locker alerts you instantly when something important changes—so you catch 
+    problems before they affect your business or reputation.`,
+  },
+  {
+    title: 'Total Visibility, At a Glance',
+    emoji: '👀',
+    subtitle: 'All your domains, all your data, all in one place',
+    description: `No more spreadsheets or guessing which registrar you used. 
+    See your entire domain portfolio—registrars, expiry dates, SSLs, DNS records, tags, 
+    valuations, and more—on a single dashboard. Knowledge is power, and now it's also easy.`,
+  },
+  {
+    title: 'Save Hours Every Month',
+    emoji: '⏱️',
+    subtitle: 'Let the automation do the heavy lifting',
+    description: `You shouldn't have to log in to five different panels or run 
+    manual WHOIS and DNS checks. Domain Locker automatically fetches and monitors 
+    all key data for each domain—leaving you more time to focus on your business, 
+    not your backend.`,
+  },
+  {
+    title: 'Smarter Decisions with Better Data',
+    emoji: '📈',
+    subtitle: 'Understand usage, performance, and security trends',
+    description: `Track uptime, response times, DNS changes, and SSL history over time. 
+    With charts and insights built in, Domain Locker helps you spot weak links 
+    in your domain strategy—and fix them before they cost you.`,
+  },
+  {
+    title: 'Built to Fit Your Business',
+    emoji: '⚙️',
+    subtitle: 'Customizable alerts, data export, and even self-hosting',
+    description: `Choose how and where to get notified—email, Telegram, Signal, Slack, 
+    webhook—and export your data anytime. Want full control? Self-host Domain 
+    Locker with one click and run it on your own infrastructure.`,
+  },
+  {
+    title: 'Complete Change History',
+    emoji: '📊',
+    subtitle: 'Full audit log for transparency and accountability',
+    description: `Track every modification made to your domains—what changed, when, and why. 
+    Domain Locker maintains a searchable, exportable audit trail that’s perfect 
+    for internal reviews, compliance reporting, or tracing unexpected issues.`,
+  },
+  {
+    title: 'Grows with Your Business',
+    emoji: '📈',
+    subtitle: 'Designed to scale from side project to full portfolio',
+    description: `Whether you manage a single domain or hundreds across teams and 
+    clients, Domain Locker adapts. It auto-fetches data, organizes everything neatly, 
+    and keeps performance snappy even as your digital footprint expands.`,
+  },
+  {
+    title: 'Compliance-Ready Domain Monitoring',
+    emoji: '✅',
+    subtitle: 'Meet your security and reporting obligations with ease',
+    description: `From SSL expiry and WHOIS accuracy to audit logs and uptime tracking, 
+    Domain Locker helps you stay compliant with standards like ISO 27001 and SOC 2. 
+    Export reports, monitor critical changes, and keep a defensible record—automatically. 
+    Dedicated enterprise instances running on your own infrastructure is also available.`,
+  },
+];
+

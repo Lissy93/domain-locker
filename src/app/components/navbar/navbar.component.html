@@ -19,18 +19,16 @@
       [attr.aria-label]="'Primary Navigation'"
     ></p-menubar>
 
-    <ng-template *ngIf="(enableSignUp$ | async)">
-      <p-button
-        *ngIf="!isAuthenticated"
-        routerLink="/login"
-        [queryParams]="{ newUser: 'true' }"
-        label="Sign Up"
-        size="small"
-        icon="pi pi-face-smile"
-        class="ml-1"
-        aria-label="Login"
-      />
-    </ng-template>
+    <p-button
+      *ngIf="enableSignUp && !isAuthenticated"
+      routerLink="/login"
+      [queryParams]="{ newUser: 'true' }"
+      label="Sign Up"
+      size="small"
+      icon="pi pi-face-smile"
+      class="ml-1"
+      aria-label="Login"
+    />
 
     <button
       pButton

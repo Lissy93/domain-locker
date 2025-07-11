@@ -42,6 +42,7 @@ export default class DomainDetailsPage implements OnInit {
   name: string | null = null;
   domainNotFound = false;
   loading = true;
+  attempts = 0;
   monitorEnabled$ = this.featureService.isFeatureEnabled('domainMonitor');
 
   constructor(
@@ -75,7 +76,11 @@ export default class DomainDetailsPage implements OnInit {
           console.log(this.domain)
           this.domainNotFound = false;
         } else {
-          console.log(`No domain info found for "${this.name}"`);
+          this.attempts++;
+          if (this.attempts < 3) {
+            this.fetchDomainInfo();
+          }
+          console.log(`No domain info found for "${this.name}". Attempt ${this.attempts}/3`);
           this.domain = null;
           this.domainNotFound = true;
         }
