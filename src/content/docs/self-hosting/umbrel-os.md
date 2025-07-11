@@ -2,7 +2,7 @@
 slug: umbrel-os-app
 title: Deploy to Umbrel OS
 description: One-click install Domain Locker on your Umbrel OS server
-index: 5
+index: 3
 coverImage: 
 ---
 

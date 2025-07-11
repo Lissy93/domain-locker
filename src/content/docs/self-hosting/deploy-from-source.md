@@ -2,7 +2,7 @@
 slug: deploying-from-source
 title: Deploy from Source
 description: Building the app manually from source code
-index: 4
+index: 5
 coverImage: 
 ---
 
