@@ -49,35 +49,49 @@ jobs:
           sed -i "s/^appVersion: .*/appVersion: \"${{ steps.vars.outputs.tag }}\"/" helm/Chart.yaml
 
       - name: 🔍 Lint the chart
-        run: helm lint helm || echo "Helm lint failed, but continuing for the hell of it..."
+        run: helm lint helm
 
       - name: 📦 Package Helm chart
         run: |
           mkdir -p .charts
           helm package helm -d .charts
 
+      - name: 🧾 Generate Helm repo index
+        run: |
+          mkdir -p .deploy/helm
+          cp .charts/*.tgz .deploy/helm/
+          helm repo index .deploy/helm --url https://lissy93.github.io/domain-locker/helm
+
       - name: 🚀 Push to GHCR
         run: |
           helm push .charts/domain-locker-${{ steps.vars.outputs.tag }}.tgz oci://ghcr.io/lissy93/domain-locker-helm
+
+      - name: 🦑 Deploy Helm chart to GH Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: .deploy/helm
+          destination_dir: helm
+          publish_branch: gh-pages
 
       - name: 🐧 Install helm-push plugin
         run: |
           helm plugin install https://github.com/chartmuseum/helm-push.git --version v0.10.3
           helm plugin list  # shows its installed
 
-      - name: 🚀 Push chart to Cloudsmith  (with debug)
-        env:
-          CLOUDSMITH_API_KEY:  ${{ secrets.CLOUDSMITH_API_KEY }}
-          CLOUDSMITH_REPO:     ${{ secrets.CLOUDSMITH_REPO }} # e.g. lissy93/helm
-        run: |
-          echo "📦 Contents of .charts"; ls -l .charts
-          echo "📂 Helm plugins dir:"; ls -R ~/.local/share/helm/plugins
+      # - name: 🚀 Push chart to Cloudsmith  (with debug)
+      #   env:
+      #     CLOUDSMITH_API_KEY:  ${{ secrets.CLOUDSMITH_API_KEY }}
+      #     CLOUDSMITH_REPO:     ${{ secrets.CLOUDSMITH_REPO }} # e.g. lissy93/helm
+      #   run: |
+      #     echo "📦 Contents of .charts"; ls -l .charts
+      #     echo "📂 Helm plugins dir:"; ls -R ~/.local/share/helm/plugins
           
-          helm cm-push \
-            .charts/domain-locker-${{ steps.vars.outputs.tag }}.tgz \
-            https://helm.cloudsmith.io/$CLOUDSMITH_REPO/ \
-            --username "$CLOUDSMITH_API_KEY" \
-            --password "$CLOUDSMITH_API_KEY"
+      #     helm cm-push \
+      #       .charts/domain-locker-${{ steps.vars.outputs.tag }}.tgz \
+      #       https://helm.cloudsmith.io/$CLOUDSMITH_REPO/ \
+      #       --username "$CLOUDSMITH_API_KEY" \
+      #       --password "$CLOUDSMITH_API_KEY"
 
       # - name: 📬 Publish to ArtifactHub
       #   env:
