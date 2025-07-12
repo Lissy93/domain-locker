@@ -21,6 +21,8 @@ on:
   push:
     branches:
       - main
+    paths:
+      - 'src/**'
     tags:
       - 'v*'
   workflow_dispatch:
