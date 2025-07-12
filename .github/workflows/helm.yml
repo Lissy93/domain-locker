@@ -64,9 +64,9 @@ jobs:
         run: |
           curl -L -o helm-push.tar.gz https://github.com/chartmuseum/helm-push/releases/download/v0.10.3/helm-push_0.10.3_linux_amd64.tar.gz
           tar -xzf helm-push.tar.gz
-          chmod +x bin/helmpush
-          mv bin/helmpush helm-push
+          chmod +x helm-push
           ./helm-push .charts/domain-locker-${{ steps.vars.outputs.tag }}.tgz \
             --username $CLOUDSMITH_API_KEY \
             --password $CLOUDSMITH_API_KEY \
             https://helm.cloudsmith.io/$CLOUDSMITH_REPO/
+
