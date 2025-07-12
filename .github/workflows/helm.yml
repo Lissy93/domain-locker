@@ -77,12 +77,11 @@ jobs:
             --password $CLOUDSMITH_API_KEY \
             https://helm.cloudsmith.io/$CLOUDSMITH_REPO/
 
-      - name: 📬 Publish to ArtifactHub
-        if: ${{ secrets.ARTIFACTHUB_API_KEY != '' }}
-        env:
-          AH_API_KEY: ${{ secrets.ARTIFACTHUB_API_KEY }}
-        run: |
-          curl -X POST https://artifacthub.io/api/v1/packages/helm/sync \
-            -H "X-API-KEY: $AH_API_KEY" \
-            -H "Content-Type: application/json" \
-            -d '{"repository_name":"domain-locker"}'
+      # - name: 📬 Publish to ArtifactHub
+      #   env:
+      #     AH_API_KEY: ${{ secrets.ARTIFACTHUB_API_KEY }}
+      #   run: |
+      #     curl -X POST https://artifacthub.io/api/v1/packages/helm/sync \
+      #       -H "X-API-KEY: $AH_API_KEY" \
+      #       -H "Content-Type: application/json" \
+      #       -d '{"repository_name":"domain-locker"}'
