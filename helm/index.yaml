@@ -1,0 +1,30 @@
+apiVersion: v1
+entries:
+  domain-locker:
+  - annotations:
+      artifacthub.io/description: A powerful tool for tracking, monitoring, and managing
+        domains
+      artifacthub.io/keywords: domain, ssl, dns, monitoring, security
+      artifacthub.io/license: MIT
+      artifacthub.io/links: |
+        - name: Website
+          url: https://domain-locker.com
+        - name: Source
+          url: https://github.com/lissy93/domain-locker
+      artifacthub.io/maintainers: |
+        - name: Alicia Sykes
+          email: alicia@omg.lol
+      artifacthub.io/screenshots: |
+        - title: Domain Demo
+          url: https://github.com/Lissy93/domain-locker/blob/main/.github/screenshots/quick-demo.gif?raw=true
+    apiVersion: v2
+    appVersion: 0.0.8
+    created: "2025-07-12T12:44:59.903943394Z"
+    description: A Helm chart for deploying Domain Locker
+    digest: 5b708af4580bccf910dbd2d135b279746b324ede9bc923681bbf0374fda3a9dc
+    name: domain-locker
+    type: application
+    urls:
+    - https://lissy93.github.io/domain-locker/helm/domain-locker-0.0.8.tgz
+    version: 0.0.8
+generated: "2025-07-12T12:44:59.90352243Z"
