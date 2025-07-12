@@ -58,8 +58,10 @@ This will start a local single-node Kubernetes cluster, add `--driver=docker` fo
 ### Spin up domain-locker helm charts
 
 ```bash
-helm install dl ./helm --wait
+helm install dl oci://ghcr.io/lissy93/domain-locker-helm --version 0.0.8 --wait
 ```
+
+(or, from source, using `helm install dl ./helm`)
 
 ### Verify it's running
 
