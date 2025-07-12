@@ -77,7 +77,7 @@ import { MetaTagsService } from '~/app/services/meta-tags.service';
 export class AppComponent implements OnInit, OnDestroy {
   private subscription: Subscription | undefined;
   private publicRoutes =  new Set([
-    '/home', '/about', '/login', '/advanced',
+    '/home', '/about', '/login', '/advanced', '/preview',
     '/advanced/status', '/advanced/debug-info', '/advanced/admin-links',
   ]);
   private fullWidthRoutes: string[] = ['/settings', '/stats'];
@@ -202,6 +202,7 @@ export class AppComponent implements OnInit, OnDestroy {
     if (route === '/' && allowHome) return true;
     if (this.publicRoutes.has(route)) return true;
     if (route.startsWith('/about')) return true;
+    if (route.startsWith('/preview')) return true;
     if (route.startsWith('/login')) return true;
     return false;
   }

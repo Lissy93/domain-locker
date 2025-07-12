@@ -1,25 +1,29 @@
 
-<section *ngIf="name" class="flex items-center justify-between">
-  <h1 class="text-3xl flex items-center my-3">
-    <app-domain-favicon [domain]="name" [size]="32" class="mr-3"></app-domain-favicon>
-    <span class="text-primary">{{ domainUtils.splitDomain(name).domain }}</span>
-    <span class="text-default">.</span>
-    <span class="text-secondary">{{ domainUtils.splitDomain(name).tld }}</span>
-  </h1>
-  <div class="flex">
-      <p-button
-        severity="primary"
-        label="Monitor Domain"
-        icon="pi pi-gauge"
-        class="p-button-primary no-underline m-0 flex gap-2 w-fit ml-2 font-medium"
-        [routerLink]="['/domains/add']"
-        [queryParams]="{ domain: name }"
-      />
-    </div>
-</section>
-  
-<app-domain-info *ngIf="domain" [domain]="domain" />
+@if ((enablePreviewDomain$ | async))  {
+  <section *ngIf="name" class="flex items-center justify-between">
+    <h1 class="text-3xl flex items-center my-3">
+      <app-domain-favicon [domain]="name" [size]="32" class="mr-3"></app-domain-favicon>
+      <span class="text-primary">{{ domainUtils.splitDomain(name).domain }}</span>
+      <span class="text-default">.</span>
+      <span class="text-secondary">{{ domainUtils.splitDomain(name).tld }}</span>
+    </h1>
+    <div class="flex">
+        <p-button
+          severity="primary"
+          label="Monitor Domain"
+          icon="pi pi-gauge"
+          class="p-button-primary no-underline m-0 flex gap-2 w-fit ml-2 font-medium"
+          [routerLink]="['/domains/add']"
+          [queryParams]="{ domain: name }"
+        />
+      </div>
+  </section>
+    
+  <app-domain-info *ngIf="domain" [domain]="domain" />
 
-<loading *ngIf="loading" loadingTitle="Loading" loadingDescription="Crunching stats for {{name}}" />
+  <loading *ngIf="loading && domain" loadingTitle="Loading" loadingDescription="Crunching stats for {{name}}" />
 
-<app-cta />
+  <app-cta [businessVersion]="true" />
+} @else {
+  <app-feature-not-enabled #featureNotEnabled feature="enablePreviewDomain" />
+}
