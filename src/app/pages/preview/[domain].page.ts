@@ -18,6 +18,8 @@ import { HttpClient } from '@angular/common/http';
 import { lastValueFrom } from 'rxjs';
 import { makeEppArrayFromLabels } from '~/app/constants/security-categories';
 import { CtaComponent } from '~/app/components/home-things/cta/cta.component';
+import { FeatureNotEnabledComponent } from '~/app/components/misc/feature-not-enabled.component';
+
 
 @Component({
   standalone: true,
@@ -32,6 +34,7 @@ import { CtaComponent } from '~/app/components/home-things/cta/cta.component';
     AdditionalResourcesComponent,
     DomainInfoComponent,
     NotFoundComponent,
+    FeatureNotEnabledComponent,
   ],
   providers: [ConfirmationService, MessageService],
   templateUrl: './[domain].page.html',
@@ -43,7 +46,7 @@ export default class DomainDetailsPage implements OnInit {
   domainNotFound = false;
   loading = true;
   attempts = 0;
-  monitorEnabled$ = this.featureService.isFeatureEnabled('domainMonitor');
+  enablePreviewDomain$ = this.featureService.isFeatureEnabled('enablePreviewDomain');
 
   constructor(
     private route: ActivatedRoute,

@@ -7,6 +7,7 @@ import { FeatureService } from '~/app/services/features.service';
 import { CtaComponent } from '~/app/components/home-things/cta/cta.component';
 import { BusinessFeaturesComponent } from '~/app/components/about-things/business-features.component';
 import { Router } from '@angular/router';
+import { EnvService } from '~/app/services/environment.service';
 
 @Component({
   standalone: true,
@@ -21,15 +22,20 @@ import { Router } from '@angular/router';
   templateUrl: 'index.page.html',
 })
 export default class DomainDetailsPage {
-  monitorEnabled$ = this.featureService.isFeatureEnabled('domainMonitor');
-
+  enablePreviewDomain$ = this.featureService.isFeatureEnabled('enablePreviewDomain');
+  public environmentType: string | null = null;
   public domain: string = '';
 
   constructor(
     public domainUtils: DomainUtils,
     private featureService: FeatureService,
+    private environmentService: EnvService,
     private router: Router
   ) {}
+
+  ngOnInit() {
+    this.environmentType = this.environmentService.getEnvironmentType();
+  }
 
 
   cleanDomain(domain: string): string {

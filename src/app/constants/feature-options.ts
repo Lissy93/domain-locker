@@ -28,6 +28,7 @@ export type FeatureDefinitions = {
   enableSocialLogin: FeatureConfig<boolean>;
   enableBilling: FeatureConfig<boolean>;
   allowLocalDbConfig: FeatureConfig<boolean>;
+  enablePreviewDomain: FeatureConfig<boolean>;
   enableDeletionTool: FeatureConfig<boolean>;
   enableAdvancedInfo: FeatureConfig<boolean>;
 };
@@ -130,6 +131,9 @@ export const features: FeatureDefinitions = {
   enableAdvancedInfo: {
     default: true,
   },
+  enablePreviewDomain: {
+    default: true,
+  },
   enableDeletionTool: {
     default: import.meta.env['DL_DISABLE_WRITE_METHODS'] ? false : true,
   },
@@ -187,6 +191,10 @@ export const featureDescriptions: Record<keyof FeatureDefinitions, { label: stri
   allowLocalDbConfig: {
     label: 'Allow Local DB Config',
     description: 'Allow users to configure which database to use, and connect to it through the app',
+  },
+  enablePreviewDomain: {
+    label: 'Enable Domain Preview',
+    description: 'Enables the /preview/:domain route, to fetch and display domain info without saving it',
   },
   enableDeletionTool: {
     label: 'Enable Deletion Tool',
