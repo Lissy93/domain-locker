@@ -17,19 +17,44 @@ export default class AboutPageComponent {
   sections = aboutPages;
 
   readonly autoLinks: { [key: string]: any } = {
-    legal: injectContentFiles<DocAttributes>((contentFile) =>
+    legal: this.createSortedContentFiles((contentFile) =>
       contentFile.filename.includes('/legal')
     ),
-    developing: injectContentFiles<DocAttributes>((contentFile) =>
+    developing: this.createSortedContentFiles((contentFile) =>
       contentFile.filename.includes('/developing/')
     ),
-    articles: injectContentFiles<DocAttributes>((contentFile) =>
+    'self-hosting': this.createSortedContentFiles((contentFile) =>
+      contentFile.filename.includes('/self-hosting/')
+    ),
+    articles: this.createSortedContentFiles((contentFile) =>
       contentFile.filename.includes('/articles/')
     ),
-    guides: injectContentFiles<DocAttributes>((contentFile) =>
+    guides: this.createSortedContentFiles((contentFile) =>
       contentFile.filename.includes('/guides/')
     ),
   };
+
+  private sortDocs<T extends { attributes: { index?: number; title: string } }>(
+    docs: T[]
+  ): T[] {
+    return [...docs].sort((a, b) => {
+      const aIndex = typeof a.attributes.index === 'number' ? a.attributes.index : Infinity;
+      const bIndex = typeof b.attributes.index === 'number' ? b.attributes.index : Infinity;
+
+      if (aIndex !== bIndex) {
+        return aIndex - bIndex;
+      } else {
+        return a.attributes.title.localeCompare(b.attributes.title);
+      }
+    });
+  }
+
+  private createSortedContentFiles(
+    predicate: (contentFile: any) => boolean
+  ) {
+    const files = injectContentFiles<DocAttributes>(predicate);
+    return this.sortDocs(files);
+  }
 
   makeId(title: string): string {
     return title.toLowerCase().replace(/ /g, '-');
