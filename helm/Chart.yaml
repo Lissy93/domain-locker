@@ -4,3 +4,18 @@ description: A Helm chart for deploying Domain Locker
 type: application
 version: 0.0.8
 appVersion: "0.0.8"
+annotations:
+  artifacthub.io/description: A powerful tool for tracking, monitoring, and managing domains
+  artifacthub.io/links: |
+    - name: Website
+      url: https://domain-locker.com
+    - name: Source
+      url: https://github.com/lissy93/domain-locker
+  artifacthub.io/keywords: domain, ssl, dns, monitoring, security
+  artifacthub.io/maintainers: |
+    - name: Alicia Sykes
+      email: alicia@omg.lol
+  artifacthub.io/license: MIT
+  artifacthub.io/screenshots: |
+    - title: Domain Demo
+      url: https://github.com/Lissy93/domain-locker/blob/main/.github/screenshots/quick-demo.gif?raw=true

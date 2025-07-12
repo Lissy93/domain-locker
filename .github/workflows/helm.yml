@@ -17,6 +17,7 @@ permissions:
 jobs:
   publish:
     runs-on: ubuntu-latest
+
     steps:
       - name: 🛎️ Check out repo
         uses: actions/checkout@v4
@@ -48,8 +49,10 @@ jobs:
           sed -i "s/^appVersion: .*/appVersion: \"${{ steps.vars.outputs.tag }}\"/" helm/Chart.yaml
 
       - name: 📦 Package Helm chart
-        run: helm package helm
-
-      - name: 🚀 Push Helm chart to GHCR
         run: |
-          helm push domain-locker-${{ steps.vars.outputs.tag }}.tgz oci://ghcr.io/lissy93
+          mkdir -p .charts
+          helm package helm -d .charts
+
+      - name: 🚀 Push to GHCR (as domain-locker-helm)
+        run: |
+          helm push .charts/domain-locker-${{ steps.vars.outputs.tag }}.tgz oci://ghcr.io/lissy93/domain-locker-helm
