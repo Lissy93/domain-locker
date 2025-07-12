@@ -1,0 +1,21 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: domain-locker-updater
+spec:
+  schedule: "0 3 * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: updater
+              image: alpine:3.20
+              command: ["/bin/sh", "-c"]
+              args:
+                - >
+                  apk add --no-cache curl &&
+                  echo "0 3 * * * /usr/bin/curl -s -X POST http://domain-locker-app:3000/api/domain-updater" > /etc/crontabs/root &&
+                  echo "0 4 * * * /usr/bin/curl -s -X POST http://domain-locker-app:3000/api/expiration-reminders" >> /etc/crontabs/root &&
+                  crond -f -L /dev/stdout
+          restartPolicy: OnFailure

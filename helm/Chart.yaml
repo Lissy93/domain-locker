@@ -1,0 +1,6 @@
+apiVersion: v2
+name: domain-locker
+description: A Helm chart for deploying Domain Locker
+type: application
+version: 0.0.8
+appVersion: "0.0.8"
