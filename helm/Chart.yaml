@@ -4,6 +4,7 @@ description: A Helm chart for deploying Domain Locker
 type: application
 version: 0.0.8
 appVersion: "0.0.8"
+icon: https://github.com/Lissy93/domain-locker/blob/main/src/assets/logo.png?raw=true
 annotations:
   artifacthub.io/description: A powerful tool for tracking, monitoring, and managing domains
   artifacthub.io/links: |
