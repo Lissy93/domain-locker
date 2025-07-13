@@ -1,11 +1,5 @@
-<h1 align="center">Domain Locker</h1>
-<p align="center">
-  <i>Track, manage and monitor all your domain names in once place</i>
-  <br>
-  <b>🌐<a href="https://domain-locker.com">domain-locker.com</a></b>
-  <br>
-  <b>🐙<a href="https://github.com/Lissy93/domain-locker">github.com/lissy93/domain-locker</a></b>
-</p>
+# Domain Locker
+> Track, manage and monitor all your domain names in once place
 
 ### Features
 - 👁️ Total visibility of all your domains and upcoming expirations
@@ -21,14 +15,25 @@
 - 🎨 Multi-language support, dark/light/custom themes
 
 ### Install
-- [Docker](https://domain-locker.com/about/self-hosting/deploying-with-docker-compose)
-- [Kubernetes](https://domain-locker.com/about/self-hosting/deploying-with-kubernetes-helm-charts)
-- [From Source](https://domain-locker.com/about/self-hosting/deploying-from-source)
-- [...More install methods](https://domain-locker.com/about/self-hosting)
+
+```
+helm install domain-locker domain-locker/domain-locker
+```
+
+For a full guide, as well as other installation methods (like Docker, building from source, etc), see the [self-hosting docs](https://domain-locker.com/about/self-hosting).
+
+### Links
+- [🐙 GitHub](https://github.com/lissy93/domain-locker)
+- [🌐 Website](https://domain-locker.com)
+- [🐋 DockerHub](https://hub.docker.com/r/lissy93/domain-locker)
+- [📚 Documentation](https://domain-locker.com/about/self-hosting)
+
+### Author
+Built by [Alicia Sykes](https://aliciasykes.com) ([@Lissy93](https://github.com/lissy93) on GitHub), with a LOT of help from the open source community.
+For the full list of contributors, sponsors and credits, see **[our Attributions page](https://domain-locker.com/about/attributions)**.
+
+If you like this kind of stuff, you might be interested in my other projects, listed at **[apps.aliciasykes.com](https://apps.aliciasykes.com)** or [on my GitHub](https://github.com/lissy93). And if you're able, do consider **[sponsoring me on GitHub](https://github.com/sponsors/Lissy93)** 🩷
+
 
 ### License
 Domain-Locker is licensed under [MIT](https://github.com/Lissy93/domain-locker/blob/HEAD/LICENSE) © [Alicia Sykes](https://aliciasykes.com) 2025.
-
-<p align="center">
-<a href="https://domain-locker.com"><img width="420" src="https://github.com/Lissy93/domain-locker/blob/main/src/assets/og.png?raw=true" /></a>
-</p>
