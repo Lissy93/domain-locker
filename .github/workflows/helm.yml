@@ -1,3 +1,7 @@
+# This packages and publishes the Helm chart
+# To GHCR and GH Pages to be consumed via ArtifactHub
+# Also updates the current version, and lints the charts
+
 name: 📊 Publish Helm Chart
 
 on:
@@ -7,7 +11,7 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: 'Optional version tag (e.g. 0.0.9)'
+        description: 'Optional version tag (e.g. 0.6.9)'
         required: false
 
 permissions:
@@ -74,30 +78,11 @@ jobs:
           destination_dir: helm
           publish_branch: gh-pages
 
-      - name: 🐧 Install helm-push plugin
+      - name: 📬 Publish to ArtifactHub
+        env:
+          AH_API_KEY: ${{ secrets.ARTIFACTHUB_API_KEY }}
         run: |
-          helm plugin install https://github.com/chartmuseum/helm-push.git --version v0.10.3
-          helm plugin list  # shows its installed
-
-      # - name: 🚀 Push chart to Cloudsmith  (with debug)
-      #   env:
-      #     CLOUDSMITH_API_KEY:  ${{ secrets.CLOUDSMITH_API_KEY }}
-      #     CLOUDSMITH_REPO:     ${{ secrets.CLOUDSMITH_REPO }} # e.g. lissy93/helm
-      #   run: |
-      #     echo "📦 Contents of .charts"; ls -l .charts
-      #     echo "📂 Helm plugins dir:"; ls -R ~/.local/share/helm/plugins
-          
-      #     helm cm-push \
-      #       .charts/domain-locker-${{ steps.vars.outputs.tag }}.tgz \
-      #       https://helm.cloudsmith.io/$CLOUDSMITH_REPO/ \
-      #       --username "$CLOUDSMITH_API_KEY" \
-      #       --password "$CLOUDSMITH_API_KEY"
-
-      # - name: 📬 Publish to ArtifactHub
-      #   env:
-      #     AH_API_KEY: ${{ secrets.ARTIFACTHUB_API_KEY }}
-      #   run: |
-      #     curl -X POST https://artifacthub.io/api/v1/packages/helm/sync \
-      #       -H "X-API-KEY: $AH_API_KEY" \
-      #       -H "Content-Type: application/json" \
-      #       -d '{"repository_name":"domain-locker"}'
+          curl -X POST https://artifacthub.io/api/v1/packages/helm/sync \
+            -H "X-API-KEY: $AH_API_KEY" \
+            -H "Content-Type: application/json" \
+            -d '{"repository_name":"domain-locker"}'

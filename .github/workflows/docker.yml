@@ -23,6 +23,7 @@ on:
       - main
     paths:
       - 'src/**'
+      - 'Dockerfile'
     tags:
       - 'v*'
   workflow_dispatch:
