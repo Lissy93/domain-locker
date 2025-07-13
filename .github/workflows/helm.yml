@@ -78,11 +78,15 @@ jobs:
           destination_dir: helm
           publish_branch: gh-pages
 
-      - name: 📬 Publish to ArtifactHub
-        env:
-          AH_API_KEY: ${{ secrets.ARTIFACTHUB_API_KEY }}
-        run: |
-          curl -X POST https://artifacthub.io/api/v1/packages/helm/sync \
-            -H "X-API-KEY: $AH_API_KEY" \
-            -H "Content-Type: application/json" \
-            -d '{"repository_name":"domain-locker"}'
+      # - name: 📬 Publish to ArtifactHub
+      #   env:
+      #     AH_API_KEY: ${{ secrets.ARTIFACTHUB_API_KEY }}
+      #   run: |
+      #     response=$(curl -s -w "%{http_code}" -o response.txt \
+      #       -X GET "https://artifacthub.io/api/v1/packages/helm/sync?repository_name=domain-locker" \
+      #       -H "X-API-KEY: $AH_API_KEY")
+      #     if [ "$response" -ne 200 ]; then
+      #       echo "❌ Failed to sync: $(cat response.txt)"
+      #     else
+      #       echo "✅ Successfully triggered sync on Artifact Hub"
+      #     fi
