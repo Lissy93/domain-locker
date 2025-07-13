@@ -94,6 +94,15 @@ export const aboutPages: AboutPage[] = [
     links: [], // Auto-populated from /src/content/docs/developing/*.md files
   },
   {
+    title: 'Self-Hosting',
+    dirSlug: 'self-hosting',
+    svgIcon: 'selfHosting',
+    description: 'Instructions for running Domain Locker on your own system or server',
+    links: [
+      { title: 'Quick Start', description: 'Get up and running in minutes', link: '/about/self-hosting', icon: '' },
+    ], // Auto-populated from /src/content/docs/self-hosting/*.md files
+  },
+  {
     title: 'External Links',
     svgIcon: 'externalLinks',
     description: 'Other stuff, like our source code, download links and more resources',

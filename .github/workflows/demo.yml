@@ -14,6 +14,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Set TAG environment variable
+        run: echo "TAG=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+
       - name: Checkout demo branch
         uses: actions/checkout@v3
         with:
@@ -57,6 +60,7 @@ jobs:
             </details>
 
             > [!NOTE]
-            > Merging this PR will incorporate the latest changes from the main branch
-            > into the demo branch, which will promote the latest updates to the demo environment.
+            > Merging this PR will incorporate the latest changes from main
+            > into the demo branch, which will promote the latest updates to the demo environment,
+            > deploying it to [demo.domain-locker.com](https://demo.domain-locker.com).
 

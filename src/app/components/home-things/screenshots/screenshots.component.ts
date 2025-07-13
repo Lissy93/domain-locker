@@ -35,12 +35,13 @@ export class ScreenshotsComponent implements OnInit, OnDestroy {
    * The array of screenshots to display.
    */
   @Input() screenshots: Screenshot[] = [];
+  @Input() hideThumbnails = false;
 
   // Galleria references
   @ViewChild('galleria') galleria: Galleria | undefined;
 
   // State / config
-  activeIndex = 0;
+  activeIndex = 1;
   showThumbnails = true;
   fullscreen = false;
 
@@ -71,6 +72,7 @@ export class ScreenshotsComponent implements OnInit, OnDestroy {
   ngOnInit() {
     // Bind for listening to when the user toggles browser fullscreen
     this.bindDocumentListeners();
+    this.showThumbnails = !this.hideThumbnails;
   }
 
   ngOnDestroy() {

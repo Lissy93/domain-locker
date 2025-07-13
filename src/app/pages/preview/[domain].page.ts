@@ -18,6 +18,8 @@ import { HttpClient } from '@angular/common/http';
 import { lastValueFrom } from 'rxjs';
 import { makeEppArrayFromLabels } from '~/app/constants/security-categories';
 import { CtaComponent } from '~/app/components/home-things/cta/cta.component';
+import { FeatureNotEnabledComponent } from '~/app/components/misc/feature-not-enabled.component';
+
 
 @Component({
   standalone: true,
@@ -32,6 +34,7 @@ import { CtaComponent } from '~/app/components/home-things/cta/cta.component';
     AdditionalResourcesComponent,
     DomainInfoComponent,
     NotFoundComponent,
+    FeatureNotEnabledComponent,
   ],
   providers: [ConfirmationService, MessageService],
   templateUrl: './[domain].page.html',
@@ -42,7 +45,8 @@ export default class DomainDetailsPage implements OnInit {
   name: string | null = null;
   domainNotFound = false;
   loading = true;
-  monitorEnabled$ = this.featureService.isFeatureEnabled('domainMonitor');
+  attempts = 0;
+  enablePreviewDomain$ = this.featureService.isFeatureEnabled('enablePreviewDomain');
 
   constructor(
     private route: ActivatedRoute,
@@ -68,14 +72,19 @@ export default class DomainDetailsPage implements OnInit {
       const domainInfo = (await lastValueFrom(
         this.http.get<any>(`/api/domain-info-preview?domain=${this.name}`)
       ))?.domainInfo;
-      console.log(domainInfo)
       this.ngZone.run(() => {
         if (domainInfo) {
           this.domain = this.formatDomainInfo(domainInfo);
-          console.log(this.domain)
           this.domainNotFound = false;
         } else {
-          console.log(`No domain info found for "${this.name}"`);
+          this.attempts++;
+          if (this.attempts < 3) {
+            this.fetchDomainInfo();
+          }
+          this.errorHandler.handleError({
+            message: `Sorry, we weren\'t able to fetch info for "${this.name}"`,
+            showToast: true,
+          });
           this.domain = null;
           this.domainNotFound = true;
         }

@@ -1,0 +1,92 @@
+# This packages and publishes the Helm chart
+# To GHCR and GH Pages to be consumed via ArtifactHub
+# Also updates the current version, and lints the charts
+
+name: 📊 Publish Helm Chart
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Optional version tag (e.g. 0.6.9)'
+        required: false
+
+permissions:
+  contents: write
+  packages: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🛎️ Check out repo
+        uses: actions/checkout@v4
+
+      - name: 🔧 Set up Helm
+        uses: azure/setup-helm@v4
+        with:
+          version: v3.14.4
+
+      - name: 🧰 Login to GHCR
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | helm registry login ghcr.io -u ${{ github.actor }} --password-stdin
+
+      - name: 🏷️ Determine version tag
+        id: vars
+        run: |
+          if [[ "${GITHUB_REF}" == refs/tags/v* ]]; then
+            VERSION="${GITHUB_REF#refs/tags/v}"
+          elif [[ -n "${{ github.event.inputs.tag }}" ]]; then
+            VERSION="${{ github.event.inputs.tag }}"
+          else
+            echo "❌ No valid version provided."
+            exit 1
+          fi
+          echo "tag=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: 📝 Patch Chart.yaml with version
+        run: |
+          sed -i "s/^version: .*/version: ${{ steps.vars.outputs.tag }}/" helm/Chart.yaml
+          sed -i "s/^appVersion: .*/appVersion: \"${{ steps.vars.outputs.tag }}\"/" helm/Chart.yaml
+
+      - name: 🔍 Lint the chart
+        run: helm lint helm
+
+      - name: 📦 Package Helm chart
+        run: |
+          mkdir -p .charts
+          helm package helm -d .charts
+
+      - name: 🧾 Generate Helm repo index
+        run: |
+          mkdir -p .deploy/helm
+          cp .charts/*.tgz .deploy/helm/
+          helm repo index .deploy/helm --url https://lissy93.github.io/domain-locker/helm
+
+      - name: 🚀 Push to GHCR
+        run: |
+          helm push .charts/domain-locker-${{ steps.vars.outputs.tag }}.tgz oci://ghcr.io/lissy93/domain-locker-helm
+
+      - name: 🦑 Deploy Helm chart to GH Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: .deploy/helm
+          destination_dir: helm
+          publish_branch: gh-pages
+
+      # - name: 📬 Publish to ArtifactHub
+      #   env:
+      #     AH_API_KEY: ${{ secrets.ARTIFACTHUB_API_KEY }}
+      #   run: |
+      #     response=$(curl -s -w "%{http_code}" -o response.txt \
+      #       -X GET "https://artifacthub.io/api/v1/packages/helm/sync?repository_name=domain-locker" \
+      #       -H "X-API-KEY: $AH_API_KEY")
+      #     if [ "$response" -ne 200 ]; then
+      #       echo "❌ Failed to sync: $(cat response.txt)"
+      #     else
+      #       echo "✅ Successfully triggered sync on Artifact Hub"
+      #     fi
