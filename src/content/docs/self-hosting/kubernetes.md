@@ -7,9 +7,10 @@ index: 2
 ---
 
 
-> [!NOTE]
-> This is not officially supported. These helm charts are for reference only. I cannot guarantee k8 support if something does not work as expected, but feel free to submit a pull request
-
+<blockquote class="markdown-alert markdown-alert-note">
+Helm charts are provided for reference only, and are not officially supported.
+If you encounter issues, please feel free to submit a pull request to improve the documentation or the charts.
+</blockquote>
 
 ## Installation Prerequisites
 
@@ -53,15 +54,18 @@ For instructions for your OS, see the [helm docs](https://helm.sh/docs/intro/ins
 minikube start
 ```
 
-This will start a local single-node Kubernetes cluster, add `--driver=docker` for using Docker.
-
-### Spin up domain-locker helm charts
+### Add the Helm repository
 
 ```bash
-helm install dl oci://ghcr.io/lissy93/domain-locker-helm --version 0.0.8 --wait
+helm repo add domain-locker https://lissy93.github.io/domain-locker/helm
 ```
 
-(or, from source, using `helm install dl ./helm`)
+
+### Install the chart
+
+```bash
+helm install dl domain-locker/domain-locker --version 0.0.8
+```
 
 ### Verify it's running
 
@@ -108,4 +112,20 @@ Manually connect to the database:
 
 ```bash
 psql -h domain-locker-postgres -U postgres -d domain_locker
+```
+
+[![Artifact Hub](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/domain-locker)](https://artifacthub.io/packages/search?repo=domain-locker)
+
+---
+
+## Manual Installation
+
+You can also manually add the repo, from the source.
+This is useful if you want to make any changes, or want to maintain your own fork.
+The source for the helm charts is in the [`helm`](https://github.com/Lissy93/domain-locker/tree/main/helm) directory.
+
+```bash
+git clone git@github.com:Lissy93/domain-locker.git
+cd domain-locker
+helm install dl ./helm
 ```
