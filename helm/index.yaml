@@ -120,12 +120,12 @@ entries:
       artifacthub.io/security-policy: https://domain-locker.com/about/legal/security
     apiVersion: v2
     appVersion: 0.0.8
-    created: "2025-07-13T17:54:44.994537013Z"
+    created: "2025-07-13T18:01:41.146198629Z"
     description: A Helm chart for deploying Domain Locker
-    digest: fc35345771fafb9e4e3ccfd4a27bf36809a2e6fa8dcd39c18f88ea01d54d4ec1
+    digest: 3dfeb58ce57253088d0d66f8b8390705694208738ccee2ad2c7db16626dcd924
     name: domain-locker
     type: application
     urls:
     - https://lissy93.github.io/domain-locker/helm/domain-locker-0.0.8.tgz
     version: 0.0.8
-generated: "2025-07-13T17:54:44.993973267Z"
+generated: "2025-07-13T18:01:41.145635343Z"
