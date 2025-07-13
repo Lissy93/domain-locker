@@ -19,7 +19,6 @@ annotations:
     - name: Alicia Sykes
       email: alicia@omg.lol
   artifacthub.io/license: MIT
-  artifacthub.io/alternativeName: Domain Locker
   artifacthub.io/security-policy: https://domain-locker.com/about/legal/security
   artifacthub.io/screenshots: |
     - title: Domain Demo
