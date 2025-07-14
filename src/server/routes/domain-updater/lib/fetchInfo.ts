@@ -2,8 +2,6 @@ export async function fetchDomainInfo(endpoint: string, domain: string): Promise
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 2000);
 
-  console.log(`Fetching domain info for "${domain}"...`);
-
   try {
     const res = await fetch(`${endpoint}?domain=${encodeURIComponent(domain)}`, {
       signal: controller.signal,
@@ -24,7 +22,6 @@ export async function fetchDomainInfo(endpoint: string, domain: string): Promise
     }
     throw err;
   } finally {
-    console.log(`Completed for "${domain}"`);
     clearTimeout(timeout);
   }
 }

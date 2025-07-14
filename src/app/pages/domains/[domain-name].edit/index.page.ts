@@ -108,30 +108,13 @@ export default class EditDomainComponent implements OnInit {
       .split('.')[0];
   }
 
-  private sanitizeAndStandardizeUrl(url: string): string {
-    try {
-      // Ensure the URL starts with a valid scheme
-      if (!/^https?:\/\//i.test(url)) {
-        url = `https://${url}`;
-      }
-      const parsedUrl = new URL(url);
-      const hostname = parsedUrl.hostname.replace(/^www\./, '');
-  
-      // Reconstruct the URL
-      return `${parsedUrl.protocol}//${hostname}${parsedUrl.pathname}${parsedUrl.search}`;
-    } catch {
-      throw new Error(`Invalid URL format for link: ${url}`);
-    }
-  }
-  
-
   onSubmit() {
     let links = this.links.value;
     try {
       links = links.map((link: Link) => {
         return {
           link_name: link.link_name,
-          link_url: this.sanitizeAndStandardizeUrl(link.link_url),
+          link_url: link.link_url,
           link_description: link.link_description,
         };
       });
@@ -189,7 +172,7 @@ export default class EditDomainComponent implements OnInit {
       link_name: [name, [Validators.required, Validators.maxLength(255)]],
       link_url: [
       url,
-      [Validators.required, Validators.pattern(/^(https?:\/\/)?([\w.-]+)+(:\d+)?(\/[\w/_.-]*)*\/?$/)],
+      [Validators.required, Validators.pattern(/^(https?:\/\/)?([\w.-]+\.[\w]{2,})(:\d+)?(\/[\w\-._~:/?#[\]@!$&'()*+,;=]*)?$/)]
       ],
       link_description: [description, [Validators.maxLength(255)]],
     });

@@ -1,0 +1,53 @@
+🎉 Domain Locker has been successfully deployed!
+
+🔗 Access the App:
+{{- if .Values.app.ingress.enabled }}
+  ▸ Ingress is enabled. Access your app via:
+    http://{{ .Values.app.ingress.hostname }}
+{{- else }}
+  ▸ Port-forward to access the app locally:
+    kubectl port-forward svc/{{ .Release.Name }}-app 3000:80
+    Then open: http://localhost:3000
+{{- end }}
+
+📦 App Details:
+  ▸ App Deployment:     {{ .Release.Name }}-app
+  ▸ App Service:        {{ .Release.Name }}-app
+  ▸ App Container Port: {{ .Values.app.port }}
+
+🐘 PostgreSQL:
+  ▸ DB Service:         {{ .Release.Name }}-postgres
+  ▸ DB Name:            {{ .Values.app.env.DL_PG_NAME }}
+  ▸ DB User:            {{ .Values.app.env.DL_PG_USER }}
+
+  You can connect to the DB from within the cluster like this:
+
+  kubectl exec -it deploy/{{ .Release.Name }}-app -- \
+    psql -h {{ .Release.Name }}-postgres \
+         -U {{ .Values.app.env.DL_PG_USER }} \
+         -d {{ .Values.app.env.DL_PG_NAME }}
+
+🛠 Useful Commands:
+
+  ▸ Check all resources:
+    kubectl get all
+
+  ▸ View logs:
+    kubectl logs deploy/{{ .Release.Name }}-app
+
+  ▸ View pod status:
+    kubectl get pods
+
+  ▸ Uninstall everything:
+    helm uninstall {{ .Release.Name }}
+
+📚 Docs & Help:
+  ▸ GitHub: https://github.com/lissy93/domain-locker
+  ▸ Docs:   https://domain-locker.com/about
+
+💡 Tip:
+  Update your `values.yaml` to customize credentials, ingress, scheduling, and more.
+
+
+Have a nice day 😊
+

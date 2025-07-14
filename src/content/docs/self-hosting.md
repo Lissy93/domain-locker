@@ -31,79 +31,41 @@ You may also need a domain name and a valid SSL certificate for that domain.
 
 ## Deployment
 
+- [With Docker](/about/self-hosting/deploying-with-docker-compose)
+- [With Kubernetes](/about/self-hosting/deploying-with-kubernetes-helm-charts)
+- [From Umbrel](/about/self-hosting/umbrel-os-app)
+- [From Source](/about/self-hosting/deploying-from-source)
+
+#### One-Liner
+
 ```
 curl -fsSL https://install.domain-locker.com | bash
 ```
-
-- Domain Locker is intended to be run in a container, so you'll need Docker [installed](https://docs.docker.com/engine/install/) on your host system.
-- We have a Docker image published to [`lissy93/domain-locker`](https://hub.docker.com/r/lissy93/domain-locker).
-You'll also need a Postgres database, such as the [`postgres:15-alpine`](https://hub.docker.com/_/postgres?tab=tags&name=15-alpine) container.
-- The database is setup with [`db/setup-postgres.sh`](https://github.com/Lissy93/domain-locker/blob/main/db/setup-postgres.sh) which applies the [`schema.sql`](https://github.com/Lissy93/domain-locker/blob/main/db/schema.sql).
-- The database is configured with environmental vairbales for `DL_PG_HOST`, `DL_PG_PORT`, `DL_PG_USER`, `DL_PG_PASSWORD` and `DL_PG_NAME`
-- When starting the container, bind `PORT` to `3000`. Then specify the Postgres environmental variables from above.
-- As an example, you can view our [`docker-compose.yml`](https://github.com/Lissy93/domain-locker/blob/main/docker-compose.yml) file.
 
 ---
 
 ## Support
 
-See: [Support: Self-Hosted](/about/support/self-hosted-support)
+- [Debugging Docs](/about/developing/debugging)
+- [Checking Logs](/about/developing/checking-logs)
+- [3rd-party Docs](/about/developing/third-party-docs)
 
 ---
 
 ## Developing
 
-See: [Developing Docs](/about/developing)
+- [Dev Setup](/about/developing)
+- [Source Code](https://github.com/lissy93/domain-locker)
 
 ---
 
-## Managing the Container
+## See Also
 
-See our [Domain Locker Docker Guide](/about/developing/general-docker-advice)
-
----
-
-## Architecture
-
-Self-hosted architecture is pretty simple; you have the pre-built app, served with Deno in one container, which then connects to Postgres in another container. The app includes some API endpoints which can be called to keep data updated, monitor domains and trigger notifications (via webhooks), so you might want a third container to manage crons to call these endpoints periodically.
-
-<details>
-<summary>How this differs from the managed instance?</summary>
-
-This differs slightly from the managed instance, as self-hosted is designed to be standalone, and run in an easy docker-compose without being reliant upon external services.
-
-Whereas the managed instance has dependencies on third-parties, which must be configured. You can switch the version at anytime, using the `DL_ENV_TYPE` environmental variable, which is set to `selfHosted` by default. (but note that you will need to configure the third-party platforms and services if you switch to managed). Either way, you can find the docs for all the services used [here](/about/developing/third-party-docs).
-
-<div class="screenshots-wrap">
-<img src="/articles/domain-locker-arch-self-hosted.svg" >
-<img src="/articles/domain-locker-arch-managed.svg" >
-</div>
-
-</details>
+- [Docker Best Practices](/about/developing/general-docker-advice)
+- [Architecture Overview](/about/self-hosting/understanding-the-architecture)
+- [Conditions for Public Instances](/about/self-hosting/guidelines-for-public-instance)
 
 
----
-
-## Publishing a Public Instance
-
-While you're free to do as you please on private self-hosted instances, if you intend to deploy a public instance of Domain Locker, there are some etiquette guidelines that we'd appreciate you try and follow.
-
-#### Do
-- ✅ Fork the repo (instead of copying it, or using our repo directly)
-- ✅ Keep the original MIT license, and credit the original authors
-- ✅ Take responsibility for securing your instance and protecting user data
-- ✅ Make it clear to your users that your version is an independent fork and not affiliated with the original project
-- ✅ Consider contributing back improvements, fixes, or features that could benefit the upstream project
-- ✅ Have fun, and use Domain Locker for something cool!
-
-#### Don't
-- ❌ Don't charge for your service if you have deployed the code as-is (aka without substantial changes)
-- ❌ Don't use our hosted APIs (they may be subject to change, rate limiting and auth)- run your own
-- ❌ Don't expect unpaid support from the original authors for your own instance
-- ❌ Don't misrepresent your fork as the official Domain Locker—your branding and domain should reflect that it's an independent instance
-- ❌ Don't modify and redistribute under a more restrictive license—the MIT license ensures continued freedom to modify and share
-- ❌ Don't use any of Domain Locker's code for illegal or unethical purposes
-- ❌ And, pretty please - don't sue us
 
 
 <style>

@@ -1,5 +1,5 @@
-@if (githubUsername && !isHidden) {
-  <div class="p-card mx-2 my-4 p-4 flex flex-col pt-0">
+@if ((githubUsername || inSelfHostingDocs) && !isHidden) {
+  <div class="p-card my-4 p-4 flex flex-col pt-0">
   @if (isSponsor) {
     <small class="opacity-70 text-center sm:text-right mt-2">You're a sponsor! 🎉</small>
     <p class="m-0 text-xl">
@@ -32,7 +32,11 @@
     </p>
   } @else {
     <p class="mt-4 mb-2 text-xl">
-      Hey {{ githubUsername }}! 👋
+      @if (githubUsername) {
+        Hey {{ githubUsername }}! 👋
+      } @else {
+        Hey there! 👋
+      }
     </p>
     <p class="m-0">
       I hope you're finding Domain Locker useful.

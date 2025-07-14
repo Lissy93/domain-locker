@@ -1,0 +1,113 @@
+apiVersion: v2
+name: domain-locker
+description: A Helm chart for deploying Domain Locker
+type: application
+version: 0.0.8
+appVersion: "0.0.8"
+icon: https://github.com/Lissy93/domain-locker/blob/main/src/assets/logo.png?raw=true
+home: https://domain-locker.com
+sources:
+  - https://github.com/Lissy93/domain-locker
+maintainers: 
+  - name: Alicia Sykes
+    email: alicia@omg.lol
+    url: https://aliciasykes.com
+annotations:
+  artifacthub.io/description: A powerful tool for tracking, monitoring, and managing domains
+  artifacthub.io/links: |
+    - name: Website
+      url: https://domain-locker.com
+    - name: GitHub
+      url: https://github.com/lissy93/domain-locker
+    - name: Docs
+      url: https://domain-locker.com/about/self-hosting
+  artifacthub.io/keywords: domain, ssl, dns, monitoring, security, whois, alert
+  artifacthub.io/maintainers: |
+    - name: Alicia Sykes
+      email: alicia@omg.lol
+  artifacthub.io/license: MIT
+  artifacthub.io/security-policy: https://domain-locker.com/about/legal/security
+  artifacthub.io/screenshots: |
+    - title: Domain Demo
+      url: https://github.com/Lissy93/domain-locker/blob/main/.github/screenshots/quick-demo.gif?raw=true
+    - title: Domain List
+      url: https://storage.googleapis.com/as93-screenshots/domain-locker/domain-list.png
+    - title: Domain Grid View
+      url: https://storage.googleapis.com/as93-screenshots/domain-locker/domain-grid-open.png
+    - title: Domain Details
+      url: https://storage.googleapis.com/as93-screenshots/domain-locker/domain.png
+    - title: Monitor
+      url: https://storage.googleapis.com/as93-screenshots/domain-locker/monitor.png
+    - title: Change History
+      url: https://storage.googleapis.com/as93-screenshots/domain-locker/change-history.png
+    - title: DNS Records
+      url: https://storage.googleapis.com/as93-screenshots/domain-locker/dns.png
+    - title: Notifications
+      url: https://storage.googleapis.com/as93-screenshots/domain-locker/notificiations.png
+
+    - title: Home View
+      url: https://storage.googleapis.com/as93-screenshots/domain-locker/home_viz.png
+    - title: Assets
+      url: https://storage.googleapis.com/as93-screenshots/domain-locker/assets.png
+    - title: Domain Page
+      url: https://storage.googleapis.com/as93-screenshots/domain-locker/domain-2.png
+    - title: Hosts
+      url: https://storage.googleapis.com/as93-screenshots/domain-locker/hosts.png
+    - title: IP Addresses v4
+      url: https://storage.googleapis.com/as93-screenshots/domain-locker/Screenshot%202025-04-08%20at%2020.14.21.png
+    - title: IP Addresses v6
+      url: https://storage.googleapis.com/as93-screenshots/domain-locker/Screenshot%202025-04-08%20at%2020.14.26.png
+    - title: Change History
+      url: https://storage.googleapis.com/as93-screenshots/domain-locker/chenge-history-3.png
+    - title: Statuses
+      url: https://storage.googleapis.com/as93-screenshots/domain-locker/statuses.png
+    - title: Subdomains
+      url: https://storage.googleapis.com/as93-screenshots/domain-locker/subdomains.png
+    - title: Tags
+      url: https://storage.googleapis.com/as93-screenshots/domain-locker/tags.png
+    - title: Valuation
+      url: https://storage.googleapis.com/as93-screenshots/domain-locker/valuation.png
+    - title: Stats
+      url: https://storage.googleapis.com/as93-screenshots/domain-locker/vis_home.png
+    - title: Export
+      url: https://storage.googleapis.com/as93-screenshots/domain-locker/export.png
+    - title: Home 2
+      url: https://storage.googleapis.com/as93-screenshots/domain-locker/home-2.png
+    - title: IPs
+      url: https://storage.googleapis.com/as93-screenshots/domain-locker/ips.png
+    - title: Add Link
+      url: https://storage.googleapis.com/as93-screenshots/domain-locker/add-link.png
+    - title: Visual Changes
+      url: https://storage.googleapis.com/as93-screenshots/domain-locker/vis_changes.png
+    - title: Visual Expirations
+      url: https://storage.googleapis.com/as93-screenshots/domain-locker/vis_expirations.png
+    - title: Visual Map
+      url: https://storage.googleapis.com/as93-screenshots/domain-locker/vis_map.png
+    - title: Visual Providers
+      url: https://storage.googleapis.com/as93-screenshots/domain-locker/vis_providers.png
+    - title: Visual Statuses
+      url: https://storage.googleapis.com/as93-screenshots/domain-locker/vis_statuses.png
+    - title: Visual Timeline
+      url: https://storage.googleapis.com/as93-screenshots/domain-locker/vis_timeline.png
+    - title: Visual Calendar
+      url: https://storage.googleapis.com/as93-screenshots/domain-locker/viz_cal.png
+    - title: Visual Tags
+      url: https://storage.googleapis.com/as93-screenshots/domain-locker/viz_tags.png
+    - title: Display
+      url: https://storage.googleapis.com/as93-screenshots/domain-locker/display.png
+    - title: Notification Locations
+      url: https://storage.googleapis.com/as93-screenshots/domain-locker/notificiation-locations.png
+    - title: Settings Notifications
+      url: https://storage.googleapis.com/as93-screenshots/domain-locker/settings_notifications.png
+    - title: Privacy
+      url: https://storage.googleapis.com/as93-screenshots/domain-locker/privacy.png
+    - title: Profile
+      url: https://storage.googleapis.com/as93-screenshots/domain-locker/profile.png
+    - title: Upgrade
+      url: https://storage.googleapis.com/as93-screenshots/domain-locker/upgrade.png
+    - title: Developer
+      url: https://storage.googleapis.com/as93-screenshots/domain-locker/developer.png
+    - title: Debug
+      url: https://storage.googleapis.com/as93-screenshots/domain-locker/debug.png
+    - title: DB Settings
+      url: https://storage.googleapis.com/as93-screenshots/domain-locker/settings_db.png

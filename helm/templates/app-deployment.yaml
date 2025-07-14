@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: domain-locker-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: domain-locker-app
+  template:
+    metadata:
+      labels:
+        app: domain-locker-app
+    spec:
+      containers:
+        - name: app
+          image: {{ .Values.app.image }}
+          command: ["./start.sh"]
+          
+          ports:
+            - containerPort: {{ .Values.app.port }}
+          env:
+            {{- range $key, $value := .Values.app.env }}
+            - name: {{ $key }}
+              value: {{ $value | quote }}
+            {{- end }}
