@@ -10,6 +10,13 @@
   }
 }
 
+.skip {
+  position: absolute;
+  font-size: 1px;
+  margin: 0;
+  padding: 0;
+}
+
 main,
 header {
   display: flex;
@@ -32,9 +39,16 @@ header {
   .main-buttons {
     display: flex;
     gap: 0.5rem;
-    width: 20rem;
+    width: 24rem;
     a {
       width: 100%;
+      display: flex;
+      gap: 0.5rem;
+      justify-content: center;
+      svg {
+        width: 1.4rem;
+        height: 1.4rem;
+      }
     }
   }
   .small-buttons {
@@ -43,12 +57,19 @@ header {
     align-content: baseline;
     justify-content: center;
     gap: 0.5rem;
-    width: 20rem;
-    button {
+    width: 24rem;
+    button, a {
+      display: flex;
+      gap: 0.5rem;
       padding: 0.25rem 0.5rem;
       min-width: 6rem;
       font-size: 0.875rem;
       width: 100%;
+      justify-content: center;
+      svg {
+        width: 1.1rem;
+        height: 1.1rem;
+      }
     }
   }
 
