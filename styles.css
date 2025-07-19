@@ -22,12 +22,57 @@ header {
 header {
   gap: 0;
   text-align: center;
+  align-items: center;
   .heading {
     display: flex;
     gap: 1rem;
     align-items: baseline;
     justify-content: center;
   }
+  .main-buttons {
+    display: flex;
+    gap: 0.5rem;
+    width: 20rem;
+    a {
+      width: 100%;
+    }
+  }
+  .small-buttons {
+    margin-top: 0.5rem;
+    display: flex;
+    align-content: baseline;
+    justify-content: center;
+    gap: 0.5rem;
+    width: 20rem;
+    button {
+      padding: 0.25rem 0.5rem;
+      min-width: 6rem;
+      font-size: 0.875rem;
+      width: 100%;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .main-buttons,
+    .small-buttons {
+      width: auto;
+      flex-wrap: wrap;
+    }
+  }
+}
+
+nav {
+  padding: 0 1rem;
+}
+
+
+nav ul li details summary {
+  background: none !important;
+  border: none !important;
+}
+
+a[role="button"] {
+  min-width: 8rem;
 }
 
 footer {

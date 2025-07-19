@@ -68,18 +68,94 @@
     </noscript>
   </head>
   <body>
-    <!-- Accessibility: Skip to main content -->
-    <a href="#main" class="visually-hidden focusable">Skip to main content</a>
 
-    <header role="banner" class="container">
-      <div class="heading">
-        <img width="32" src="https://domain-locker.com/logo.png" />
-        <h1>Domain Locker</h1>
+    <!-- Accessibility: Skip to main content -->
+    <!-- <a href="#main" class="visually-hidden focusable">Skip to main content</a> -->
+
+    <!-- Navbar -->
+    <nav>
+      <ul>
+        <li>
+          <img width="32" src="https://domain-locker.com/logo.png" />
+        </li>
+        <li><strong>Domain Locker</strong></li>
+      </ul>
+      <ul>
+        <li><a href="https://domain-locker.com" class="secondary">Visit Website</a></li>
+        <li><a href="https://github.com/lissy93/domain-locker" class="secondary">GitHub</a></li>
+        <li>
+          <details class="dropdown">
+            <summary>
+              Info
+            </summary>
+            <ul dir="rtl">
+              <li><a href="#">Live Demo</a></li>
+              <li><a href="#">Documentation</a></li>
+              <li><a href="#">Service Status</a></li>
+              <li><a href="https://domain-locker.com/about/features">Feature List</a></li>
+              <li><a href="https://domain-locker.com/about/pricing">Pricing</a></li>
+              <li><a href="https://domain-locker.com/about/support">Customer Support</a></li>
+              <li><a href="https://domain-locker.com/about/legal">Legal Docs</a></li>
+            </ul>
+          </details>
+        </li>
+        <li>
+          <details class="dropdown">
+            <summary>
+              Self-Hosting
+            </summary>
+            <ul dir="rtl">
+              <li><a href="#">Self-Hosting Docs</a></li>
+              <li><a href="#">DockerHub</a></li>
+              <li><a href="#">ArchiveHub</a></li>
+              <li><a href="#">GitHub</a></li>
+              <li><a href="#">Umbrel Store</a></li>
+              <li><a href="https://domain-locker.com/about/developing">Dev Docs</a></li>
+            </ul>
+          </details>
+        </li>
+      </ul>
+    </nav>
+
+    <!-- Hero header -->
+    <header class="container grid">
+      <div>
+        <div class="heading">
+          <img width="32" src="https://domain-locker.com/logo.png" />
+          <h1>Domain Locker</h1>
+        </div>
+        <p class="lead">
+          <em>Your all-in-one tool for keeping on top of your domain names.</em>
+        </p>
+        <div class="container main-buttons">
+          <a
+            href="https://domain-locker.com"
+            role="button"
+            aria-label="Visit Domain Locker website"
+          >
+            Website
+          </a>
+          <a
+            href="https://domain-locker.com"
+            role="button"
+            aria-label="Visit Domain Locker website"
+          >
+            GitHub
+          </a>
+        </div>
+
+        <div class="container small-buttons">
+          <button class="outline secondary">Mirror</button>
+          <button class="outline secondary">DockerHub</button>
+          <button class="outline secondary">ArtifactHub</button>
+        </div>
       </div>
-      <p class="lead">
-        <em>Your all-in-one tool for keeping on top of your domain names.</em>
-      </p>
+      <div>
+        <img src="https://domain-locker.com/screenshots/homepage.png" alt="Domain Locker homepage screenshot" />
+      </div>
     </header>
+
+
 
     <main id="main" role="main" class="container">
       <!-- 1. Website link -->
@@ -152,7 +228,7 @@
             role="button"
             aria-label="One-line installation script"
           >
-            Install
+            Install Script
           </a>
         </div>
       </article>
