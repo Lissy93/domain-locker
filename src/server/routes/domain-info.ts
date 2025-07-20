@@ -77,8 +77,13 @@ const getHostData = async (ip: string): Promise<Host | undefined> => {
   }
 };
 
-const makeStatusArray = (status?: string): string[] =>
-  status ? Array.from(new Set([...status.matchAll(/([a-zA-Z]+Prohibited)/g)].map(m => m[1]))) : [];
+const makeStatusArray = (status?: string): string[] => {
+  if (!status) return [];
+  const matches = Array.from(
+    status.matchAll(/\b([a-zA-Z0-9]+)(?=\s|\(|$)/gi)
+  );
+  return Array.from(new Set(matches.map(m => m[1])));
+};
 
 
 // --- Main handler ---
