@@ -1,10 +1,10 @@
 import { defineEventHandler, getQuery } from 'h3';
-import whois from 'whois-json';
 import dns from 'dns';
 import tls, { PeerCertificate } from 'tls';
-import type { DomainInfo, HostData } from '../../types/DomainInfo';
-import type { Contact, Host } from 'src/types/common';
+import type { DomainInfo } from '../../types/DomainInfo';
+import type { Host } from 'src/types/common';
 import { verifyAuth } from '../utils/auth';
+import { getWhoisInfo } from '../utils/whois';
 import Logger from '../utils/logger';
 
 const log = new Logger('domain-info');
@@ -22,30 +22,6 @@ const safeExecute = async <T>(
     errors.push(errorMsg);
     log.warn(`${errorMsg}: ${(err as Error).message}`);
     return;
-  }
-};
-
-const getParentDomain = (domain: string): string => {
-  const parts = domain.split('.');
-  return parts.length > 2 && parts[parts.length - 2].length > 3
-    ? parts.slice(-2).join('.')
-    : domain;
-};
-
-const getWhoisData = async (domain: string): Promise<any | null> => {
-  try {
-    const data = await whois(getParentDomain(domain));
-    if (data && typeof data === 'object' && Object.keys(data).length > 0) {
-      log.debug(`Found primary WHOIS data for ${domain}`);
-      return data as Contact;
-    } else {
-      log.warn(`Primary WHOIS data failed, attempting backup lookup for ${domain}`);
-      const backup = await getWhoisBackupData(domain);
-      return backup ?? null;
-    }
-  } catch (err) {
-    log.error(`WHOIS lookup failed: ${(err as Error).message}`);
-    return null;
   }
 };
 
@@ -104,53 +80,6 @@ const getHostData = async (ip: string): Promise<Host | undefined> => {
 const makeStatusArray = (status?: string): string[] =>
   status ? Array.from(new Set([...status.matchAll(/([a-zA-Z]+Prohibited)/g)].map(m => m[1]))) : [];
 
-const getWhoisBackupData = async (domain: string): Promise<any | null> => {
-  const WHOISXML_API_KEY = import.meta.env['WHOISXML_API_KEY'];
-  if (!WHOISXML_API_KEY) {
-    log.warn('Skipping fallback lookup - no API key set.');
-    return null;
-  }
-
-  const parent = getParentDomain(domain);
-  const apiUrl = `https://www.whoisxmlapi.com/whoisserver/WhoisService?apiKey=${WHOISXML_API_KEY}&outputFormat=json&domainName=${parent}`;
-
-  try {
-    const res = await fetch(apiUrl);
-    if (!res.ok) {
-      log.warn(`[WHOISXML] Request failed for ${parent}: ${res.statusText}`);
-      return null;
-    }
-
-    const json = await res.json();
-    const record = json?.WhoisRecord?.registryData ?? {};
-    const registrant = record?.registrant ?? {};
-
-    return {
-      domainName: json?.WhoisRecord?.domainName || parent,
-      registrar: {
-        name: json?.WhoisRecord?.registrarName || record.registrarName || 'Unknown',
-        id: json?.WhoisRecord?.registrarIANAID || 'Unknown',
-        url: record.whoisServer ? `https://${record.whoisServer}` : null,
-      },
-      dates: {
-        creation_date: record.createdDateNormalized || 'Unknown',
-        expiry_date: record.expiresDateNormalized || 'Unknown',
-        updated_date: record.updatedDateNormalized || 'Unknown',
-      },
-      whois: {
-        name: registrant.name ?? null,
-        organization: registrant.organization ?? null,
-        street: registrant.street1 ?? null,
-        city: registrant.state ?? null,
-        country: registrant.countryCode ?? null,
-        postal_code: registrant.postalCode ?? null,
-      },
-    };
-  } catch (err) {
-    log.error(`[WHOISXML] Fallback fetch failed: ${(err as Error).message}`);
-    return null;
-  }
-};
 
 // --- Main handler ---
 
@@ -171,7 +100,7 @@ export default defineEventHandler(async (event) => {
   const dunno = null;
 
   try {
-    const whoisData = await getWhoisData(domain);
+    const whoisData = await getWhoisInfo(domain) as any;
     if (!whoisData) {
       log.warn(`WHOIS data not found for ${domain}`);
       return { error: 'Failed to fetch WHOIS data' };
