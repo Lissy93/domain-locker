@@ -55,7 +55,13 @@ export const getWhoisInfo = async (domain: string): Promise<WhoisResult | null> 
   };
 
   try {
-    const raw = await whois(trimmed);
+    const WHOIS_TIMEOUT_MS = 8000;
+    const raw = await Promise.race([
+      whois(trimmed),
+      new Promise((_, reject) =>
+        setTimeout(() => reject(new Error(`WHOIS timeout after ${WHOIS_TIMEOUT_MS}ms for ${domain}`)), WHOIS_TIMEOUT_MS)
+      )
+    ]);
     if (raw && typeof raw === 'object' && Object.keys(raw).length > 0) {
       log.success(`Got WHOIS data via whois-json for ${domain}`);
       return normalizeWhoisJson(raw);
@@ -63,7 +69,7 @@ export const getWhoisInfo = async (domain: string): Promise<WhoisResult | null> 
     log.warn(`whois-json returned empty for ${domain}, falling back`);
     return await fallback();
   } catch (err) {
-    log.warn(`whois-json failed for ${domain}: ${(err as Error).message}`);
+    log.error(`whois-json failed for ${domain}: ${(err as Error).message}`);
     return await fallback();
   }
 };
