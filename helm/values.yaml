@@ -10,7 +10,19 @@ app:
     DL_PG_NAME: domain_locker
   ingress:
     enabled: true
-    hostname: domain-locker.local
+    # ingressClassName: "nginx"
+    annotations: # nginx.ingress.kubernetes.io/rewrite-target: /
+    hosts:
+    - host: domain-locker.localhost.com
+      paths:
+      - path: /
+        service:
+          name: domain-locker-app
+          port: 80
+    # tls:
+    # - hosts:
+    #   - domain-locker.localhost.com
+    #   secretName: domain-locker.localhost.com-tls
 
 postgres:
   image: postgres:15-alpine
