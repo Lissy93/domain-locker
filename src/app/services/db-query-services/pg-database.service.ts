@@ -414,35 +414,35 @@ SELECT domains.*, registrars.name AS registrar_name, tags.name AS tag_name, host
       DO $$
       BEGIN
         -- Delete related records
-        DELETE FROM notifications WHERE notifications.domain_id = $1;
-        DELETE FROM ip_addresses WHERE ip_addresses.domain_id = $1;
-        DELETE FROM domain_tags WHERE domain_tags.domain_id = $1;
-        DELETE FROM notification_preferences WHERE notification_preferences.domain_id = $1;
-        DELETE FROM dns_records WHERE dns_records.domain_id = $1;
-        DELETE FROM ssl_certificates WHERE ssl_certificates.domain_id = $1;
-        DELETE FROM whois_info WHERE whois_info.domain_id = $1;
-        DELETE FROM domain_hosts WHERE domain_hosts.domain_id = $1;
-        DELETE FROM domain_costings WHERE domain_costings.domain_id = $1;
-        DELETE FROM sub_domains WHERE sub_domains.domain_id = $1;
-  
+        DELETE FROM notifications WHERE domain_id = '${domainId}';
+        DELETE FROM ip_addresses WHERE domain_id = '${domainId}';
+        DELETE FROM domain_tags WHERE domain_id = '${domainId}';
+        DELETE FROM notification_preferences WHERE domain_id = '${domainId}';
+        DELETE FROM dns_records WHERE domain_id = '${domainId}';
+        DELETE FROM ssl_certificates WHERE domain_id = '${domainId}';
+        DELETE FROM whois_info WHERE domain_id = '${domainId}';
+        DELETE FROM domain_hosts WHERE domain_id = '${domainId}';
+        DELETE FROM domain_costings WHERE domain_id = '${domainId}';
+        DELETE FROM sub_domains WHERE domain_id = '${domainId}';
+
         -- Delete the domain itself
-        DELETE FROM domains WHERE domains.id = $1;
-  
+        DELETE FROM domains WHERE id = '${domainId}';
+
         -- Clean up orphaned records
-        DELETE FROM tags WHERE tags.id NOT IN (SELECT DISTINCT tag_id FROM domain_tags);
-        DELETE FROM hosts WHERE hosts.id NOT IN (SELECT DISTINCT host_id FROM domain_hosts);
-        DELETE FROM registrars WHERE registrars.id NOT IN (SELECT DISTINCT registrar_id FROM domains);
+        DELETE FROM tags WHERE id NOT IN (SELECT DISTINCT tag_id FROM domain_tags);
+        DELETE FROM hosts WHERE id NOT IN (SELECT DISTINCT host_id FROM domain_hosts);
+        DELETE FROM registrars WHERE id NOT IN (SELECT DISTINCT registrar_id FROM domains);
       END $$;
     `;
-  
-    return from(this.pgApiUtil.postToPgExecutor(query, [domainId])).pipe(
+
+    return from(this.pgApiUtil.postToPgExecutor(query)).pipe(
       map(() => void 0),
       catchError(error => {
         this.handleError(error);
-        return throwError(error);
-      }
-    ));
-  }  
+        return throwError(() => error);
+      })
+    );
+  }
   
 
   getDomainExpirations(): Observable<DomainExpiration[]> {
