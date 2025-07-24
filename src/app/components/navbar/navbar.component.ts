@@ -83,6 +83,9 @@ export class NavbarComponent implements OnInit, AfterViewInit {
     // Log the result of enableSignUp feature flag when it's ready
     this.featureService.isFeatureEnabled('enableSignUp').subscribe(enabled => {
       this.enableSignUp = enabled;
+      if (this.isAuthenticated) {
+        this.enableSignUp = false;
+      }
       this.cdr.detectChanges();
     });
   }

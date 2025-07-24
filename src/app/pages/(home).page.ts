@@ -103,6 +103,7 @@ export default class HomePageComponent implements OnInit {
     this.subscriptions.add(
       this.supabaseService.authState$.subscribe(isAuthenticated => {
         this.isAuthenticated = isAuthenticated;
+        this.cdr.detectChanges();
       })
     );
   }
