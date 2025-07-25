@@ -200,7 +200,7 @@ export default defineEventHandler(async (event) => {
       subdomains = await mergeResponses(domain, shodanUrl, dnsdumpUrl);
     } else {
       const primaryUrl = METHOD === 'shod' ? shodanUrl : dnsdumpUrl;
-      const fallbackUrl = METHOD === 'shod' ? dnsdumpUrl :shodanUrl;
+      const fallbackUrl = METHOD === 'shod' ? dnsdumpUrl : shodanUrl;
       log.debug(`Primary URL: ${primaryUrl}, Fallback URL: ${fallbackUrl}`);
 
       const primaryData = await fetchSubdomains(primaryUrl);
