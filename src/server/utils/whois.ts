@@ -64,6 +64,7 @@ export const getWhoisInfo = async (domain: string): Promise<WhoisResult | null> 
     ]);
     if (raw && typeof raw === 'object' && Object.keys(raw).length > 0) {
       log.success(`Got WHOIS data via whois-json for ${domain}`);
+      console.log(raw)
       return normalizeWhoisJson(raw);
     }
     log.warn(`whois-json returned empty for ${domain}, falling back`);
@@ -76,39 +77,67 @@ export const getWhoisInfo = async (domain: string): Promise<WhoisResult | null> 
 
 // --- Normalizers and fallback methods ---
 
-const normalizeWhoisJson = (raw: any): WhoisResult => ({
-  domainName: raw.domainName || null,
-  registrar: {
-    name: raw.registrarName || raw.registrar || null,
-    id: raw.registrarIanaId || null,
-    url: raw.registrarUrl || null,
-    registryDomainId: raw.registryDomainId || null,
-  },
-  dates: {
-    creation_date: raw.creationDate || null,
-    updated_date: raw.updatedDate || null,
-    expiry_date: raw.expiryDate || raw.registrarRegistrationExpirationDate || null,
-  },
-  whois: {
-    name: raw.registrantName || null,
-    organization: raw.registrantOrganization || null,
-    street: raw.registrantStreet || null,
-    city: raw.registrantCity || null,
-    country: raw.registrantCountry || null,
-    state: raw.registrantStateProvince || null,
-    postal_code: raw.registrantPostalCode || null,
-  },
-  abuse: {
-    email: raw.abuseContactEmail || raw.registrarAbuseContactEmail || null,
-    phone: raw.abuseContactPhone || raw.registrarAbuseContactPhone || null,
-  },
-  status: parseStatusArray(raw.domainStatus),
-  dnssec: raw.dnssec || null,
-});
+const normalizeWhoisJson = (raw: any): WhoisResult => {
+  const registrarName = raw.registrarName
+  || (typeof raw.registrar === 'string') ? raw.registrar : raw?.registrar?.name
+  || 'Unknown';
+  return {
+    domainName: raw.domainName || null,
+    registrar: {
+      name: registrarName,
+      id: raw.registrarIanaId || null,
+      url: raw.registrarUrl || null,
+      registryDomainId: raw.registryDomainId || null,
+    },
+    dates: { // Why can't we just have a single date option!!!
+      creation_date:
+        raw.creationDate ||
+        raw.createdDate ||
+        raw.created ||
+        raw.domainRegistrationDate ||
+        raw.registered ||
+        raw.registrationDate ||
+        (raw.dates && (raw.dates.creation_date || raw.dates.created)) ||
+        null,
+      updated_date:
+        raw.updatedDate ||
+        raw.lastUpdated ||
+        raw.updated ||
+        raw.domainLastUpdated ||
+        raw.lastModified ||
+        (raw.dates && (raw.dates.updated_date || raw.dates.updated)) ||
+        null,
+      expiry_date:
+        raw.expiryDate ||
+        raw.registrarRegistrationExpirationDate ||
+        raw.expiresDate ||
+        raw.expirationDate ||
+        raw.domainExpirationDate ||
+        raw.expiry ||
+        (raw.dates && (raw.dates.expiry_date || raw.dates.expires)) ||
+        null,
+    },
+    whois: {
+      name: raw.registrantName || null,
+      organization: raw.registrantOrganization || null,
+      street: raw.registrantStreet || null,
+      city: raw.registrantCity || null,
+      country: raw.registrantCountry || null,
+      state: raw.registrantStateProvince || null,
+      postal_code: raw.registrantPostalCode || null,
+    },
+    abuse: {
+      email: raw.abuseContactEmail || raw.registrarAbuseContactEmail || null,
+      phone: raw.abuseContactPhone || raw.registrarAbuseContactPhone || null,
+    },
+    status: parseStatusArray(raw.domainStatus),
+    dnssec: raw.dnssec || null,
+  };
+}
 
 const parseStatusArray = (status?: string): string[] =>
   status
-    ? Array.from(new Set([...status.matchAll(/([a-zA-Z]+Prohibited)/g)].map(m => m[1])))
+    ? Array.from(new Set([...status.matchAll(/([a-zA-Z]+rohibited)/g)].map(m => m[1])))
     : [];
 
 const getRdapUrlForTld = async (tld: string): Promise<string | null> => {

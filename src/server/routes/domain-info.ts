@@ -9,8 +9,15 @@ import Logger from '../utils/logger';
 
 const log = new Logger('domain-info');
 
-// --- Helpers ---
-
+/**
+ * Execute a function safely
+ * So that if one step fails, the world will not implode
+ * Errors are caught and logged, and the endpoint will continue
+ * @param fn 
+ * @param errorMsg 
+ * @param errors 
+ * @returns 
+ */
 const safeExecute = async <T>(
   fn: () => Promise<T>,
   errorMsg: string,
@@ -25,16 +32,19 @@ const safeExecute = async <T>(
   }
 };
 
+/* Looks up IP (v4) address/s of a given hostname */
 const getIpAddress = (domain: string) =>
   new Promise<string[]>((resolve) => {
     dns.resolve4(domain, (err, addresses) => resolve(err ? [] : addresses));
   });
 
+/* Looks up IP (v6) address/s of a given hostname */
 const getIpv6Address = (domain: string) =>
   new Promise<string[]>((resolve) => {
     dns.resolve6(domain, (err, addresses) => resolve(err ? [] : addresses));
   });
 
+/* Looks up mail records of a given domain */
 const getMxRecords = (domain: string) =>
   new Promise<string[]>((resolve) => {
     dns.resolveMx(domain, (err, records) =>
@@ -42,6 +52,7 @@ const getMxRecords = (domain: string) =>
     );
   });
 
+/* Looks up TXT records of a given domain */
 const getTxtRecords = (domain: string) =>
   new Promise<string[]>((resolve) => {
     dns.resolveTxt(domain, (err, records) =>
@@ -49,11 +60,13 @@ const getTxtRecords = (domain: string) =>
     );
   });
 
+/* Looks up name servers of a given domain */
 const getNameServers = (domain: string) =>
   new Promise<string[]>((resolve) => {
     dns.resolveNs(domain, (err, records) => resolve(err ? [] : records));
   });
 
+/* Uses TLS to get certificate info of a given host/domain, if https enabled */
 const getSslCertificateDetails = (domain: string): Promise<Partial<PeerCertificate>> =>
   new Promise((resolve, reject) => {
     const socket = tls.connect(443, domain, { servername: domain }, () => {
@@ -64,6 +77,7 @@ const getSslCertificateDetails = (domain: string): Promise<Partial<PeerCertifica
     socket.on('error', reject);
   });
 
+/* Uses the wonderful ip-api to find host location and org of a given IP */
 const getHostData = async (ip: string): Promise<Host | undefined> => {
   try {
     const res = await fetch(`http://ip-api.com/json/${ip}?fields=12249`);
@@ -77,23 +91,14 @@ const getHostData = async (ip: string): Promise<Host | undefined> => {
   }
 };
 
-const makeStatusArray = (status?: string): string[] => {
-  if (!status) return [];
-  const matches = Array.from(
-    status.matchAll(/\b([a-zA-Z0-9]+)(?=\s|\(|$)/gi)
-  );
-  return Array.from(new Set(matches.map(m => m[1])));
-};
-
-
 // --- Main handler ---
-
 export default defineEventHandler(async (event) => {
   const authResult = await verifyAuth(event);
   if (!authResult.success) {
     return { statusCode: 401, body: { error: authResult.error } };
   }
 
+  // Get domain name from query parameters / throw error if not provided
   const { domain } = getQuery(event);
   if (!domain || typeof domain !== 'string') {
     log.warn('Domain name is required for domain info lookup');
@@ -124,55 +129,16 @@ export default defineEventHandler(async (event) => {
       ? await safeExecute(() => getHostData(ipv4[0]), 'Host info fetch failed', errors)
       : undefined;
 
-    const registrarName =
-      whoisData.registrarName ||
-      (typeof whoisData.registrar === 'string'
-        ? whoisData.registrar
-        : whoisData?.registrar?.name) || dunno;
-
     const domainInfo: DomainInfo = {
-      domainName: whoisData.domainName || dunno,
-      status: makeStatusArray(whoisData.domainStatus),
+      domainName: whoisData.domainName || domain,
+      status: whoisData.status,
       ip_addresses: { ipv4: ipv4 || [], ipv6: ipv6 || [] },
-      dates: {
-        expiry_date:
-          whoisData.expiryDate ||
-          whoisData.registrarRegistrationExpirationDate ||
-          whoisData?.dates?.expiry_date,
-        updated_date:
-          whoisData.lastUpdated ||
-          whoisData.updatedDate ||
-          whoisData?.dates?.updated_date,
-        creation_date:
-          whoisData.creationDate || whoisData?.dates?.creation_date,
-      },
-      registrar: {
-        name: registrarName,
-        id: whoisData.registrarIanaId || dunno,
-        url: whoisData.registrarUrl || dunno,
-        registryDomainId: whoisData.registryDomainId || dunno,
-      },
-      whois: {
-        name: whoisData.registrantName || dunno,
-        organization: whoisData.registrantOrganization || dunno,
-        street: whoisData.registrantStreet || dunno,
-        city: whoisData.registrantCity || dunno,
-        country: whoisData.registrantCountry || dunno,
-        state: whoisData.registrantStateProvince || dunno,
-        postal_code: whoisData.registrantPostalCode || dunno,
-      },
-      abuse: {
-        email:
-          whoisData.abuseContactEmail ||
-          whoisData.registrarAbuseContactEmail ||
-          dunno,
-        phone:
-          whoisData.abuseContactPhone ||
-          whoisData.registrarAbuseContactPhone ||
-          dunno,
-      },
+      dates: whoisData.dates || {},
+      registrar: whoisData.registrar || {},
+      whois: whoisData.whois || {},
+      abuse: whoisData.abuse || {},
       dns: {
-        dnssec: whoisData.dnssec || dunno,
+        dnssec: whoisData.dnssec,
         nameServers: ns || [],
         mxRecords: mx || [],
         txtRecords: txt || [],
