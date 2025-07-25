@@ -147,4 +147,51 @@ The response will look something like this:
 }
 ```
 
+---
+
+## Subdomains API Endpoint
+
+The subdomains are fetched from the [`/api/domain-subs`](https://github.com/Lissy93/domain-locker/blob/main/src/server/routes/domain-subs.ts) endpoint returns subdomains for a given domain.
+
+It's not possible to read dns zone transfer records in Deno on the self-hosted instance, therefore if you want to use this feature, you will need to set up your own API endpoint to fetch subdomains, or make use of a third-party API like Shodan or DNSDumpster.
+
+### Using Third-Party APIs
+- To use Shodan, apply for an API key, and then set the `SHODAN_TOKEN` environment variable.
+- To use DNSDumpster, purchase a key and set the `DNS_DUMPSTER_TOKEN` environment variable.
+
+
+## Use your own API
+You can create your own API endpoint to fetch subdomains. Set the `DL_DOMAIN_SUBS_API` environment variable to point to your API endpoint. The API should accept a `domain` query parameter and return a JSON response with the following structure:
+
+```json
+[
+  {
+    "subdomain": "smtp-inbound1",
+    "tags": [
+      "cloud"
+    ],
+    "type": "A",
+    "ip": "40.67.249.73",
+    "ports": [
+      25
+    ],
+    "asn": "",
+    "asn_name": "",
+    "asn_range": "",
+    "country": "unknown",
+    "country_code": "??",
+    "banners": {}
+  },
+  {
+    "id": "1",
+    "domainId": "123",
+    "name": "sub.example.com",
+    "sd_info": {
+      "cname": "example.com"
+    }
+  }
+],
+
+```
+
 
