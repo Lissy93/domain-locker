@@ -252,7 +252,7 @@ const tryWhoisXml = async (domain: string): Promise<WhoisResult | null> => {
         city: registrant.state || null,
         country: registrant.countryCode || null,
         postal_code: registrant.postalCode || null,
-        state: null,
+        state: registrant.state || null,
       },
       abuse: {
         email: null,
