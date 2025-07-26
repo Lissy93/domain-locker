@@ -67,22 +67,21 @@ export class NavbarComponent implements OnInit, AfterViewInit {
   ) {}
 
   ngOnInit() {
-    // Check auth status and fetch user plan
-    this.checkAuthStatus();
+    // Set contents of menubar items
+    this.initializeMenuItems();
+
+    // Check auth status, listen for changes and fetch user plan
+    this.setAuthState();
+    
+    // Get user plan (for navbar badge, later)
     this.billingService.fetchUserPlan();
 
-    // Subscribe to auth state changes, and also init menu items
-    this.subscriptions.add(
-      this.supabaseService.authState$.subscribe(isAuthenticated => {
-        this.isAuthenticated = isAuthenticated;
-        this.initializeMenuItems();
-        this.cdr.detectChanges();
-      })
-    );
-
-    // Log the result of enableSignUp feature flag when it's ready
+    // If enableSignup is enabled, then show the Signup button (if not logged in)
     this.featureService.isFeatureEnabled('enableSignUp').subscribe(enabled => {
       this.enableSignUp = enabled;
+      if (this.isAuthenticated) {
+        this.enableSignUp = false;
+      }
       this.cdr.detectChanges();
     });
   }
@@ -149,9 +148,18 @@ export class NavbarComponent implements OnInit, AfterViewInit {
     }
   }
 
-  async checkAuthStatus() {
+  async setAuthState() {
+    if (!this.environmentService.isSupabaseEnabled()) {
+      this.isAuthenticated = true;
+      return;
+    }
     this.isAuthenticated = await this.supabaseService.isAuthenticated();
-    this.supabaseService.setAuthState(this.isAuthenticated);
+    this.subscriptions.add(
+      this.supabaseService.authState$.subscribe(isAuthenticated => {
+        this.initializeMenuItems();
+        this.isAuthenticated = isAuthenticated;
+      })
+    );
   }
 
   // Set the navbar links, depending if user is logged in or not

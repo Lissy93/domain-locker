@@ -95,11 +95,12 @@ export default class HomePageComponent implements OnInit {
     }
   }
 
-  setAuthState() {
+  async setAuthState() {
     if (!this.environmentService.isSupabaseEnabled()) {
       this.isAuthenticated = true;
       return;
     }
+    this.isAuthenticated = await this.supabaseService.isAuthenticated();
     this.subscriptions.add(
       this.supabaseService.authState$.subscribe(isAuthenticated => {
         this.isAuthenticated = isAuthenticated;
