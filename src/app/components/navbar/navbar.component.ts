@@ -154,7 +154,6 @@ export class NavbarComponent implements OnInit, AfterViewInit {
 
   async checkAuthStatus() {
     this.isAuthenticated = await this.supabaseService.isAuthenticated();
-    this.supabaseService.setAuthState(this.isAuthenticated);
   }
 
   // Set the navbar links, depending if user is logged in or not
