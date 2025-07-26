@@ -1,0 +1,19 @@
+name: ❓ Question
+description: Ask a question about using or developing Domain Locker
+title: '[Question]: '
+body:
+  - type: textarea
+    id: question
+    attributes:
+      label: Your Question
+      description: >-
+        Please clearly describe your question or what you need help with.
+        If it's about usage, include what you've tried and what you're hoping to do.
+        For development-related questions, feel free to share relevant code or errors.
+    validations:
+      required: true
+  - type: markdown
+    attributes:
+      value: >-
+        💡 Tip: You can also check the [documentation](https://domain-locker.com/about)
+        or [developer guides](https://domain-locker.com/about/developing)
