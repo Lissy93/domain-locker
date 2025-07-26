@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PrimeNgModule } from '~/app/prime-ng.module';
 import { MetaTagsService } from '~/app/services/meta-tags.service';
@@ -10,7 +10,7 @@ import { sections } from '../data/useful-links';
   imports: [CommonModule, PrimeNgModule],
   templateUrl: './index.page.html',
 })
-export default class ExternalToolsPage {
+export default class ExternalToolsPage implements OnInit {
   public sections = sections;
 
   constructor(private metaTagsService: MetaTagsService) {}
