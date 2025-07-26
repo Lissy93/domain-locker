@@ -67,13 +67,16 @@ export class NavbarComponent implements OnInit, AfterViewInit {
   ) {}
 
   ngOnInit() {
-    // Check auth status, listen for changes and fetch user plan
-    this.setAuthState();
-    this.billingService.fetchUserPlan();
-
+    // Set contents of menubar items
     this.initializeMenuItems();
 
-    // Log the result of enableSignUp feature flag when it's ready
+    // Check auth status, listen for changes and fetch user plan
+    this.setAuthState();
+    
+    // Get user plan (for navbar badge, later)
+    this.billingService.fetchUserPlan();
+
+    // If enableSignup is enabled, then show the Signup button (if not logged in)
     this.featureService.isFeatureEnabled('enableSignUp').subscribe(enabled => {
       this.enableSignUp = enabled;
       if (this.isAuthenticated) {
