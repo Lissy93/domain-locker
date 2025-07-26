@@ -1,0 +1,41 @@
+
+name: ✨ Feature Request
+description: Suggest a new feature or improvement for Domain Locker
+title: '[Feature Request]: '
+
+body:
+- type: textarea
+  id: feature
+  attributes:
+    label: Describe the feature
+    description: >-
+      What problem does this feature solve or what would it improve?
+      Please explain clearly, and include example use-cases or scenarios.
+  validations:
+    required: true
+
+- type: dropdown
+  id: willingness
+  attributes:
+    label: Would you be open to implementing this yourself?
+    options:
+      - Yes, I'd like to implement it
+      - Maybe, with some guidance
+      - No, just suggesting the idea
+
+- type: textarea
+  id: execution
+  attributes:
+    label: 'Optional: How should it work?'
+    description: >-
+      If you have an idea for how this can be implemented or how it should behave, feel free to describe them here.
+
+- type: markdown
+  attributes:
+    value: >-
+      🙌 Thanks for your suggestion! While I can't guarantee every feature will
+      be implemented — especially if it's highly specific — I will carefully
+      consider all ideas and prioritize those that benefit the wider community.<br><br>
+      If you're keen to contribute or prototype the idea yourself, check out our
+      [developer docs](https://domain-locker.com/about/developing) - PRs are always welcome!
+

@@ -1,11 +1,9 @@
-// src/app/pages/home.page.ts
 import { ChangeDetectorRef, Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { PrimeNgModule } from '../prime-ng.module';
 import DatabaseService from '~/app/services/database.service';
 import { SupabaseService } from '~/app/services/supabase.service';
 import { DbDomain } from '~/app/../types/Database';
-import { MessageService } from 'primeng/api';
 import AssetListComponent from '~/app/components/misc/asset-list.component';
 import { DomainExpirationBarComponent } from '~/app/components/charts/domain-expiration-bar/domain-expiration-bar.component';
 import { DomainCollectionComponent } from '~/app/components/domain-things/domain-collection/domain-collection.component';
@@ -78,7 +76,6 @@ export default class HomePageComponent implements OnInit {
 
   constructor(
     private databaseService: DatabaseService,
-    private messageService: MessageService,
     public supabaseService: SupabaseService,
     private environmentService: EnvService,
     private errorHandlerService: ErrorHandlerService,
@@ -88,18 +85,20 @@ export default class HomePageComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.setAuthState();
-    this.demoInstanceLoginRedirect();
+    this.setAuthState(); // Set auth state, and listen for changes
+    this.checkDemoDevInstance(); // Redirect to login on demo, show note on dev
     if (isPlatformBrowser(this.platformId)) {
-      this.loadDomains();
+      this.loadDomains(); // Initiate the loading of user's domains
     }
   }
 
-  setAuthState() {
+  /* Sets the user's auth state, and listens for auth changes (skip on self-hosted) */
+  async setAuthState() {
     if (!this.environmentService.isSupabaseEnabled()) {
       this.isAuthenticated = true;
       return;
     }
+    this.isAuthenticated = await this.supabaseService.isAuthenticated();
     this.subscriptions.add(
       this.supabaseService.authState$.subscribe(isAuthenticated => {
         this.isAuthenticated = isAuthenticated;
@@ -127,17 +126,20 @@ export default class HomePageComponent implements OnInit {
     });
   }
 
+  /* Called after new domain is added, re-fetches domain list */
   newDomainAdded(newDomainName: string) {
     this.domains.push({ domain_name: newDomainName } as DbDomain);
     this.loadDomains();
   }
 
+  /* Show/hide the insights stats */
   toggleInsights() {
     this.showInsights = !this.showInsights;
   }
 
-  // If running demo instance, and user not authenticated, redirect to login page
-  demoInstanceLoginRedirect() {
+  /* Special checks for dev and demo instance */
+  checkDemoDevInstance() {
+    // If demo instance, and user not authenticated, redirect to login page
     if (this.environmentService.getEnvironmentType() === 'demo') {
       this.isDemoInstance = true;
       if (!this.isAuthenticated) {
@@ -146,6 +148,7 @@ export default class HomePageComponent implements OnInit {
         });
       }
     }
+    // Show dev banner if user is locally running the app using public dev supabase
     if (this.environmentService.getEnvironmentType() === 'dev') {
       if ((this.environmentService.getSupabaseUrl() || '').includes('admdzkssuivrztrvzinh')) {
         this.isDevInstance = true;

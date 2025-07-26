@@ -46,7 +46,13 @@ export class SupabaseService {
       return;
     }
 
-    this.supabase.auth.onAuthStateChange((event, session) => {
+    // Eager session check on app init
+    this.supabase.auth.getSession().then(({ data: { session } }) => {
+      this.setAuthState(!!session);
+    });
+
+    // Listen to future auth changes
+    this.supabase.auth.onAuthStateChange((_event, session) => {
       this.setAuthState(!!session);
     });
 

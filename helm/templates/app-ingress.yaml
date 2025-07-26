@@ -1,0 +1,38 @@
+{{- if and .Values.app.ingress (hasKey .Values.app.ingress "enabled") .Values.app.ingress.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: domain-locker-app-ingress
+  labels:
+    {{- include "domain-locker-app.labels" . | nindent 4 }}
+  annotations:
+    {{- with .Values.app.ingress.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+spec:
+  rules:
+    {{- range .Values.app.ingress.hosts }}
+    - host: {{ .host }}
+      http:
+        paths:
+          {{- range .paths }}
+          - path: {{ .path }}
+            pathType: {{ .pathType | default "Prefix" }}
+            backend:
+              service:
+                name: {{ .service.name }}
+                port:
+                  number: {{ .service.port }}
+          {{- end }}
+    {{- end }}
+  {{- if .Values.app.ingress.tls }}
+  tls:
+    {{- range .Values.app.ingress.tls }}
+    - hosts:
+        {{- range .hosts }}
+        - {{ . }}
+        {{- end }}
+      secretName: {{ .secretName }}
+    {{- end }}
+  {{- end }}
+{{- end }}

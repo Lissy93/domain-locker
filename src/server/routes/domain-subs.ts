@@ -5,6 +5,9 @@
  */
 import { defineEventHandler, getQuery } from 'h3';
 import { verifyAuth } from '../utils/auth';
+import Logger from '../utils/logger';
+
+const log = new Logger('domain-subs');
 
 type Subdomain = {
   subdomain: string;
@@ -23,7 +26,7 @@ type Subdomain = {
 type ServiceResponse = { subdomains?: Subdomain[]; error?: string };
 
 // Service URLs
-const SHODAN_URL = import.meta.env['DL_SHODAN_URL'] || 'https://api.shodan.io/dns/domain/';
+const SHODAN_URL = import.meta.env['DL_SHODAN_URL'];
 const DNSDUMP_URL = import.meta.env['DL_DNSDUMP_URL'];
 
 const preferredMethod = import.meta.env['DL_PREFERRED_SUBDOMAIN_PROVIDER'];
@@ -37,21 +40,43 @@ const METHOD: 'shod' | 'dnsdump' | 'both' = (() => {
   return DNSDUMP_URL ? 'dnsdump' : 'shod';
 })();
 
+// If user is using one of these services, we need their API keys
+const SHODAN_TOKEN = import.meta.env['SHODAN_TOKEN'] || '';
+const DNS_DUMPSTER_TOKEN = import.meta.env['DNS_DUMPSTER_TOKEN'] || '';
+
 // Fetches subdomains from a given service URL
 async function fetchSubdomains(url: string): Promise<ServiceResponse> {
+  log.debug(`Fetching subdomains from ${url}`);
+  if (!url || url.includes('undefined')) {
+    log.error('Unable to check for subdomains, this has not been configured on your instance yet');
+    return { error: 'Skipping subdomains, service not configured - please check your environmental variables' };
+  }
+
+  const requestParams: { method?: string, headers?: Record<string, string> } = {};
+
+  if (url.includes('dnsdump')) {
+    if (!DNS_DUMPSTER_TOKEN) {
+      log.error('DNSDumpster token is not configured');
+      return { error: 'Service is not configured' };
+    }
+    requestParams.method = 'GET';
+    requestParams.headers = { 'X-Api-Key': DNS_DUMPSTER_TOKEN };
+  }
+
   try {
-    const response = await fetch(url);
+    const response = await fetch(url, requestParams);
     const data = await response.json();
     if (data.error) {
+      log.error(`Error from ${url}: ${data.error}`);
       return { error: data.error };
     }
-    if (url.includes('safe-shodan')) {
+    if (url.includes('shodan')) {
       return { subdomains: parseShodanResponse(data) };
     } else {
       return { subdomains: parseDnsDumpResponse(data) };
     }
   } catch (error) {
-    console.error(`Error fetching from ${url}:`, error);
+    log.error(`Error fetching from ${url}: ${error}`);
     return { error: 'Failed to fetch data from service' };
   }
 }
@@ -103,10 +128,10 @@ function parseDnsDumpResponse(data: any): Subdomain[] {
 
 
 // Merges and deduplicates responses from both services
-async function mergeResponses(domain: string): Promise<Subdomain[]> {
+async function mergeResponses(domain: string, shodUrl: string, dnsDumpUrl: string): Promise<Subdomain[]> {
   const [shodData, dnsData] = await Promise.all([
-    fetchSubdomains(`${SHODAN_URL}/${domain}`),
-    fetchSubdomains(`${DNSDUMP_URL}/${domain}`),
+    fetchSubdomains(shodUrl),
+    fetchSubdomains(dnsDumpUrl),
   ]);
   if (shodData.error && dnsData.error) {
     throw new Error('Both services failed');
@@ -165,13 +190,18 @@ export default defineEventHandler(async (event) => {
     return { error: 'Domain name is required' };
   }
 
+  const shodanUrl = SHODAN_URL ? `${SHODAN_URL}/${domain}` : `https://api.shodan.io/dns/domain/${domain}${SHODAN_TOKEN ? `?key=${SHODAN_TOKEN}` : ''}`;
+  const dnsdumpUrl = DNSDUMP_URL ? `${DNSDUMP_URL}/${domain}` : `https://api.dnsdumpster.com/domain/${domain}`;
+
   try {
     let subdomains: Subdomain[] = [];
+    log.debug(`Fetching subdomains for ${domain} using method: ${METHOD}`);
     if (METHOD === 'both') {
-      subdomains = await mergeResponses(domain);
+      subdomains = await mergeResponses(domain, shodanUrl, dnsdumpUrl);
     } else {
-      const primaryUrl = METHOD === 'shod' ? `${SHODAN_URL}/${domain}` : `${DNSDUMP_URL}/${domain}`;
-      const fallbackUrl = METHOD === 'shod' ? `${DNSDUMP_URL}/${domain}` : `${SHODAN_URL}/${domain}`;
+      const primaryUrl = METHOD === 'shod' ? shodanUrl : dnsdumpUrl;
+      const fallbackUrl = METHOD === 'shod' ? dnsdumpUrl : shodanUrl;
+      log.debug(`Primary URL: ${primaryUrl}, Fallback URL: ${fallbackUrl}`);
 
       const primaryData = await fetchSubdomains(primaryUrl);
       if (primaryData.error) {
@@ -187,7 +217,7 @@ export default defineEventHandler(async (event) => {
 
     return removeDuplicates(subdomains);
   } catch (error) {
-    console.error('Error in API handler:', error);
+    log.error(`Error fetching subdomains for ${domain}: ${error}`);
     return { error: 'Failed to retrieve subdomains' };
   }
 });
