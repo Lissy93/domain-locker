@@ -28,6 +28,25 @@ jobs:
           VERSION=$(jq -r .version package.json)
           echo "version=$VERSION" >> $GITHUB_OUTPUT
 
+      - name: Update submodules recursively
+        continue-on-error: true
+        run: |
+          echo "Updating submodules recursively..."
+          git submodule update --recursive --remote || echo "Submodule update failed or no changes."
+
+      - name: Commit submodule updates if any
+        continue-on-error: true
+        run: |
+          if ! git diff --quiet; then
+            VERSION="${{ steps.get_version.outputs.version }}"
+            echo "Committing submodule updates..."
+            git add .
+            git commit -m "bot: Update supabase server for domain-locker v${VERSION}" || echo "Nothing to commit"
+            git push origin HEAD || echo "Push failed or nothing to push"
+          else
+            echo "No submodule updates to commit."
+          fi
+
       - name: Create Git Tag (skip if exists)
         run: |
           VERSION="${{ steps.get_version.outputs.version }}"
