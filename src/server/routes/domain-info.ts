@@ -105,17 +105,19 @@ export default defineEventHandler(async (event) => {
     return { error: 'Domain name is required' };
   }
 
-  log.info(`Resolving domain info for: ${domain}`);
-  const errors: string[] = [];
-  const dunno = null;
+  const errors: string[] = []; // Will hold any errors encountered during the process
+  const dunno = null; // Fallback for unknown values
 
   try {
+    // Initiate a whois lookup
+    log.info(`Resolving domain info for: ${domain}`);
     const whoisData = await getWhoisInfo(domain) as any;
     if (!whoisData) {
       log.warn(`WHOIS data not found for ${domain}`);
       return { error: 'Failed to fetch WHOIS data' };
     }
 
+    // Then, gather additional DNS and SSL information
     const [ipv4, ipv6, mx, txt, ns, ssl] = await Promise.all([
       safeExecute(() => getIpAddress(domain), 'IPv4 lookup failed', errors),
       safeExecute(() => getIpv6Address(domain), 'IPv6 lookup failed', errors),
@@ -124,11 +126,11 @@ export default defineEventHandler(async (event) => {
       safeExecute(() => getNameServers(domain), 'NS records failed', errors),
       safeExecute(() => getSslCertificateDetails(domain), 'SSL cert fetch failed', errors),
     ]);
-
     const host = ipv4?.[0]
       ? await safeExecute(() => getHostData(ipv4[0]), 'Host info fetch failed', errors)
-      : undefined;
+      : undefined; // we need at least one IP to get host info
 
+    // Put everything together into a DomainInfo object for response
     const domainInfo: DomainInfo = {
       domainName: whoisData.domainName || domain,
       status: whoisData.status,
@@ -137,6 +139,7 @@ export default defineEventHandler(async (event) => {
       registrar: whoisData.registrar || {},
       whois: whoisData.whois || {},
       abuse: whoisData.abuse || {},
+      host,
       dns: {
         dnssec: whoisData.dnssec,
         nameServers: ns || [],
@@ -153,12 +156,13 @@ export default defineEventHandler(async (event) => {
         key_size: ssl?.bits || 0,
         signature_algorithm: ssl?.asn1Curve || '',
       },
-      host,
     };
 
+    // All done :)
     log.success(`Successfully resolved: ${domain}`);
     return { domainInfo, errors: errors.length ? errors : undefined };
   } catch (err) {
+    // Ahh fuck :(
     log.error(`Fatal error during domain lookup: ${(err as Error).message}`);
     return {
       error: 'An unexpected error occurred while processing domain information',

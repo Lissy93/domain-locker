@@ -1,6 +1,5 @@
-// src/utils/whois.ts
-
 import whois from 'whois-json';
+import type { Dates, Registrar, Contact, Abuse } from '../../types/common';
 import Logger from './logger';
 
 const log = new Logger('whois');
@@ -9,32 +8,12 @@ const RDAP_BOOTSTRAP_URL = 'https://data.iana.org/rdap/dns.json';
 
 interface WhoisResult {
   domainName: string | null;
-  registrar: {
-    name: string | null;
-    id: string | null;
-    url: string | null;
-    registryDomainId: string | null;
-  };
-  dates: {
-    creation_date: string | null;
-    updated_date: string | null;
-    expiry_date: string | null;
-  };
-  whois: {
-    name: string | null;
-    organization: string | null;
-    street: string | null;
-    city: string | null;
-    country: string | null;
-    state: string | null;
-    postal_code: string | null;
-  };
-  abuse: {
-    email: string | null;
-    phone: string | null;
-  };
   status: string[];
   dnssec: string | null;
+  dates: Partial<Dates>;
+  registrar: Partial<Registrar>;
+  whois: Partial<Contact>;
+  abuse: Partial<Abuse>;
 }
 
 let rdapBootstrapCache: Record<string, string> | null = null;
@@ -64,7 +43,6 @@ export const getWhoisInfo = async (domain: string): Promise<WhoisResult | null> 
     ]);
     if (raw && typeof raw === 'object' && Object.keys(raw).length > 0) {
       log.success(`Got WHOIS data via whois-json for ${domain}`);
-      console.log(raw)
       return normalizeWhoisJson(raw);
     }
     log.warn(`whois-json returned empty for ${domain}, falling back`);
@@ -75,8 +53,7 @@ export const getWhoisInfo = async (domain: string): Promise<WhoisResult | null> 
   }
 };
 
-// --- Normalizers and fallback methods ---
-
+/* Converts mystery random whois structure into WhoisResult */
 const normalizeWhoisJson = (raw: any): WhoisResult => {
   const registrarName = raw.registrarName
   || (typeof raw.registrar === 'string') ? raw.registrar : raw?.registrar?.name
@@ -135,11 +112,44 @@ const normalizeWhoisJson = (raw: any): WhoisResult => {
   };
 }
 
-const parseStatusArray = (status?: string): string[] =>
-  status
-    ? Array.from(new Set([...status.matchAll(/([a-zA-Z]+rohibited)/g)].map(m => m[1])))
-    : [];
+/* Statuses come back as long string with urls, convert to array of IDs */
+const parseStatusArray = (status?: string): string[] => {
+  if (!status) return [];
 
+  const knownStatuses = [
+    'clientDeleteProhibited',
+    'clientHold',
+    'clientRenewProhibited',
+    'clientTransferProhibited',
+    'clientUpdateProhibited',
+    'serverDeleteProhibited',
+    'serverHold',
+    'serverRenewProhibited',
+    'serverTransferProhibited',
+    'serverUpdateProhibited',
+    'inactive',
+    'ok',
+    'pendingCreate',
+    'pendingDelete',
+    'pendingRenew',
+    'pendingRestore',
+    'pendingTransfer',
+    'pendingUpdate',
+    'addPeriod',
+    'autoRenewPeriod',
+    'renewPeriod',
+    'transferPeriod'
+  ];
+  // Convert to lowercase, just for the comparison
+  const normalized = status.toLowerCase();
+  // Match anything resembling a known status
+  const matches = knownStatuses.filter((s) => normalized.includes(s.toLowerCase()));
+  // Deduplicate + preserve ICANN casing
+  return Array.from(new Set(matches));
+};
+
+
+/* Determine the url for an rdp lookup, based on the domains TLD */
 const getRdapUrlForTld = async (tld: string): Promise<string | null> => {
   try {
     if (!rdapBootstrapCache) {
@@ -154,7 +164,6 @@ const getRdapUrlForTld = async (tld: string): Promise<string | null> => {
         }
       }
     }
-
     return rdapBootstrapCache[tld] ?? null;
   } catch (err) {
     log.warn(`Failed to fetch RDAP bootstrap: ${(err as Error).message}`);
@@ -189,27 +198,27 @@ const tryRdapLookup = async (domain: string): Promise<WhoisResult | null> => {
       domainName: json.ldhName || null,
       registrar: {
         name: json.handle || null,
-        id: null,
-        url: null,
+        id: undefined,
+        url: undefined,
         registryDomainId: json.handle || null,
       },
       dates: {
-        creation_date: getEvent('registration'),
-        updated_date: getEvent('last changed'),
-        expiry_date: getEvent('expiration'),
+        creation_date: getEvent('registration') || undefined,
+        updated_date: getEvent('last changed') || undefined,
+        expiry_date: getEvent('expiration') || undefined,
       },
       whois: {
-        name: null,
-        organization: null,
-        street: null,
-        city: null,
-        country: null,
-        state: null,
-        postal_code: null,
+        name: undefined,
+        organization: undefined,
+        street: undefined,
+        city: undefined,
+        country: undefined,
+        state: undefined,
+        postal_code: undefined,
       },
       abuse: {
         email: abuseEmail,
-        phone: null,
+        phone: undefined,
       },
       status: json.status || [],
       dnssec: json.secureDNS?.zoneSigned ? 'signed' : null,
@@ -220,6 +229,7 @@ const tryRdapLookup = async (domain: string): Promise<WhoisResult | null> => {
   }
 };
 
+/* We can also try a whois lookup using a third-party API. But, unlikely to work if our whois failed */
 const tryWhoisXml = async (domain: string): Promise<WhoisResult | null> => {
   try {
     const apiUrl =
@@ -237,7 +247,7 @@ const tryWhoisXml = async (domain: string): Promise<WhoisResult | null> => {
       registrar: {
         name: data?.WhoisRecord?.registrarName || record.registrarName || null,
         id: data?.WhoisRecord?.registrarIANAID || null,
-        url: record.whoisServer ? `https://${record.whoisServer}` : null,
+        url: data?.WhoisRecord?.customField3Value || record.whoisServer ? `https://${record.whoisServer}` : undefined,
         registryDomainId: record.registryDomainId || null,
       },
       dates: {
@@ -255,10 +265,10 @@ const tryWhoisXml = async (domain: string): Promise<WhoisResult | null> => {
         state: registrant.state || null,
       },
       abuse: {
-        email: null,
-        phone: null,
+        email: data?.WhoisRecord?.customField1Value || null,
+        phone: data?.WhoisRecord?.customField2Value || null,
       },
-      status: [],
+      status: parseStatusArray(record.status || data?.WhoisRecord?.status),
       dnssec: null,
     };
   } catch (err) {
@@ -266,3 +276,4 @@ const tryWhoisXml = async (domain: string): Promise<WhoisResult | null> => {
     return null;
   }
 };
+
