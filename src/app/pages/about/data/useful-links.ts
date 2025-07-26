@@ -195,7 +195,7 @@ export const domainManagementPlatforms: WebTool[] =  [
   {
     title: 'Domain Locker',
     link: 'https://domain-locker.com',
-    icon: '',
+    icon: 'https://domain-locker.com/icons/android-chrome-192x192.png',
     description: 'The all-in-one domain management platform, for keeping track of your domain portfolio, associated assets, and more',
   },
   {
@@ -348,31 +348,31 @@ export const domainOsintTools: WebTool[] = [
   {
     title: 'Mozilla HTTP Observatory',
     link: 'https://developer.mozilla.org/en-US/observatory',
-    icon: 'https://i.ibb.co/hBWh9cj/logo-mozm-5e95c457fdd1.png',
+    icon: 'https://www.mozilla.org/media/img/favicons/mozilla/favicon-196x196.png',
     description: 'Assesses website security posture by analyzing various security headers and practices',
   },
   {
     title: 'AbuseIPDB',
     link: 'https://abuseipdb.com/',
-    icon: 'https://i.ibb.co/KLZncxw/abuseipdb.png',
+    icon: 'https://www.abuseipdb.com/favicon.ico',
     description: 'Checks a website against Zscaler\'s dynamic risk scoring engine',
   },
   {
     title: 'IBM X-Force Exchange',
     link: 'https://exchange.xforce.ibmcloud.com/',
-    icon: 'https://i.ibb.co/tsTsCV5/x-force.png',
+    icon: 'https://i.ibb.co/0ybPGm9C/XFE-v2-image-2895644591.png',
     description: 'View shared human and machine generated threat intelligence',
   },
   {
     title: 'URLVoid',
     link: 'https://urlvoid.com/',
-    icon: 'https://i.ibb.co/0ZDjCDz/urlvoid-icon.png',
+    icon: 'https://www.urlvoid.com/favicon.ico',
     description: 'Checks a website across 30+ blocklist engines and website reputation services',
   },
   {
     title: 'URLhaus',
     link: 'https://urlhaus.abuse.ch/',
-    icon: 'https://i.ibb.co/j3QwrT8/urlhaus-logo.png',
+    icon: 'https://urlhaus.abuse.ch/favicon.ico',
     description: 'Checks if the site is in URLhaus\'s malware URL exchange',
   },
 ];
@@ -403,7 +403,7 @@ export const sections = [
   {
     title: 'Reputable Registrars',
     description: `
-      The most important decision you can make when it comes to domain management is choosing the right registrar.
+      <span>The most important decision you can make when it comes to domain management is choosing the right registrar.</span>
       <details>
       <summary>What to look for in a domain registrar</summary>
       <ul class="pl-4">
@@ -419,7 +419,7 @@ export const sections = [
         <li><strong>Additional Services:</strong> Assess value of hosting, email, and SSL options.</li>
         <li><strong>TLD Availability:</strong> Confirm availability of desired domain extensions.</li>
         <li><strong>Reputation:</strong> Read reviews and ratings from other customers.</li>
-      <ul>
+      </ul>
       </details>
     `,
     links: registrars,
