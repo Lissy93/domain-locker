@@ -29,6 +29,27 @@ export const selfHostedLinks: LinkItem[] = [
   },
 ];
 
+export const downloadLinks: LinkItem[] = [
+  {
+    purpose: 'Container',
+    provider: 'DockerHub',
+    url: 'https://hub.docker.com/r/lissy93/domain-locker',
+    description: 'Domain Locker container for Docker deployments',
+  },
+  {
+    purpose: 'Helm Chart',
+    provider: 'ArtifactHub',
+    url: 'https://artifacthub.io/packages/helm/domain-locker/domain-locker',
+    description: 'Domain Locker Helm Chart for Kubernetes deployments',
+  },
+  {
+    purpose: 'App',
+    provider: 'Umbrel',
+    url: 'https://apps.umbrel.com/app/domain-locker',
+    description: 'Domain Locker Umbrel app for UmbrelOS deployments',
+  },
+];
+
 export const serviceLinks: LinkItem[] = [
   {
     purpose: 'Database',
