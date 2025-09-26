@@ -22,5 +22,12 @@ spec:
           env:
             {{- range $key, $value := .Values.app.env }}
             - name: {{ $key }}
+              {{- if hasKey $.Values.app.secretEnv $key }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ (index $.Values.app.secretEnv $key).name }}
+                  key: {{ (index $.Values.app.secretEnv $key).key }}
+              {{- else }}
               value: {{ $value | quote }}
+              {{- end }}
             {{- end }}
