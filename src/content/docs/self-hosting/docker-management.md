@@ -262,13 +262,13 @@ Use Helm for deploys. Define:
 2. Install dependencies:
 
 ```bash
-yarn install
+npm install
 ```
 
 3. Build:
 
 ```bash
-yarn build
+npm run build
 ```
 
 4. Build Docker image:

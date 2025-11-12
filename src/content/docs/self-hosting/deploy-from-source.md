@@ -19,8 +19,7 @@ cd domain-locker
 #### 2. Install dependencies
 
 ```bash
-corepack enable
-yarn install --immutable
+npm install
 ```
 
 #### 3. Configure the environment
@@ -50,7 +49,7 @@ NITRO_PRESET=node_server
 #### 4. Build the app
 
 ```bash
-yarn build
+npm run build
 ```
 
 #### 5. Start the app
