@@ -8,19 +8,16 @@ coverImage:
 
 ## The App Setup
 
-#### 1. Get the code
+#### 0. Prerequisites
+You'll need git and Node.js (22) installed.
+If you're using [NVM](https://github.com/nvm-sh/nvm) you can run `nvm use` to download and use the correct Node version
+
+#### 1. Get the code and install dependencies
 
 ```bash
 git clone https://github.com/your-org/domain-locker.git
 cd domain-locker
-
-```
-
-#### 2. Install dependencies
-
-```bash
-corepack enable
-yarn install --immutable
+npm install
 ```
 
 #### 3. Configure the environment
@@ -50,7 +47,7 @@ NITRO_PRESET=node_server
 #### 4. Build the app
 
 ```bash
-yarn build
+npm run build
 ```
 
 #### 5. Start the app
