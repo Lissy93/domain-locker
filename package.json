@@ -50,7 +50,7 @@
     "fuse.js": "^7.0.0",
     "leaflet": "^1.9.4",
     "leaflet.markercluster": "^1.5.3",
-    "marked": "^5.1.2",
+    "marked": "12.0.2",
     "marked-gfm-heading-id": "^3.2.0",
     "marked-highlight": "^2.2.1",
     "marked-mangle": "^1.1.10",
