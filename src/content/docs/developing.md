@@ -33,9 +33,15 @@ Alternatively, you can deploy your own database, either a (self-hosted or Pro) S
 
 ### Option 1) Postgres
 
-With Postgres, follow the setup instructions in [Postgres Setup](/about/developing/postgres-setup),
-then init the schema and start the DB with `./db/setup-postgres.sh`
-(to import the [`schema.sql`](https://github.com/Lissy93/domain-locker/blob/main/db/schema.sql)).
+With Postgres, follow the setup instructions in [Postgres Setup](/about/developing/postgres-setup).
+
+If your database and user are already created, apply the schema directly:
+```bash
+psql -h $DL_PG_HOST -U $DL_PG_USER -d $DL_PG_NAME -f ./db/schema.sql
+```
+
+Or if creating from scratch, use `./db/setup-postgres.sh` (requires superuser access) to import the [`schema.sql`](https://github.com/Lissy93/domain-locker/blob/main/db/schema.sql).
+
 You'll then just need to pass the following env vars to the app, so it can connect to your Postgres instance.
 
 ```

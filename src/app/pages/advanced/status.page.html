@@ -122,12 +122,15 @@
             <summary class="flex cursor-pointer hover:bg-surface-100 rounded pr-2">
               <span class="font-medium flex-shrink-0 w-56 flex items-center space-x-2 truncate">{{s.name}}</span>
               <span class="flex items-center">
-                <div *ngIf="s.conclusion === 'success'; else downStatus">
+                <div *ngIf="s.conclusion === 'success'">
                   <i class="pi pi-check-circle text-green-400 mr-1"></i> Passing
                 </div>
-                <ng-template #downStatus>
+                <div *ngIf="s.status === 'in_progress' || s.status === 'queued'">
+                  <i class="pi pi-info-circle text-blue-400 mr-1"></i> Running
+                </div>
+                <div *ngIf="s.status === 'completed' && s.conclusion !== 'success'">
                   <i class="pi pi-times-circle text-red-400 mr-1"></i> Failing
-                </ng-template>
+                </div>
               </span>
             </summary>
             <p class="mt-0 text-sm opacity-70 italic">

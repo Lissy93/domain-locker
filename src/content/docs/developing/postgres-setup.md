@@ -57,7 +57,46 @@ In each case, you’d retrieve the connection details (hostname, port, credentia
 
 ## Configuring the Schema
 
-We've got a Bash script in [`./db/setup-postgres.sh`](https://github.com/Lissy93/domain-locker/blob/main/db/setup-postgres.sh) which will take care of creating your database and applying the Domain Locker schema.
+### Quick Setup (Database Already Created)
+
+If your database and user are already created (e.g., using Docker, Proxmox, or managed hosting), simply apply the schema:
+
+```bash
+# Set your connection details
+export DL_PG_HOST=localhost
+export DL_PG_PORT=5432
+export DL_PG_USER=domainlocker
+export DL_PG_PASSWORD=your_password
+export DL_PG_NAME=domainlocker
+
+# Apply schema directly
+PGPASSWORD="$DL_PG_PASSWORD" psql \
+  -h "$DL_PG_HOST" \
+  -p "$DL_PG_PORT" \
+  -U "$DL_PG_USER" \
+  -d "$DL_PG_NAME" \
+  -f ./db/schema.sql
+```
+
+### Full Setup (Create Database + Apply Schema)
+
+If you need to create the database and user from scratch, use our setup script:
+
+```bash
+# Set your connection details
+export DL_PG_HOST=localhost
+export DL_PG_PORT=5432
+export DL_PG_USER=domainlocker
+export DL_PG_PASSWORD=your_password
+export DL_PG_NAME=domainlocker
+
+# Run the setup script (requires postgres superuser access)
+./db/setup-postgres.sh
+```
+
+The [`setup-postgres.sh`](https://github.com/Lissy93/domain-locker/blob/main/db/setup-postgres.sh) script will create the database, user, grant privileges, and apply the schema.
+
+**Note**: The setup script connects as the `postgres` superuser to create resources. If you don't have superuser access or the database is already created, use the Quick Setup method above.
 
 ---
 
