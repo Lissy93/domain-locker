@@ -1,3 +1,4 @@
+{{- if .Values.postgres.enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -21,7 +22,21 @@ spec:
             - name: POSTGRES_USER
               value: {{ .Values.postgres.env.POSTGRES_USER | quote }}
             - name: POSTGRES_PASSWORD
+              {{- if .Values.postgres.passwordFromSecret }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.postgres.passwordFromSecret.name }}
+                  key: {{ .Values.postgres.passwordFromSecret.key }}
+              {{- else if hasKey $.Values.app.secretEnv "DL_PG_PASSWORD" }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ (index $.Values.app.secretEnv "DL_PG_PASSWORD").name }}
+                  key: {{ (index $.Values.app.secretEnv "DL_PG_PASSWORD").key }}
+              {{- else }}
               value: {{ .Values.postgres.env.POSTGRES_PASSWORD | quote }}
+              {{- end }}
+            - name: TZ
+              value: {{ .Values.postgres.env.TZ | quote }}
             - name: PGDATA
               value: /var/lib/postgresql/data/pgdata
           ports:
@@ -33,3 +48,4 @@ spec:
         - name: postgres-storage
           persistentVolumeClaim:
             claimName: domain-locker-postgres-pvc
+{{- end }}

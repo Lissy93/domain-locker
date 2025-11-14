@@ -72,7 +72,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
 
     // Check auth status, listen for changes and fetch user plan
     this.setAuthState();
-    
+
     // Get user plan (for navbar badge, later)
     this.billingService.fetchUserPlan();
 
@@ -141,11 +141,11 @@ export class NavbarComponent implements OnInit, AfterViewInit {
 
   // Fetch number of unread notifications for the notification badge
   loadUnreadNotificationCount() {
-    if (this.isAuthenticated) {
-      this.databaseService.instance.notificationQueries.getUnreadNotificationCount().subscribe(
-        (count: number) => this.unreadNotificationsCount = count,
-      );
-    }
+    if (!isPlatformBrowser(this.platformId) || !this.isAuthenticated) return;
+
+    this.databaseService.instance?.notificationQueries?.getUnreadNotificationCount()?.subscribe(
+      (count: number) => this.unreadNotificationsCount = count,
+    );
   }
 
   async setAuthState() {
