@@ -7,11 +7,11 @@ set -e
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
 # Configuration variables: Use environment variables if set, otherwise use defaults
-DB_NAME="${DOMAIN_LOCKER_DB_NAME:-domain_locker}"
-DB_USER="${DOMAIN_LOCKER_DB_USER:-postgres}"
-DB_PASSWORD="${DOMAIN_LOCKER_DB_PASSWORD:-changeme2420}"
-DB_HOST="${DOMAIN_LOCKER_DB_HOST:-localhost}"
-DB_PORT="${DOMAIN_LOCKER_DB_PORT:-5432}"
+DB_NAME="${DL_PG_NAME:-domain_locker}"
+DB_USER="${DL_PG_USER:-postgres}"
+DB_PASSWORD="${DL_PG_PASSWORD:-changeme2420}"
+DB_HOST="${DL_PG_HOST:-localhost}"
+DB_PORT="${DL_PG_PORT:-5432}"
 # By default, assume schema.sql is in the same directory as this script
 SCHEMA_FILE="${SCHEMA_FILE:-$SCRIPT_DIR/schema.sql}"
 
