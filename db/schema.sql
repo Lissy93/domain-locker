@@ -478,6 +478,19 @@ BEGIN
 END
 $$;
 
+-- User information table
+CREATE TABLE IF NOT EXISTS "public"."user_info" (
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    user_id uuid NOT NULL,
+    notification_channels jsonb,
+    created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+    current_plan text,
+    CONSTRAINT user_info_pkey PRIMARY KEY (id),
+    CONSTRAINT user_info_user_id_fkey FOREIGN KEY (user_id) REFERENCES "public"."users" (id) ON DELETE CASCADE
+);
+
+CREATE INDEX IF NOT EXISTS idx_user_info_user_id ON "public"."user_info" (user_id);
 
 -- Final adjustments and default grants
 GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA "public" TO "postgres";
