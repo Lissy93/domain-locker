@@ -61,15 +61,19 @@ curl -fsSL https://install.domain-locker.com | bash
 ---
 
 ## See Also
-
+- [Auto-Fetching Domain Info](/about/self-hosting/domain-fetching-config)
+- [Configuring Expiry Notifications](/about/self-hosting/notifications-self-hosted)
 - [Docker Best Practices](/about/developing/general-docker-advice)
 - [Architecture Overview](/about/self-hosting/understanding-the-architecture)
 - [Conditions for Public Instances](/about/self-hosting/guidelines-for-public-instance)
 
 
-
-
 <style>
+
+a:visited {
+  color: var(--primary-400);
+}
+
   .warning {
     background-color: var(--yellow-200);
     color: var(--yellow-800);

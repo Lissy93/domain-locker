@@ -2,8 +2,8 @@
 slug: notifications-self-hosted
 title: Notifications
 description: How to setup alerts for domain changes and upcoming expirations in a self-hosted Domain Locker instance
-coverImage: 
-index: 6
+coverImage:
+index: 7
 ---
 
 The self-hosted version of Domain Locker supports basic notifications, sent via webhooks.

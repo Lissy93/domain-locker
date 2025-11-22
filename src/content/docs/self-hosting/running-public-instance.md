@@ -3,8 +3,8 @@ slug: guidelines-for-public-instance
 title: Publishing a Public Instance
 description: Etiquette for deploying a public instance of Domain Locker
 noShowInContents: true
-index: 8
-coverImage: 
+index: 10
+coverImage:
 ---
 
 While you're free to do as you please on private self-hosted instances, if you intend to deploy a public instance of Domain Locker, there are some etiquette guidelines that we'd appreciate you try and follow.
