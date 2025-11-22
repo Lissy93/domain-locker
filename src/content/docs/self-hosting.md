@@ -33,6 +33,7 @@ You may also need a domain name and a valid SSL certificate for that domain.
 
 - [With Docker](/about/self-hosting/deploying-with-docker-compose)
 - [With Kubernetes](/about/self-hosting/deploying-with-kubernetes-helm-charts)
+- [On Proxmox VE](/about/self-hosting/proxmox-community-script)
 - [From Umbrel](/about/self-hosting/umbrel-os-app)
 - [From Source](/about/self-hosting/deploying-from-source)
 
