@@ -3,7 +3,7 @@
 > This is our code of conduct, based upon the [Contributor Covenant](https://www.contributor-covenant.org/).
 > It outlines a set of core values and norms that are essential in a just and equitable software commons.
 > You must abide by these if you wish to contribute to this project.
-> For contributing guidelines - see [`CONTRIBUTING.md`](https://github.com/Lissy93/git-into-open-source/blob/main/.github/CONTRIBUTING.md)
+> For contributing guidelines - see [`CONTRIBUTING.md`](https://github.com/Lissy93/domain-locker/blob/main/.github/CONTRIBUTING.md)
 >
 > **TLDR; Don't be a d!ck**
 
