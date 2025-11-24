@@ -18,20 +18,27 @@ export class ServerSafeTranslateLoader implements TranslateLoader {
   private platformId = inject(PLATFORM_ID);
 
   getTranslation(lang: string): Observable<any> {
+    // Sanitize lang code: allow only valid formats, to prevents path traversal
+    const sanitizedLang = /^[a-zA-Z0-9.-]+$/.test(lang) ? lang : 'en';
+
     // Client-Side: Use HttpClient to fetch translations from /i18n/
     if (isPlatformBrowser(this.platformId)) {
-      const langRequestUrl = `/i18n/${lang}.json`;
+      const langRequestUrl = `/i18n/${sanitizedLang}.json`;
       return this.http.get(langRequestUrl).pipe(catchError(() => of({})));
     }
 
     // Server-Side: Use fs to read translation files directly
     if (isPlatformServer(this.platformId)) {
       try {
-        const filePath = path.join(process.cwd(), 'src/assets/i18n', `${lang}.json`);
+        // Get path to translation file (it vary depending on environment)
+        const productionPath = path.join(process.cwd(), 'dist/i18n', `${sanitizedLang}.json`);
+        const devPath = path.join(process.cwd(), 'src/assets/i18n', `${sanitizedLang}.json`);
+        const filePath = fs.existsSync(productionPath) ? productionPath : devPath;
+        // Read and parse the translation file
         const data = fs.readFileSync(filePath, 'utf8');
         return of(JSON.parse(data));
       } catch (error) {
-        console.error(`Error loading translation file for language "${lang}":`, error);
+        console.error(`Failed to load translation file for "${sanitizedLang}":`, error);
         return of({});
       }
     }
