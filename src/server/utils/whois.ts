@@ -82,6 +82,7 @@ const normalizeWhoisJson = (raw: any): WhoisResult => {
         raw.updated ||
         raw.domainLastUpdated ||
         raw.lastModified ||
+        raw.modified ||
         (raw.dates && (raw.dates.updated_date || raw.dates.updated)) ||
         null,
       expiry_date:
@@ -91,6 +92,7 @@ const normalizeWhoisJson = (raw: any): WhoisResult => {
         raw.expirationDate ||
         raw.domainExpirationDate ||
         raw.expiry ||
+        raw.expires ||
         (raw.dates && (raw.dates.expiry_date || raw.dates.expires)) ||
         null,
     },
@@ -107,7 +109,7 @@ const normalizeWhoisJson = (raw: any): WhoisResult => {
       email: raw.abuseContactEmail || raw.registrarAbuseContactEmail || null,
       phone: raw.abuseContactPhone || raw.registrarAbuseContactPhone || null,
     },
-    status: parseStatusArray(raw.domainStatus),
+    status: parseStatusArray(raw.domainStatus || raw.status),
     dnssec: raw.dnssec || null,
   };
 }
