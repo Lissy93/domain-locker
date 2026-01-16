@@ -42,7 +42,7 @@ export interface InternalStatus {
     name: string;
     path: string;
     state: string;
-    conclusion: 'success' | 'failure' | 'cancelled' | 'cancelled' | 'skipped' | 'timed_out' | 'action_required' | 'neutral' | 'stale' | 'startup_failure';
+    conclusion: 'success' | 'failure' | 'cancelled' | 'skipped' | 'timed_out' | 'action_required' | 'neutral' | 'stale' | 'startup_failure';
     badge_url: string;
     html_url: string;
     created_at: string;

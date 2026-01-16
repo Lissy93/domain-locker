@@ -8,6 +8,15 @@ app:
     DL_PG_USER: postgres
     DL_PG_PASSWORD: changeme2420
     DL_PG_NAME: domain_locker
+    TZ: UTC
+  secretEnv: {}
+    # To source DL_PG_PASSWORD from a Kubernetes Secret, uncomment and configure below.
+    # This will override the value in app.env for the specified key.
+    # DL_PG_PASSWORD:
+    #   name: my-secret
+    #   key: dl_pg_password
+    # Note: If DL_PG_PASSWORD is specified here, Postgres will also use the same Secret
+    # unless postgres.passwordFromSecret is set.
   ingress:
     enabled: true
     # ingressClassName: "nginx"
@@ -25,12 +34,21 @@ app:
     #   secretName: domain-locker.localhost.com-tls
 
 postgres:
+  enabled: true
   image: postgres:15-alpine
   port: 5432
   env:
     POSTGRES_DB: domain_locker
     POSTGRES_USER: postgres
     POSTGRES_PASSWORD: changeme2420
+    TZ: UTC
+  # Optionally source the POSTGRES_PASSWORD from a Kubernetes Secret.
+  # When set, this will override env.POSTGRES_PASSWORD.
+  # passwordFromSecret:
+  #   name: my-postgres-secret
+  #   key: postgres_password
+  # If passwordFromSecret is not set, this chart will fall back to app.secretEnv.DL_PG_PASSWORD
+  # when present, so app and Postgres share the same secret by default.
   persistence:
     enabled: true
     size: 1Gi

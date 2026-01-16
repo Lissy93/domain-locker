@@ -275,7 +275,9 @@ The db used will depend on which env vars are set.
 
 - **Supabase**: Follow the Supabase [self-hosting docs](https://supabase.com/docs/guides/self-hosting), then use [dl-sb-iac](https://github.com/lissy93/dl-sb-iac) to import the schema and configure auth, edge functions, emails, etc.
 	- Then set: `SUPABASE_URL` and `SUPABASE_ANON_KEY` environmental variables
-- **Postgres**: Deploy a Postgres instance, then use our [`setup-postgres.sh`](https://github.com/Lissy93/domain-locker/blob/main/db/setup-postgres.sh) script to init your DB with our[`schema.sql`](https://github.com/Lissy93/domain-locker/blob/main/db/schema.sql)
+- **Postgres**: Deploy a Postgres instance, then apply the [`schema.sql`](https://github.com/Lissy93/domain-locker/blob/main/db/schema.sql)
+	- If DB already exists: `psql -h $DL_PG_HOST -U $DL_PG_USER -d $DL_PG_NAME -f ./db/schema.sql`
+	- If creating from scratch: Use [`setup-postgres.sh`](https://github.com/Lissy93/domain-locker/blob/main/db/setup-postgres.sh) (requires superuser access)
 	- Then set: `DL_PG_HOST`, `DL_PG_PORT`, `DL_PG_USER`, `DL_PG_PASSWORD`, `DL_PG_NAME`
 
 ```mermaid
