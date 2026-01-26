@@ -24,7 +24,7 @@
 
   <!-- User already authenticated -->
   <p-card *ngIf="isAuthenticated && !requireMFA" class="max-w-[500px] w-[calc(100%-0.5rem)]">
-    <ng-template pTemplate="title">Your Signed In</ng-template>
+    <ng-template pTemplate="title">You're Signed In</ng-template>
     <div class="flex gap-2 flex-wrap md:flex-nowrap">
       <a class="w-full" routerLink="/domains">
         <p-button severity="primary" label="Go to Account" class="w-full" styleClass="w-full" icon="pi pi-user"></p-button>
