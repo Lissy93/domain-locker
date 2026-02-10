@@ -11,6 +11,7 @@ import { Router, RouterModule } from '@angular/router';
 import { DomainFaviconComponent } from '~/app/components/misc/favicon.component';
 import { ApexOptions } from 'ng-apexcharts';
 import { getUptimeColor, getResponseCodeColor, getPerformanceColor } from './monitor-helpers';
+import { EnvService } from '~/app/services/environment.service';
 
 interface DomainSummary {
   domainId: string;
@@ -51,10 +52,11 @@ interface UptimeData {
 })
 export default class MonitorPage {
   monitorEnabled$ = this.featureService.isFeatureEnabled('domainMonitor');
-  
+
   domains: DbDomain[] = [];
   domainSummaries: DomainSummary[] = [];
   loading = false;
+  isSelfHosted = false;
 
   getUptimeColor = getUptimeColor;
   getResponseCodeColor = getResponseCodeColor;
@@ -81,10 +83,12 @@ export default class MonitorPage {
     private featureService: FeatureService,
     private databaseService: DatabaseService,
     private errorHandlerService: ErrorHandlerService,
+    private envService: EnvService,
   ) {}
 
-  
+
   ngOnInit(): void {
+    this.isSelfHosted = this.envService.getEnvironmentType() === 'selfHosted';
     this.loadDomains();
   }
 

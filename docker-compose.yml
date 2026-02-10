@@ -64,6 +64,7 @@ services:
         apk add --no-cache curl &&
         echo '0 3 * * * /usr/bin/curl -s -X POST http://app:3000/api/domain-updater' > /etc/crontabs/root &&
         echo '0 4 * * * /usr/bin/curl -s -X POST http://app:3000/api/expiration-reminders' >> /etc/crontabs/root &&
+        echo '*/15 * * * * /usr/bin/curl -s -X POST http://app:3000/api/domain-monitor' >> /etc/crontabs/root &&
         crond -f -L /dev/stdout
       "
 
