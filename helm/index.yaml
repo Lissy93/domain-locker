@@ -102,10 +102,10 @@ entries:
           url: https://storage.googleapis.com/as93-screenshots/domain-locker/settings_db.png
       artifacthub.io/security-policy: https://domain-locker.com/about/legal/security
     apiVersion: v2
-    appVersion: 0.1.2
-    created: "2025-11-14T22:08:21.899184938Z"
+    appVersion: 0.1.3
+    created: "2026-02-11T10:03:33.14706938Z"
     description: A Helm chart for deploying Domain Locker
-    digest: 10a0f09008a7dd7b3e154c07e3db627aaa3c69e77111b01676c8e0ec5d131e48
+    digest: 65afa8d9b29740793f6d6c96f85d1edcea866b3f065bad48f803c6ece4029b11
     home: https://domain-locker.com
     icon: https://github.com/Lissy93/domain-locker/blob/main/src/assets/logo.png?raw=true
     maintainers:
@@ -117,6 +117,6 @@ entries:
     - https://github.com/Lissy93/domain-locker
     type: application
     urls:
-    - https://lissy93.github.io/domain-locker/helm/domain-locker-0.1.2.tgz
-    version: 0.1.2
-generated: "2025-11-14T22:08:21.8985388Z"
+    - https://lissy93.github.io/domain-locker/helm/domain-locker-0.1.3.tgz
+    version: 0.1.3
+generated: "2026-02-11T10:03:33.146364718Z"
