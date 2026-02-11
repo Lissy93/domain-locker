@@ -33,6 +33,7 @@ You may also need a domain name and a valid SSL certificate for that domain.
 
 - [With Docker](/about/self-hosting/deploying-with-docker-compose)
 - [With Kubernetes](/about/self-hosting/deploying-with-kubernetes-helm-charts)
+- [On Proxmox VE](/about/self-hosting/proxmox-community-script)
 - [From Umbrel](/about/self-hosting/umbrel-os-app)
 - [From Source](/about/self-hosting/deploying-from-source)
 
@@ -60,15 +61,19 @@ curl -fsSL https://install.domain-locker.com | bash
 ---
 
 ## See Also
-
+- [Auto-Fetching Domain Info](/about/self-hosting/domain-fetching-config)
+- [Configuring Expiry Notifications](/about/self-hosting/notifications-self-hosted)
 - [Docker Best Practices](/about/developing/general-docker-advice)
 - [Architecture Overview](/about/self-hosting/understanding-the-architecture)
 - [Conditions for Public Instances](/about/self-hosting/guidelines-for-public-instance)
 
 
-
-
 <style>
+
+a:visited {
+  color: var(--primary-400);
+}
+
   .warning {
     background-color: var(--yellow-200);
     color: var(--yellow-800);

@@ -1,4 +1,3 @@
-
 services:
   postgres:
     image: postgres:15-alpine
@@ -46,10 +45,10 @@ services:
     networks:
       - domain_locker_network
     labels:
-    - "traefik.enable=true"
-    - "traefik.http.routers.domainlocker.rule=Host(`domain-locker.local`)"
-    - "traefik.http.routers.domainlocker.entrypoints=http"
-    - "traefik.http.services.domainlocker.loadbalancer.server.port=3000"
+      - "traefik.enable=true"
+      - "traefik.http.routers.domainlocker.rule=Host(`domain-locker.local`)"
+      - "traefik.http.routers.domainlocker.entrypoints=http"
+      - "traefik.http.services.domainlocker.loadbalancer.server.port=3000"
 
   updater:
     image: alpine:3.20
@@ -64,6 +63,8 @@ services:
         apk add --no-cache curl &&
         echo '0 3 * * * /usr/bin/curl -s -X POST http://app:3000/api/domain-updater' > /etc/crontabs/root &&
         echo '0 4 * * * /usr/bin/curl -s -X POST http://app:3000/api/expiration-reminders' >> /etc/crontabs/root &&
+        echo '*/15 * * * * /usr/bin/curl -s -X POST http://app:3000/api/domain-monitor' >> /etc/crontabs/root &&
+        echo '0 2 * * 0 /usr/bin/curl -s -X POST http://app:3000/api/cleanup-monitor-data' >> /etc/crontabs/root &&
         crond -f -L /dev/stdout
       "
 

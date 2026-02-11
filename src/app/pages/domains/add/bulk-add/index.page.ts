@@ -200,16 +200,18 @@ export default class BulkAddComponent implements OnInit, OnDestroy {
    */
   parseDomainList(rawInput: string): string[] {
     const lines = rawInput.split(/[\s,]+/);
-    // Example regex: supports e.g. "example.com" or "www.example.com"
     const domainRegex =
-      /^(?:https?:\/\/)?(?:www\.)?([a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*\.[a-zA-Z]{2,})(?:\/.*)?$/;
+      /^(?:https?:\/\/)?(?:www\.)?([a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?(?:\.[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)*)(?:\/.*)?$/i;
 
     const result: string[] = [];
     for (const line of lines) {
       const match = line.trim().match(domainRegex);
       if (match && match[1]) {
         const domain = match[1].toLowerCase();
-        result.push(domain);
+        // Ensure it has at least one dot (is a valid domain)
+        if (domain.includes('.')) {
+          result.push(domain);
+        }
       }
     }
     return result;
