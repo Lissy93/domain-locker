@@ -11,6 +11,7 @@ import { Router, RouterModule } from '@angular/router';
 import { DomainFaviconComponent } from '~/app/components/misc/favicon.component';
 import { ApexOptions } from 'ng-apexcharts';
 import { getUptimeColor, getResponseCodeColor, getPerformanceColor } from './monitor-helpers';
+import { EnvService } from '~/app/services/environment.service';
 
 interface DomainSummary {
   domainId: string;
@@ -51,10 +52,11 @@ interface UptimeData {
 })
 export default class MonitorPage {
   monitorEnabled$ = this.featureService.isFeatureEnabled('domainMonitor');
-  
+
   domains: DbDomain[] = [];
   domainSummaries: DomainSummary[] = [];
   loading = false;
+  isSelfHosted = false;
 
   getUptimeColor = getUptimeColor;
   getResponseCodeColor = getResponseCodeColor;
@@ -81,10 +83,12 @@ export default class MonitorPage {
     private featureService: FeatureService,
     private databaseService: DatabaseService,
     private errorHandlerService: ErrorHandlerService,
+    private envService: EnvService,
   ) {}
 
-  
+
   ngOnInit(): void {
+    this.isSelfHosted = this.envService.getEnvironmentType() === 'selfHosted';
     this.loadDomains();
   }
 
@@ -128,21 +132,21 @@ export default class MonitorPage {
             this.getResponseCodeColor(item.code)
           );
   
-          const uptimePercentage =
-            (uptimeData.filter((entry: UptimeData) => entry.is_up).length /
-              uptimeData.length) *
-            100;
-            const avgResponseTime = uptimeData.reduce((sum, entry) =>
-              sum + Number(entry.response_time_ms || 0), 0
-            ) / uptimeData.length;
-            
-            const avgDnsTime = uptimeData.reduce((sum, entry) =>
-              sum + Number(entry.dns_lookup_time_ms || 0), 0
-            ) / uptimeData.length;
-            
-            const avgSslTime = uptimeData.reduce((sum, entry) =>
-              sum + Number(entry.ssl_handshake_time_ms || 0), 0
-            ) / uptimeData.length;
+          const uptimePercentage = uptimeData.length > 0
+            ? (uptimeData.filter((entry: UptimeData) => entry.is_up).length / uptimeData.length) * 100
+            : 0;
+
+          const avgResponseTime = uptimeData.length > 0
+            ? uptimeData.reduce((sum, entry) => sum + Number(entry.response_time_ms || 0), 0) / uptimeData.length
+            : 0;
+
+          const avgDnsTime = uptimeData.length > 0
+            ? uptimeData.reduce((sum, entry) => sum + Number(entry.dns_lookup_time_ms || 0), 0) / uptimeData.length
+            : 0;
+
+          const avgSslTime = uptimeData.length > 0
+            ? uptimeData.reduce((sum, entry) => sum + Number(entry.ssl_handshake_time_ms || 0), 0) / uptimeData.length
+            : 0;
             
   
           this.domainSummaries.push({
