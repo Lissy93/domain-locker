@@ -122,6 +122,7 @@ const normalizeWhoisJson = (raw: any): WhoisResult => {
         raw.updated ||
         raw.domainLastUpdated ||
         raw.lastModified ||
+        raw.modified ||
         (raw.dates && (raw.dates.updated_date || raw.dates.updated))
       ),
       expiry_date: parseDate(
@@ -151,7 +152,7 @@ const normalizeWhoisJson = (raw: any): WhoisResult => {
       email: raw.abuseContactEmail || raw.registrarAbuseContactEmail || null,
       phone: raw.abuseContactPhone || raw.registrarAbuseContactPhone || null,
     },
-    status: parseStatusArray(raw.domainStatus),
+    status: parseStatusArray(raw.domainStatus || raw.status),
     dnssec: raw.dnssec || null,
   };
 }

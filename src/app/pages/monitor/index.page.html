@@ -9,8 +9,36 @@
     <p>Loading domains...</p>
   </div>
 
-  <div *ngIf="!loading && domainSummaries.length === 0">
-    <p>No domains available to monitor.</p>
+  <div *ngIf="!loading && domains.length > 0 && domainSummaries.length === 0">
+    <p-messages severity="info">
+      <ng-template pTemplate>
+        <div class="flex flex-col gap-2">
+          <p class="m-0 font-semibold">No monitoring data available yet</p>
+          <p class="m-0" *ngIf="isSelfHosted">
+            Domain monitoring is now enabled for your self-hosted instance, but no data has been collected yet.
+            The monitoring cron job runs every 15 minutes to check your domains' uptime and performance.
+          </p>
+          <p class="m-0" *ngIf="isSelfHosted">
+            If you recently updated your deployment, please ensure the <code>domain-locker-updater</code> container is running.
+            You can also manually trigger monitoring by running:
+          </p>
+          <code *ngIf="isSelfHosted" class="bg-surface-100 dark:bg-surface-800 p-2 rounded">
+            curl -X POST http://localhost:3000/api/domain-monitor
+          </code>
+          <p class="m-0 mt-2" *ngIf="!isSelfHosted">
+            Monitoring data will appear here once your domains have been checked. This typically happens within a few minutes.
+          </p>
+        </div>
+      </ng-template>
+    </p-messages>
+  </div>
+
+  <div *ngIf="!loading && domains.length === 0">
+    <p-messages severity="warn">
+      <ng-template pTemplate>
+        <p class="m-0">No domains available to monitor. Please add some domains first.</p>
+      </ng-template>
+    </p-messages>
   </div>
 
   <ul class="list-none p-0 m-0 flex flex-col gap-3" *ngIf="!loading && domainSummaries.length > 0">
