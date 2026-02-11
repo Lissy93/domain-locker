@@ -140,7 +140,7 @@ export default class DomainDetailsPage implements OnInit {
       notification_preferences: [],
       sub_domains: [],
       domain_links: [],
-      expiry_date: domain.dates?.expiry_date ? new Date(domain.dates.expiry_date) : new Date(),
+      expiry_date: domain.dates?.expiry_date ? new Date(domain.dates.expiry_date) : undefined,
       registration_date: domain.dates?.creation_date ? new Date(domain.dates.creation_date) : undefined,
       updated_date: domain.dates?.updated_date ? new Date(domain.dates.updated_date) : undefined,
     };

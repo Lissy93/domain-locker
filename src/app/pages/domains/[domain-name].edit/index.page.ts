@@ -80,7 +80,7 @@ export default class EditDomainComponent implements OnInit {
   populateForm() {
     this.domainForm.patchValue({
       registrar: this.domain!.registrar?.name,
-      expiryDate: new Date(this.domain!.expiry_date),
+      expiryDate: this.domain!.expiry_date ? new Date(this.domain!.expiry_date) : null,
       tags: this.domain!.tags,
       notes: this.domain!.notes,
       subdomains: this.domain!.sub_domains?.map((sd: { name: string }) => sd.name) || [],

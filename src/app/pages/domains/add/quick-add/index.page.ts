@@ -137,8 +137,8 @@ export default class QuickAddDomain {
     }
   }
 
-  private makeDateOrUndefined(date: string | undefined): Date {
-    return date ? new Date(date) : new Date();
+  private makeDateOrUndefined(date: string | undefined): Date | undefined {
+    return date ? new Date(date) : undefined;
   }
 
 

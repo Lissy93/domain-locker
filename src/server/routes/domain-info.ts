@@ -105,6 +105,13 @@ export default defineEventHandler(async (event) => {
     return { error: 'Domain name is required' };
   }
 
+  // Validate domain format (alphanumeric labels separated by dots, no special chars)
+  const domainRegex = /^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?$/i;
+  if (!domainRegex.test(domain)) {
+    log.warn(`Invalid domain format: ${domain}`);
+    return { error: 'Invalid domain format' };
+  }
+
   const errors: string[] = []; // Will hold any errors encountered during the process
   const dunno = null; // Fallback for unknown values
 
@@ -115,6 +122,19 @@ export default defineEventHandler(async (event) => {
     if (!whoisData) {
       log.warn(`WHOIS data not found for ${domain}`);
       return { error: 'Failed to fetch WHOIS data' };
+    }
+
+    // Validate expiry date - if it's today's date, it's likely a parsing bug
+    if (whoisData.dates?.expiry_date) {
+      const expiryDate = new Date(whoisData.dates.expiry_date);
+      const today = new Date();
+      const diffDays = Math.abs((expiryDate.getTime() - today.getTime()) / (1000 * 3600 * 24));
+      if (diffDays < 1) {
+        log.warn(`Expiry date is today for ${domain} - likely parsing bug, removing it`);
+        whoisData.dates.expiry_date = undefined;
+      }
+    } else {
+      log.warn(`No expiry date found for ${domain}`);
     }
 
     // Then, gather additional DNS and SSL information
@@ -128,7 +148,7 @@ export default defineEventHandler(async (event) => {
     ]);
     const host = ipv4?.[0]
       ? await safeExecute(() => getHostData(ipv4[0]), 'Host info fetch failed', errors)
-      : undefined; // we need at least one IP to get host info
+      : null; // we need at least one IP to get host info
 
     // Put everything together into a DomainInfo object for response
     const domainInfo: DomainInfo = {
@@ -139,7 +159,7 @@ export default defineEventHandler(async (event) => {
       registrar: whoisData.registrar || {},
       whois: whoisData.whois || {},
       abuse: whoisData.abuse || {},
-      host,
+      host: host || null,
       dns: {
         dnssec: whoisData.dnssec,
         nameServers: ns || [],
