@@ -289,6 +289,8 @@ CREATE TABLE IF NOT EXISTS "public"."uptime" (
 );
 
 CREATE INDEX IF NOT EXISTS idx_uptime_domain_id ON "public"."uptime" (domain_id);
+CREATE INDEX IF NOT EXISTS idx_uptime_domain_checked ON "public"."uptime" (domain_id, checked_at DESC);
+CREATE INDEX IF NOT EXISTS idx_uptime_checked_at ON "public"."uptime" (checked_at);
 
 -- IP addresses table
 CREATE TABLE IF NOT EXISTS "public"."ip_addresses" (
