@@ -66,7 +66,7 @@ export interface DbDomain extends Timestamps {
   id: string;
   user_id: string;
   domain_name: string;
-  expiry_date: Date;
+  expiry_date?: Date;
   registration_date?: Date;
   updated_date?: Date;
   notes: string;

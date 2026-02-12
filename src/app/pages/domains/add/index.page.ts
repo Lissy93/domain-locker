@@ -354,7 +354,7 @@ export default class AddDomainComponent implements OnInit, OnDestroy {
           whois: this.domainInfo?.whois,
           dns: this.domainInfo?.dns,
           ssl: this.domainInfo?.ssl,
-          host: this.domainInfo?.host,
+          host: this.domainInfo?.host || undefined,
           registrar: this.domainInfo?.registrar as Registrar,
           subdomains,
         };

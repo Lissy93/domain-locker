@@ -137,8 +137,8 @@ export default class QuickAddDomain {
     }
   }
 
-  private makeDateOrUndefined(date: string | undefined): Date {
-    return date ? new Date(date) : new Date();
+  private makeDateOrUndefined(date: string | undefined): Date | undefined {
+    return date ? new Date(date) : undefined;
   }
 
 
@@ -219,18 +219,18 @@ export default class QuickAddDomain {
         issuer_country: domainInfo.ssl?.issuer_country || 'Unknown',
         fingerprint: domainInfo.ssl?.fingerprint || 'Unknown',
       },
-      host: {
-        country: domainInfo.host?.country || 'Unknown',
-        city: domainInfo.host?.city || 'Unknown',
-        region: domainInfo.host?.region || 'Unknown',
-        isp: domainInfo.host?.isp || 'Unknown',
-        org: domainInfo.host?.org || 'Unknown',
-        query: domainInfo.host?.query || 'Unknown',
-        lat: domainInfo.host?.lat || 0,
-        lon: domainInfo.host?.lon || 0,
-        timezone: domainInfo.host?.timezone || 'Unknown',
-        asNumber: domainInfo.host?.as || 'Unknown',
-      },
+      host: domainInfo.host?.query ? {
+        country: domainInfo.host.country || 'Unknown',
+        city: domainInfo.host.city || 'Unknown',
+        region: domainInfo.host.region || 'Unknown',
+        isp: domainInfo.host.isp || 'Unknown',
+        org: domainInfo.host.org || 'Unknown',
+        query: domainInfo.host.query,
+        lat: domainInfo.host.lat || 0,
+        lon: domainInfo.host.lon || 0,
+        timezone: domainInfo.host.timezone || 'Unknown',
+        asNumber: domainInfo.host.as || 'Unknown',
+      } : undefined,
       subdomains: [],
       notifications: this.defaultNotifications,
       tags: [],
