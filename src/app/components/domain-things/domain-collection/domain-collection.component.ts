@@ -102,8 +102,8 @@ export class DomainCollectionComponent implements OnInit {
         break;
       case 'expiryDate':
         this.filteredDomains.sort((a, b) => {
-          const aTime = a.expiry_date ? new Date(a.expiry_date).getTime() : 0;
-          const bTime = b.expiry_date ? new Date(b.expiry_date).getTime() : 0;
+          const aTime = a.expiry_date ? new Date(a.expiry_date).getTime() : Number.MAX_SAFE_INTEGER;
+          const bTime = b.expiry_date ? new Date(b.expiry_date).getTime() : Number.MAX_SAFE_INTEGER;
           return aTime - bTime;
         });
         break;

@@ -118,23 +118,19 @@ export default defineEventHandler(async (event) => {
   try {
     // Initiate a whois lookup
     log.info(`Resolving domain info for: ${domain}`);
-    const whoisData = await getWhoisInfo(domain) as any;
+    const whoisData = await getWhoisInfo(domain);
     if (!whoisData) {
       log.warn(`WHOIS data not found for ${domain}`);
       return { error: 'Failed to fetch WHOIS data' };
     }
 
-    // Validate expiry date - if it's today's date, it's likely a parsing bug
+    // Validate expiry date - if it's exactly today's date, it's likely a parsing bug
     if (whoisData.dates?.expiry_date) {
-      const expiryDate = new Date(whoisData.dates.expiry_date);
-      const today = new Date();
-      const diffDays = Math.abs((expiryDate.getTime() - today.getTime()) / (1000 * 3600 * 24));
-      if (diffDays < 1) {
-        log.warn(`Expiry date is today for ${domain} - likely parsing bug, removing it`);
+      const todayStr = new Date().toISOString().split('T')[0];
+      if (whoisData.dates.expiry_date === todayStr) {
+        log.warn(`Expiry date is exactly today for ${domain} - likely parsing bug, removing it`);
         whoisData.dates.expiry_date = undefined;
       }
-    } else {
-      log.warn(`No expiry date found for ${domain}`);
     }
 
     // Then, gather additional DNS and SSL information

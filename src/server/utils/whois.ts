@@ -25,10 +25,8 @@ const parseDate = (date: string | null | undefined): string | undefined => {
   const match = cleaned.match(/^(\d{1,2})[\/\.\-](\d{1,2})[\/\.\-](\d{4})/);
   if (match) {
     const [, a, b, year] = match.map(Number);
-    // If first number > 12, it's definitely DD/MM/YYYY
-    const isDateFirst = a > 12;
-    const day = isDateFirst ? a : (b > 12 ? b : b); // Assume DD/MM for ambiguous
-    const month = isDateFirst ? b : (b > 12 ? a : a);
+    const day = a > 12 ? a : (b > 12 ? b : a);
+    const month = a > 12 ? b : (b > 12 ? a : b);
     const parsed = new Date(year, month - 1, day);
     if (!isNaN(parsed.getTime())) {
       return parsed.toISOString().split('T')[0];
@@ -69,7 +67,7 @@ export const getWhoisInfo = async (domain: string): Promise<WhoisResult | null> 
       if (xml) return xml;
     }
 
-    return {} as WhoisResult;
+    return null;
   };
 
   try {

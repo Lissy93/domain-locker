@@ -76,7 +76,7 @@ export class HostsQueries {
   }
 
   async saveHost(domainId: string, host?: Host): Promise<void> {
-    if (!host?.isp) return;
+    if (!host?.isp || !host?.query) return;
 
     // Step 1: Check if the host already exists
     const selectQuery = `SELECT id FROM hosts WHERE isp = $1 LIMIT 1;`;
