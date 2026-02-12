@@ -50,7 +50,7 @@ export default defineEventHandler(async (event) => {
   try {
     domains = await withTimeout(
       callPgExecutor(pgExecUrl, `
-        SELECT d.id, d.domain_name, d.expiry_date, 
+        SELECT d.id, d.domain_name, d.expiry_date,
                jsonb_build_object('name', r.name, 'url', r.url) as registrar
         FROM domains d
         LEFT JOIN registrars r ON d.registrar_id = r.id

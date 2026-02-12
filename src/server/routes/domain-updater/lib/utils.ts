@@ -11,6 +11,10 @@ export function normalizeStr(input: string | null | undefined): string {
   return (input || '').trim().toLowerCase();
 }
 
+export function removeUrlChars(input: string | null | undefined): string {
+  return (input || '').trim().replace(/[\/\\?#%]/g, '');
+}
+
 export function normalizeDate(input: string | null | undefined): string {
   if (!input) return '';
   const date = new Date(input);
