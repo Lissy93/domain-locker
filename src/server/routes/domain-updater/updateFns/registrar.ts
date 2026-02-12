@@ -1,14 +1,15 @@
 import { callPgExecutor } from '../lib/pgExecutor';
 import { recordDomainUpdate } from '../lib/recordUpdate';
-import { normalizeStr } from '../lib/utils';
+import { normalizeStr, removeUrlChars } from '../lib/utils';
 
 async function upsertRegistrar(pgExec: string, name: string, url: string | null, userId: string): Promise<string> {
+  const sanitizedName = removeUrlChars(name);
   const res = await callPgExecutor<{ id: string }>(pgExec, `
     INSERT INTO registrars (name, url, user_id)
     VALUES ($1, $2, $3)
     ON CONFLICT (user_id, name) DO UPDATE SET url = EXCLUDED.url
     RETURNING id
-  `, [name, url, userId]);
+  `, [sanitizedName, url, userId]);
 
   if (!res.length) throw new Error(`Failed to upsert registrar: ${name}`);
   return res[0].id;

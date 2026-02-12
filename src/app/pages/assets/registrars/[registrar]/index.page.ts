@@ -45,7 +45,7 @@ export default class RegistrarDomainsPageComponent implements OnInit {
 
   ngOnInit() {
     this.route.params.subscribe(params => {
-      this.registrarName = params['registrar'];
+      this.registrarName = decodeURIComponent(params['registrar']);
       this.loadDomains();
     });
   }

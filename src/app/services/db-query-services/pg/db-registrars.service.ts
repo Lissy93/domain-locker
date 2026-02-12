@@ -21,16 +21,17 @@ export class RegistrarQueries {
 
   // Get or insert a registrar by name
   async getOrInsertRegistrarId(registrarName: string): Promise<string> {
+    const sanitizedName = (registrarName || '').trim().replace(/[\/\\?#%]/g, '');
     const selectQuery = 'SELECT id FROM registrars WHERE name = $1 LIMIT 1';
     const insertQuery = 'INSERT INTO registrars (name) VALUES ($1) RETURNING id';
 
     try {
-      const selectResponse = await this.pgApiUtil.postToPgExecutor<{ id: string }>(selectQuery, [registrarName]).toPromise();
+      const selectResponse = await this.pgApiUtil.postToPgExecutor<{ id: string }>(selectQuery, [sanitizedName]).toPromise();
       if (selectResponse && selectResponse.data.length > 0) {
         return selectResponse.data[0].id;
       }
 
-      const insertResponse = await this.pgApiUtil.postToPgExecutor<{ id: string }>(insertQuery, [registrarName]).toPromise();
+      const insertResponse = await this.pgApiUtil.postToPgExecutor<{ id: string }>(insertQuery, [sanitizedName]).toPromise();
       if (insertResponse && insertResponse.data.length > 0) {
         return insertResponse.data[0].id;
       }
