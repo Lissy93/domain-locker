@@ -101,6 +101,11 @@ for VAR in $REQUIRED_VARS; do
   fi
 done
 
+# Warn if using default insecure password
+if [ "$DL_PG_PASSWORD" = "changeme2420" ]; then
+  echo "${WARN} Using default password! Set DL_PG_PASSWORD in .env for production${RESET}"
+fi
+
 # Success message if everything looks good
 if [ "$WARNINGS_FOUND" -eq 0 ]; then
   echo "${SUCCESS} All environment checks have passed${RESET}"

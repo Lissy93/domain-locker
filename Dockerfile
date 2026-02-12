@@ -27,8 +27,8 @@ RUN npm run build
 # Stage 2 - run: Alpine-based runtime to serve the app
 FROM node:20.12.0-alpine AS runner
 
-# Install PostgreSQL client to run pg_isready and psql
-RUN apk add --no-cache postgresql-client whois
+# Install PostgreSQL client to run pg_isready and psql, plus wget for healthchecks
+RUN apk add --no-cache postgresql-client whois wget
 
 # Create non-root app user
 RUN addgroup -S appgroup && adduser -S appuser -G appgroup
