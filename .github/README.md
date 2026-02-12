@@ -143,7 +143,9 @@ Use the one-liner abover, or use the [`docker-compose.yml`](https://github.com/L
   - Mount a volume to `/var/lib/postgresql/data` to persist your Postgres data
 - **Crons**
   - `/api/domain-updater` - Execute this daily, to keep domain data up-to-date and trigger notifications
-  - `/api/uptime-monitor` - Execute this every N minutes, to monitor website uptime and performance
+  - `/api/domain-monitor` - Execute this every 15 minutes, to monitor website uptime and performance
+  - `/api/cleanup-monitor-data` - Execute this weekly, to aggregate old monitoring data
+
 - **Example**:
   - Putting it all together, you can use our [`docker-compose.yml`](https://github.com/Lissy93/domain-locker/blob/main/docker-compose.yml) file.
   - For more details, view the [Self-Hosting Docs](https://domain-locker.com/about/self-hosting)
