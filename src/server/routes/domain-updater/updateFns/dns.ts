@@ -8,17 +8,19 @@ export async function updateDNS(
   freshInfo: any,
   changes: string[]
 ): Promise<void> {
-  const domainId = domainRow.id;
   const dns = freshInfo?.dns;
   if (!dns) return;
 
+  const domainId = domainRow.id;
   const types = ['TXT', 'NS', 'MX'] as const;
 
   for (const type of types) {
     const freshRecords = Array.isArray(dns[type.toLowerCase()]) ? dns[type.toLowerCase()] : [];
-    const freshSet = new Set(
-      freshRecords.map((r: string) => normalizeStr(r)).filter(Boolean) as string
-    );
+
+    // Skip if no fresh data for this type - don't assume records were deleted
+    if (freshRecords.length === 0) continue;
+
+    const freshSet = new Set(freshRecords.map((r: string) => normalizeStr(r)).filter(Boolean));
 
     const existing = await callPgExecutor<{ id: string; record_value: string }>(
       pgExec,
@@ -26,9 +28,7 @@ export async function updateDNS(
       [domainId, type]
     );
 
-    const existingSet = new Set(
-      existing.map((row) => normalizeStr(row.record_value)).filter(Boolean)
-    );
+    const existingSet = new Set(existing.map((row) => normalizeStr(row.record_value)).filter(Boolean));
 
     // Add new records
     for (const record of freshSet) {
@@ -42,14 +42,11 @@ export async function updateDNS(
       }
     }
 
-    // Remove stale records
+    // Remove stale records only if we received fresh data
     for (const row of existing) {
       const normalized = normalizeStr(row.record_value);
       if (!freshSet.has(normalized)) {
-        await callPgExecutor(pgExec,
-          `DELETE FROM dns_records WHERE id = $1`,
-          [row.id]
-        );
+        await callPgExecutor(pgExec, `DELETE FROM dns_records WHERE id = $1`, [row.id]);
         await recordDomainUpdate(pgExec, domainId, `DNS ${type} record removed`, `dns_${type.toLowerCase()}_removed`, row.record_value, '');
         changes.push(`DNS ${type}-`);
       }
@@ -58,10 +55,7 @@ export async function updateDNS(
 
   // Handle DNSSEC flag
   if (typeof dns.dnssec === 'boolean' && domainRow.dnssec_enabled !== dns.dnssec) {
-    await callPgExecutor(pgExec,
-      `UPDATE domains SET dnssec_enabled = $1 WHERE id = $2`,
-      [dns.dnssec, domainId]
-    );
+    await callPgExecutor(pgExec, `UPDATE domains SET dnssec_enabled = $1 WHERE id = $2`, [dns.dnssec, domainId]);
     await recordDomainUpdate(pgExec, domainId, `DNSSEC changed`, 'dnssec', String(domainRow.dnssec_enabled), String(dns.dnssec));
     changes.push('DNSSEC toggled');
   }

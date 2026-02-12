@@ -22,8 +22,8 @@ export async function updateRegistrar(
   freshInfo: any,
   changes: string[]
 ): Promise<void> {
-  const oldName = normalizeStr(domainRow.registrar?.name);
-  const newName = normalizeStr(freshInfo?.registrar?.name);
+  const oldName = normalizeStr(removeUrlChars(domainRow.registrar?.name));
+  const newName = normalizeStr(removeUrlChars(freshInfo?.registrar?.name));
 
   const userId = domainRow.user_id || 'a0000000-aaaa-42a0-a0a0-00a000000a69';
 
