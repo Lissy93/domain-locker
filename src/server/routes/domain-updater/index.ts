@@ -3,6 +3,7 @@ import { getEnvVar, withTimeout } from './lib/utils';
 import { callPgExecutor } from './lib/pgExecutor';
 import { fetchDomainInfo } from './lib/fetchInfo';
 import { compareAndUpdateDomain } from './lib/compare';
+import { getBaseUrl } from '../../utils/base-url';
 
 const DOMAIN_FETCH_TIMEOUT = 10000; // ms
 const DOMAIN_UPDATE_TIMEOUT = 7000; // ms
@@ -40,7 +41,7 @@ export default defineEventHandler(async (event) => {
     return { error: 'Only available in self-hosted mode.' };
   }
 
-  const baseUrl = getEnvVar('DL_BASE_URL', 'http://localhost:3000');
+  const baseUrl = getBaseUrl(event);
   const pgExecUrl = `${baseUrl}/api/pg-executer`;
   const domainInfoUrl = `${baseUrl}/api/domain-info`;
 
