@@ -92,7 +92,7 @@ export default class AddDomainComponent implements OnInit, OnDestroy {
     this.domainForm = this.fb.group({
       domainName: [this.initialDomain, [
         Validators.required,
-        Validators.pattern(/^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9](\.[a-zA-Z]{2,})+$/),
+        Validators.pattern(/^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?$/i),
         this.domainExistsValidator()
       ]],
       registrar: ['', Validators.required],

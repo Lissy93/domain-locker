@@ -78,6 +78,7 @@ export interface DocAttributes {
     a:visited {
       color: var(--primary-color);
     }
+    pre { overflow-x: scroll !important; }
     img { border-radius: 4px; display: flex; margin: 0 auto; max-width: 100%; }
     .sticky-nav { transition: top 0.3s ease; }
     table {

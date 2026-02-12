@@ -76,7 +76,7 @@ export const features: FeatureDefinitions = {
   },
   domainMonitor: {
     default: true,
-    selfHosted: false,
+    selfHosted: true,
     managed: {
       free: false,
       hobby: false,
