@@ -3,7 +3,7 @@ import DatabaseService from '~/app/services/database.service';
 import { MessageService } from 'primeng/api';
 import { PrimeNgModule } from '~/app/prime-ng.module';
 import { isPlatformBrowser } from '@angular/common';
-import { localeToCurrency } from '~/app/constants/currencies';
+import { CurrencyService } from '~/app/services/currency.service';
 
 import { TableModule } from 'primeng/table';
 import { CommonModule } from '@angular/common';
@@ -20,7 +20,7 @@ export default class ValuationPageComponent implements OnInit {
   domains: any[] = [];
   loading = true;
   public currencySymbol = '$';
-  private localeToCurrency = localeToCurrency;
+  public currencyCode = 'USD';
 
   public totalRenewalCost: number = 0;
   public portfolioWorth: number = 0;
@@ -31,25 +31,14 @@ export default class ValuationPageComponent implements OnInit {
   constructor(
     private databaseService: DatabaseService,
     private messageService: MessageService,
+    public currencyService: CurrencyService,
     @Inject(PLATFORM_ID) private platformId: any,
   ) {}
 
   ngOnInit() {
+    this.currencySymbol = this.currencyService.getCurrencySymbol();
+    this.currencyCode = this.currencyService.getCurrencyCode();
     this.loadDomains();
-    this.setCurrencySymbol();
-  }
-
-  private setCurrencySymbol() {
-    if (isPlatformBrowser(this.platformId)) {
-      const userLocale = navigator.language || 'en-US';
-      const currencyCode = this.localeToCurrency[userLocale] || 'USD';
-      const currencyFormatter = new Intl.NumberFormat(userLocale, {
-        style: 'currency',
-        currency: currencyCode,
-        currencyDisplay: 'symbol',
-      });
-      this.currencySymbol = currencyFormatter.formatToParts(1).find(part => part.type === 'currency')?.value || '';
-    }
   }
 
   // Fetch all domains, including those without value records

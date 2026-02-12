@@ -2,7 +2,7 @@
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
   
   <ng-template ngFor let-registrar [ngForOf]="registrars">
-    <div *ngIf="registrar.domainCount > 0" 
+    <div *ngIf="registrar.domainCount > 0"
          [attr.data-testid]="'registrar-card-' + registrar.name"
          [attr.data-domain-count]="registrar.domainCount"
          [attr.data-registrar-name]="registrar.name"

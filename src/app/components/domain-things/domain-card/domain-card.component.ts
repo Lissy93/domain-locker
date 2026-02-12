@@ -13,6 +13,7 @@ import { GlobalMessageService } from '~/app/services/messaging.service';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { ErrorHandlerService } from '~/app/services/error-handler.service';
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
+import { CurrencyService } from '~/app/services/currency.service';
 
 @Component({
   standalone: true,
@@ -50,6 +51,7 @@ export class DomainCardComponent implements OnInit {
     private elRef: ElementRef,
     private errorHandler: ErrorHandlerService,
     private translate: TranslateService,
+    public currencyService: CurrencyService,
   ) {}
 
   isVisible(field: string): boolean {
