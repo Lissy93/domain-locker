@@ -55,7 +55,8 @@ export class DomainPieChartsComponent implements OnInit, AfterViewInit {
   constructor(
     private databaseService: DatabaseService,
     private errorHandler: ErrorHandlerService,
-    @Inject(PLATFORM_ID) private platformId: Object
+    @Inject(PLATFORM_ID) private platformId: Object,
+    private cdr: ChangeDetectorRef,
   ) {}
 
   ngOnInit() {
@@ -103,6 +104,7 @@ export class DomainPieChartsComponent implements OnInit, AfterViewInit {
         this.initChartOptions('registrar', data);
         this.registrarDataLoaded = true;
         this.registrarChartReady = true;
+        this.cdr.markForCheck();
       })
     ).subscribe();
   }
@@ -113,6 +115,7 @@ export class DomainPieChartsComponent implements OnInit, AfterViewInit {
         this.initChartOptions('sslIssuer', data);
         this.sslIssuerDataLoaded = true;
         this.sslIssuerChartReady = true;
+        this.cdr.markForCheck();
       })
     ).subscribe();
   }
@@ -123,6 +126,7 @@ export class DomainPieChartsComponent implements OnInit, AfterViewInit {
         this.initChartOptions('host', data);
         this.hostDataLoaded = true;
         this.hostChartReady = true;
+        this.cdr.markForCheck();
       })
     ).subscribe();
   }

@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
+import { AutoCompleteCompleteEvent } from 'primeng/autocomplete';
 import DatabaseService from '~/app/services/database.service';
 import { DbDomain, Link, SaveDomainData } from '~/app/../types/Database';
 import { notificationTypes, NotificationType } from '~/app/constants/notification-types';
@@ -10,6 +11,8 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { GlobalMessageService } from '~/app/services/messaging.service';
 import { ErrorHandlerService } from '~/app/services/error-handler.service';
+import { RegistrarAutocompleteService } from '~/app/services/registrar-autocomplete.service';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-edit-domain',
@@ -19,11 +22,16 @@ import { ErrorHandlerService } from '~/app/services/error-handler.service';
   imports: [CommonModule, ReactiveFormsModule, PrimeNgModule],
   providers: [MessageService]
 })
-export default class EditDomainComponent implements OnInit {
+export default class EditDomainComponent implements OnInit, OnDestroy {
   domainForm: FormGroup;
   domain: DbDomain | undefined;
   notificationTypes: NotificationType[] = notificationTypes;
   public isLoading = true;
+
+  // Registrar autocomplete properties
+  public filteredRegistrars: string[] = [];
+  public registrarLoadFailed = false;
+  private destroy$ = new Subject<void>();
 
   constructor(
     private fb: FormBuilder,
@@ -32,6 +40,8 @@ export default class EditDomainComponent implements OnInit {
     private databaseService: DatabaseService,
     private errorHandler: ErrorHandlerService,
     private globalMessageService: GlobalMessageService,
+    private cdr: ChangeDetectorRef,
+    public registrarAutocomplete: RegistrarAutocompleteService,
   ) {
     this.domainForm = this.fb.group({
       registrar: ['', Validators.required],
@@ -56,6 +66,22 @@ export default class EditDomainComponent implements OnInit {
       this.globalMessageService.showMessage({ severity: 'error', summary: 'Error', detail: 'Domain not found' });
       this.router.navigate(['/domains']);
     }
+    this.registrarAutocomplete.loadRegistrars();
+
+    // Subscribe to registrar error state for reactivity
+    this.registrarAutocomplete.getHasError$().pipe(
+      takeUntil(this.destroy$)
+    ).subscribe({
+      next: (hasError) => {
+        this.registrarLoadFailed = hasError;
+        this.cdr.markForCheck();
+      }
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   loadDomain(domainName: string) {
@@ -71,6 +97,13 @@ export default class EditDomainComponent implements OnInit {
         this.isLoading = false;
       }
     });
+  }
+
+  /**
+   * Filters registrars based on user input for autocomplete
+   */
+  public filterRegistrars(event: AutoCompleteCompleteEvent): void {
+    this.filteredRegistrars = this.registrarAutocomplete.filterRegistrars(event.query);
   }
 
   get links(): FormArray {
