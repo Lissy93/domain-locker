@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
+import { Component, Inject, OnInit, PLATFORM_ID, ChangeDetectorRef } from '@angular/core';
 import DatabaseService from '~/app/services/database.service';
 import { MessageService } from 'primeng/api';
 import { PrimeNgModule } from '~/app/prime-ng.module';
@@ -24,6 +24,7 @@ export default class EditDomainValuePage implements OnInit {
     private databaseService: DatabaseService,
     private messageService: MessageService,
     @Inject(PLATFORM_ID) private platformId: any,
+    private cdr: ChangeDetectorRef,
   ) {}
 
   ngOnInit() {
@@ -56,6 +57,7 @@ export default class EditDomainValuePage implements OnInit {
               };
             });
             this.loading = false;
+            this.cdr.markForCheck();
           },
           error: (error) => {
             this.messageService.add({
@@ -64,6 +66,7 @@ export default class EditDomainValuePage implements OnInit {
               detail: 'Failed to load domain costings',
             });
             this.loading = false;
+            this.cdr.markForCheck();
           },
         });
       },
@@ -74,6 +77,7 @@ export default class EditDomainValuePage implements OnInit {
           detail: 'Failed to load domains',
         });
         this.loading = false;
+        this.cdr.markForCheck();
       },
     });
   }

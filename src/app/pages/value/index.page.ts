@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit, Pipe, PipeTransform, PLATFORM_ID } from '@angular/core';
+import { Component, Inject, OnInit, Pipe, PipeTransform, PLATFORM_ID, ChangeDetectorRef } from '@angular/core';
 import DatabaseService from '~/app/services/database.service';
 import { MessageService } from 'primeng/api';
 import { PrimeNgModule } from '~/app/prime-ng.module';
@@ -33,6 +33,7 @@ export default class ValuationPageComponent implements OnInit {
     private messageService: MessageService,
     public currencyService: CurrencyService,
     @Inject(PLATFORM_ID) private platformId: any,
+    private cdr: ChangeDetectorRef,
   ) {}
 
   ngOnInit() {
@@ -68,6 +69,7 @@ export default class ValuationPageComponent implements OnInit {
             this.calculatePercentiles();
             this.calculateSummaryData();
             this.loading = false;
+            this.cdr.markForCheck();
           },
           error: (error) => {
             this.messageService.add({
@@ -76,6 +78,7 @@ export default class ValuationPageComponent implements OnInit {
               detail: 'Failed to load domain costings',
             });
             this.loading = false;
+            this.cdr.markForCheck();
           },
         });
       },
@@ -86,6 +89,7 @@ export default class ValuationPageComponent implements OnInit {
           detail: 'Failed to load domains',
         });
         this.loading = false;
+        this.cdr.markForCheck();
       },
     });
   }

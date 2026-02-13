@@ -1,4 +1,4 @@
-import { catchError, concatMap, forkJoin, from, map, Observable, of, switchMap } from 'rxjs';
+import { catchError, concatMap, forkJoin, map, Observable, of, switchMap } from 'rxjs';
 import { Tag } from '~/app/../types/Database';
 import { PgApiUtilService } from '~/app/utils/pg-api.util';
 
@@ -16,7 +16,7 @@ export class TagQueries {
       RETURNING *
     `;
     const params = [tag.name, tag.color || null, tag.icon || null, tag.description || null];
-    return from(this.pgApiUtil.postToPgExecutor(query, params)).pipe(
+    return this.pgApiUtil.postToPgExecutor(query, params).pipe(
       map(response => response.data[0] as Tag),
       catchError(error => this.handleError(error))
     );
@@ -24,7 +24,7 @@ export class TagQueries {
 
   getTag(tagName: string): Observable<Tag> {
     const query = `SELECT * FROM tags WHERE name = $1`;
-    return from(this.pgApiUtil.postToPgExecutor(query, [tagName])).pipe(
+    return this.pgApiUtil.postToPgExecutor(query, [tagName]).pipe(
       map(response => {
         if (!response.data.length) throw new Error('Tag not found');
         return response.data[0] as Tag;
@@ -35,7 +35,7 @@ export class TagQueries {
 
   getTags(): Observable<Tag[]> {
     const query = `SELECT * FROM tags`;
-    return from(this.pgApiUtil.postToPgExecutor(query)).pipe(
+    return this.pgApiUtil.postToPgExecutor(query).pipe(
       map(response => response.data as Tag[]),
       catchError(error => this.handleError(error))
     );
@@ -91,7 +91,7 @@ export class TagQueries {
       LEFT JOIN domain_tags ON tags.id = domain_tags.tag_id
       GROUP BY tags.id
     `;
-    return from(this.pgApiUtil.postToPgExecutor(query)).pipe(
+    return this.pgApiUtil.postToPgExecutor(query).pipe(
       map(response => response.data),
       catchError(error => this.handleError(error))
     );
@@ -99,7 +99,7 @@ export class TagQueries {
 
   async updateTags(domainId: string, tags: string[]): Promise<void> {
     const deleteQuery = `DELETE FROM domain_tags WHERE domain_id = $1`;
-    await from(this.pgApiUtil.postToPgExecutor(deleteQuery, [domainId])).toPromise();
+    await this.pgApiUtil.postToPgExecutor(deleteQuery, [domainId]).toPromise();
 
     await this.saveTags(domainId, tags);
   }
@@ -110,18 +110,25 @@ export class TagQueries {
       VALUES ($1, $2, $3, $4, $5)
       RETURNING *
     `;
-    return from(
+    return new Observable(observer => {
       this.getCurrentUser().then(user => {
-        if (!user) throw new Error('User must be authenticated to create a tag.');
-        return this.pgApiUtil.postToPgExecutor(query, [
+        if (!user) {
+          observer.error(new Error('User must be authenticated to create a tag.'));
+          return;
+        }
+        this.pgApiUtil.postToPgExecutor(query, [
           tag.name,
           tag.color || null,
           tag.icon || null,
           tag.description || null,
           user.id,
-        ]).toPromise();
-      })
-    ).pipe(
+        ]).subscribe({
+          next: (result) => observer.next(result),
+          error: (error) => observer.error(error),
+          complete: () => observer.complete()
+        });
+      }).catch(error => observer.error(error));
+    }).pipe(
       catchError(error => this.handleError(error))
     );
   }
@@ -132,7 +139,7 @@ export class TagQueries {
       SET name = $1, color = $2, description = $3, icon = $4
       WHERE name = $1
     `;
-    return from(this.pgApiUtil.postToPgExecutor(query, [tag.name, tag.color || null, tag.description || null, tag.icon || null])).pipe(
+    return this.pgApiUtil.postToPgExecutor(query, [tag.name, tag.color || null, tag.description || null, tag.icon || null]).pipe(
       map(() => undefined),
       catchError(error => this.handleError(error))
     );
@@ -147,15 +154,15 @@ export class TagQueries {
       WHERE dt.tag_id = $1
     `;
     return forkJoin({
-      available: from(this.pgApiUtil.postToPgExecutor(availableQuery)).pipe(map(response => response.data || [])),
-      selected: from(this.pgApiUtil.postToPgExecutor(selectedQuery, [tagId])).pipe(map(response => response.data || [])),
+      available: this.pgApiUtil.postToPgExecutor(availableQuery).pipe(map(response => response.data || [])),
+      selected: this.pgApiUtil.postToPgExecutor(selectedQuery, [tagId]).pipe(map(response => response.data || [])),
     });
   }
 
   deleteTag(id: string): Observable<void> {
     const deleteDomainTagsQuery = `DELETE FROM domain_tags WHERE tag_id = $1`;
     const deleteTagQuery = `DELETE FROM tags WHERE id = $1`;
-    return from(this.pgApiUtil.postToPgExecutor(deleteDomainTagsQuery, [id])).pipe(
+    return this.pgApiUtil.postToPgExecutor(deleteDomainTagsQuery, [id]).pipe(
       concatMap(() => this.pgApiUtil.postToPgExecutor(deleteTagQuery, [id])),
       map(() => undefined),
       catchError(error => this.handleError(error))
@@ -164,7 +171,7 @@ export class TagQueries {
 
   saveDomainsForTag(tagId: string, selectedDomains: any[]): Observable<void> {
     const fetchExistingQuery = `SELECT domain_id FROM domain_tags WHERE tag_id = $1`;
-    return from(this.pgApiUtil.postToPgExecutor(fetchExistingQuery, [tagId])).pipe(
+    return this.pgApiUtil.postToPgExecutor(fetchExistingQuery, [tagId]).pipe(
       map(response => response.data.map((item: any) => item.domain_id)),
       switchMap(existingDomains => {
         const domainsToAdd = selectedDomains.filter(domain => !existingDomains.includes(domain.id));
@@ -190,7 +197,7 @@ export class TagQueries {
       LEFT JOIN domain_tags dt ON t.id = dt.tag_id
       GROUP BY t.name
     `;
-    return from(this.pgApiUtil.postToPgExecutor(query)).pipe(
+    return this.pgApiUtil.postToPgExecutor(query).pipe(
       map(response => {
         const counts: Record<string, number> = {};
         response.data.forEach((item: any) => {

@@ -1,4 +1,4 @@
-import { catchError, from, map, Observable, of } from 'rxjs';
+import { catchError, map, Observable, of } from 'rxjs';
 import { PgApiUtilService } from '~/app/utils/pg-api.util';
 import { DbDomain, Registrar } from '~/app/../types/Database';
 
@@ -13,7 +13,7 @@ export class RegistrarQueries {
   getRegistrars(): Observable<Registrar[]> {
     const query = 'SELECT * FROM registrars';
 
-    return from(this.pgApiUtil.postToPgExecutor<Registrar>(query)).pipe(
+    return this.pgApiUtil.postToPgExecutor<Registrar>(query).pipe(
       map((response) => response.data),
       catchError((error) => this.handleError(error))
     );
@@ -50,7 +50,7 @@ export class RegistrarQueries {
       GROUP BY r.name
     `;
 
-    return from(this.pgApiUtil.postToPgExecutor<{ registrar_name: string; domain_count: number }>(query)).pipe(
+    return this.pgApiUtil.postToPgExecutor<{ registrar_name: string; domain_count: number }>(query).pipe(
       map((response) => {
         const counts: Record<string, number> = {};
         response.data.forEach((item) => {
@@ -156,7 +156,7 @@ getDomainsByRegistrar(registrarName: string): Observable<DbDomain[]> {
       wi.name, wi.organization, wi.country, wi.street, wi.city, wi.state, wi.postal_code
   `;
 
-  return from(this.pgApiUtil.postToPgExecutor(query, [registrarName])).pipe(
+  return this.pgApiUtil.postToPgExecutor(query, [registrarName]).pipe(
     map((response) => response.data.map(this.formatDomainData)),
     catchError((error) => this.handleError(error))
   );

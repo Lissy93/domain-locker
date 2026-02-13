@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, OnInit, PLATFORM_ID, NgZone } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { PrimeNgModule } from '../prime-ng.module';
 import DatabaseService from '~/app/services/database.service';
@@ -81,6 +81,7 @@ export default class HomePageComponent implements OnInit {
     private errorHandlerService: ErrorHandlerService,
     private router: Router,
     private cdr: ChangeDetectorRef,
+    private ngZone: NgZone,
     @Inject(PLATFORM_ID) private platformId: Object,
   ) {}
 
@@ -112,7 +113,7 @@ export default class HomePageComponent implements OnInit {
       next: (domains) => {
         this.domains = domains;
         this.loading = false;
-        this.cdr.detectChanges();
+        this.cdr.markForCheck();
       },
       error: (error) => {
         this.errorHandlerService.handleError({
@@ -122,6 +123,7 @@ export default class HomePageComponent implements OnInit {
           location: 'HomePageComponent.loadDomains'
         });
         this.loading = false;
+        this.cdr.markForCheck();
       }
     });
   }
@@ -134,7 +136,10 @@ export default class HomePageComponent implements OnInit {
 
   /* Show/hide the insights stats */
   toggleInsights() {
-    this.showInsights = !this.showInsights;
+    this.ngZone.run(() => {
+      this.showInsights = !this.showInsights;
+      this.cdr.detectChanges();
+    });
   }
 
   /* Special checks for dev and demo instance */

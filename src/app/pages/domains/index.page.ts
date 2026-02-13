@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PrimeNgModule } from '../../prime-ng.module';
 import DatabaseService from '~/app/services/database.service';
@@ -12,7 +12,7 @@ import { ErrorHandlerService } from '~/app/services/error-handler.service';
   selector: 'domain-all-page',
   imports: [DomainCollectionComponent, PrimeNgModule, CommonModule, LoadingComponent],
   template: `
-    <app-domain-view 
+    <app-domain-view
       *ngIf="!loading"
       [loading]="loading"
       [domains]="domains"
@@ -27,6 +27,7 @@ export default class DomainAllPageComponent implements OnInit {
   constructor(
     private databaseService: DatabaseService,
     private errorHandlerService: ErrorHandlerService,
+    private cdr: ChangeDetectorRef,
   ) {}
 
   ngOnInit() {
@@ -43,6 +44,7 @@ export default class DomainAllPageComponent implements OnInit {
       next: (domains) => {
         this.domains = domains;
         this.loading = false;
+        this.cdr.markForCheck();
       },
       error: (error) => {
         this.errorHandlerService.handleError({
@@ -52,6 +54,7 @@ export default class DomainAllPageComponent implements OnInit {
           location: 'domains',
         });
         this.loading = false;
+        this.cdr.markForCheck();
       }
     });
   }

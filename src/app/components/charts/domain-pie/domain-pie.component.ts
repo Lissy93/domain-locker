@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, AfterViewInit, PLATFORM_ID, Inject, ElementRef, Input } from "@angular/core";
+import { Component, OnInit, ViewChild, AfterViewInit, PLATFORM_ID, Inject, ElementRef, Input, ChangeDetectorRef } from "@angular/core";
 import { ChartComponent, NgApexchartsModule } from "ng-apexcharts";
 import { ApexNonAxisChartSeries, ApexChart, ApexResponsive, ApexTheme, ApexLegend, ApexStroke } from "ng-apexcharts";
 import DatabaseService from '~/app/services/database.service';

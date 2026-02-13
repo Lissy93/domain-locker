@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PrimeNgModule } from '../../../prime-ng.module';
@@ -62,6 +62,7 @@ export default class DomainDetailsPage implements OnInit {
     private globalMessageService: GlobalMessageService,
     private errorHandler: ErrorHandlerService,
     private featureService: FeatureService,
+    private cdr: ChangeDetectorRef,
   ) {}
 
   ngOnInit() {
@@ -77,21 +78,24 @@ export default class DomainDetailsPage implements OnInit {
               showToast: true,
               location: 'Domain',
             });
+            this.cdr.markForCheck();
             return of(null);
           })
         );
       }),
       tap(domain => {
         this.domain = domain;
+        this.cdr.markForCheck();
         // if ?update=true, re-fetch in 1s and then remove param
         if (this.route.snapshot.queryParamMap.get('update') === 'true' && this.name) {
           setTimeout(() => {
             this.databaseService.instance.getDomain(this.name!).subscribe(
-              refreshed => this.domain = refreshed,
-              // swallow error
+              refreshed => {
+                this.domain = refreshed;
+                this.cdr.markForCheck();
+              },
               () => {}
             );
-            // remove the update param without reloading
             this.router.navigate([], {
               relativeTo: this.route,
               queryParams: { update: null },
