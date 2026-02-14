@@ -32,6 +32,8 @@ services:
     # build: . # Uncomment to build from source instead
     container_name: domain-locker-app
     restart: unless-stopped
+    # secrets: # Uncomment to use Docker secrets
+    #   - dl_pg_password
     environment:
       DL_ENV_TYPE: ${DL_ENV_TYPE:-selfHosted}
       DL_PG_HOST: ${DL_PG_HOST:-postgres}
@@ -85,3 +87,9 @@ volumes:
 networks:
   domain_locker_network:
     driver: bridge
+
+# secrets:
+#   dl_pg_password:
+#     file: ./secrets/dl_pg_password.txt
+#   postgres_password:
+#     file: ./secrets/postgres_password.txt

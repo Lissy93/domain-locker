@@ -1,5 +1,30 @@
 #!/bin/sh
 
+#==============================================================================#
+# Load Docker secrets as environment variables (if they exist)
+#==============================================================================#
+
+load_secret() {
+  secret_file="/run/secrets/$1"
+  env_var="$2"
+
+  if [ -f "$secret_file" ]; then
+    export "$env_var=$(cat "$secret_file")"
+  fi
+}
+
+# Load supported Docker secrets
+load_secret "dl_pg_password" "DL_PG_PASSWORD"
+load_secret "dl_pg_user" "DL_PG_USER"
+load_secret "dl_pg_host" "DL_PG_HOST"
+load_secret "dl_pg_port" "DL_PG_PORT"
+load_secret "dl_pg_name" "DL_PG_NAME"
+load_secret "supabase_url" "SUPABASE_URL"
+load_secret "supabase_anon_key" "SUPABASE_ANON_KEY"
+load_secret "dl_turnstile_key" "DL_TURNSTILE_KEY"
+load_secret "dl_glitchtip_dsn" "DL_GLITCHTIP_DSN"
+
+#==============================================================================#
 # This is the entrypoint script for starting Domain Locker in Docker.
 # It checks everything is setup correctly, all required env vars are set,
 # and then initialized and tests the database, before starting the app.
