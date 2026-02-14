@@ -26,23 +26,24 @@ export class RegistrarQueries {
 
     // Method to get or insert registrar by name
     async getOrInsertRegistrarId(registrarName: string): Promise<string> {
+      const sanitizedName = (registrarName || '').trim().replace(/[\/\\?#%]/g, '');
       const { data: existingRegistrar, error: registrarError } = await this.supabase
         .from('registrars')
         .select('id')
-        .eq('name', registrarName)
+        .eq('name', sanitizedName)
         .single();
-    
+
       if (registrarError && registrarError.code !== 'PGRST116') throw registrarError;
-    
+
       if (existingRegistrar) {
         return existingRegistrar.id;
       } else {
         const { data: newRegistrar, error: insertError } = await this.supabase
           .from('registrars')
-          .insert({ name: registrarName })
+          .insert({ name: sanitizedName })
           .select('id')
           .single();
-    
+
         if (insertError) throw insertError;
         return newRegistrar.id;
       }
@@ -101,13 +102,14 @@ export class RegistrarQueries {
   
   async saveRegistrar(domainId: string, registrar: Omit<Registrar, 'id'>): Promise<void> {
     if (!registrar?.name) return;
-  
+
+    const sanitizedName = (registrar.name || '').trim().replace(/[\/\\?#%]/g, '');
     const { data: existingRegistrar, error: fetchError } = await this.supabase
       .from('registrars')
       .select('id')
-      .eq('name', registrar.name)
+      .eq('name', sanitizedName)
       .single();
-  
+
     if (fetchError && fetchError.code !== 'PGRST116') throw fetchError;
     let registrarId: string;
 
@@ -116,7 +118,7 @@ export class RegistrarQueries {
     } else {
       const { data: newRegistrar, error: insertError } = await this.supabase
         .from('registrars')
-        .insert({ name: registrar['name'], url: registrar['url'] })
+        .insert({ name: sanitizedName, url: registrar['url'] })
         .select('id')
         .single();
   

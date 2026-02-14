@@ -1,4 +1,4 @@
-import { catchError, from, map, Observable } from 'rxjs';
+import { catchError,  map, Observable } from 'rxjs';
 import { PgApiUtilService } from '~/app/utils/pg-api.util';
 import { IpAddress } from '~/app/../types/Database';
 
@@ -41,7 +41,7 @@ export class IpQueries {
     `;
     const params = [isIpv6];
 
-    return from(this.pgApiUtil.postToPgExecutor<{ ip_address: string; domains: string[] }>(query, params)).pipe(
+    return this.pgApiUtil.postToPgExecutor<{ ip_address: string; domains: string[] }>(query, params).pipe(
       map(response => response.data),
       catchError(error => this.handleError(error))
     );

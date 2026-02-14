@@ -60,21 +60,24 @@ DNS_DUMPSTER_TOKEN=your-api-key-here
 
 #### Option 2: Using Shodan
 
-Shodan provides more detailed data but requires a paid subscription for API access.
+**Important**: Shodan requires a paid subscription for API access. The free tier does not support API queries.
 
-Sign up at [shodan.io](https://www.shodan.io/), get your API key from your account dashboard, and set it as an environment variable:
+Sign up at [shodan.io](https://www.shodan.io/), upgrade to a paid plan, get your API key from your account dashboard, and set it as an environment variable:
 
 ```bash
 SHODAN_TOKEN=your-api-key-here
 ```
 
 #### Using Both Services
-By default, Domain Locker will use whichever service is configured, or both if available (for better coverage).
+By default, Domain Locker will automatically detect which service(s) you have configured:
+- If neither service is configured, subdomain fetching will be disabled
+- If one service is configured, it will be used automatically
+- If both are configured, both will be queried for maximum coverage
 
-If both services are configured, you can choose which one is used, by setting the `DL_PREFERRED_SUBDOMAIN_PROVIDER` environment variable, to either:
-- `dnsdump` - Only use DNSDumpster
-- `shod` - Only use Shodan
-- `both` - Query both services and merge the results (most comprehensive)
+You can override this behavior by setting the `DL_PREFERRED_SUBDOMAIN_PROVIDER` environment variable:
+- `dnsdump` - Only use DNSDumpster (requires `DNS_DUMPSTER_TOKEN` to be set)
+- `shod` - Only use Shodan (requires `SHODAN_TOKEN` to be set)
+- `both` - Query both services and merge results (requires both tokens)
 
 ---
 
@@ -116,18 +119,32 @@ Check the [Debugging Guide](/about/developing/debugging) for further steps on ho
 
 ### Resolving Subdomain Issues
 
-You can test the subdomain endpoint, with:
+If subdomain fetching isn't working, here are some common issues and solutions:
+
+**1. Subdomain fetching is disabled**
+- Error: "Subdomain fetching is not configured"
+- Solution: Set at least one API token (`SHODAN_TOKEN` or `DNS_DUMPSTER_TOKEN`)
+
+**2. Service is called despite being disabled**
+- If you're seeing API calls to Shodan/DNSDumpster when they shouldn't be used:
+  - Check that your preferred provider is set correctly with `DL_PREFERRED_SUBDOMAIN_PROVIDER`
+  - Ensure only the tokens you want to use are configured
+  - Clear any cached environment variables and restart the container
+
+**3. API authentication failures**
+- Shodan: Requires a **paid** API subscription (free tier doesn't support API access)
+- DNSDumpster: Free tier should work, but check your API key is valid
+
+**Testing subdomain fetching:**
 
 ```bash
+# Test the subdomain endpoint
 curl "http://localhost:5173/api/domain-subs?domain=bbc.com"
-```
 
-You can check your keys are valid, with:
-```bash
-# Check Shodan API key is valid
+# Verify Shodan API key (requires paid subscription)
 curl "https://api.shodan.io/dns/domain/example.com?key=${SHODAN_TOKEN}"
 
-# Check DNSDumpster API key is valid
+# Verify DNSDumpster API key
 curl -H "X-Api-Key: ${DNS_DUMPSTER_TOKEN}" "https://api.dnsdumpster.com/domain/example.com"
 ```
 

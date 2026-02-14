@@ -11,7 +11,7 @@ services:
       POSTGRES_PASSWORD: ${DL_PG_PASSWORD:-changeme2420}
 
     ports:
-      - "${DL_PG_PORT:-5432}:5432"
+      - "127.0.0.1:${DL_PG_PORT:-5432}:5432"
 
     volumes:
       # This is where the Postgres data will be stored
@@ -29,8 +29,11 @@ services:
 
   app:
     image: lissy93/domain-locker:latest # or ghcr.io/lissy93/domain-locker:latest
+    # build: . # Uncomment to build from source instead
     container_name: domain-locker-app
     restart: unless-stopped
+    # secrets: # Uncomment to use Docker secrets
+    #   - dl_pg_password
     environment:
       DL_ENV_TYPE: ${DL_ENV_TYPE:-selfHosted}
       DL_PG_HOST: ${DL_PG_HOST:-postgres}
@@ -39,11 +42,18 @@ services:
       DL_PG_PASSWORD: ${DL_PG_PASSWORD:-changeme2420}
       DL_PG_NAME: ${DL_PG_NAME:-domain_locker}
     ports:
-      - "3000:3000"
+      - "${DL_APP_PORT:-3000}:3000"
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
     networks:
       - domain_locker_network
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:3000/api/health"]
+      interval: 15s
+      timeout: 3s
+      retries: 3
+      start_period: 30s
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.domainlocker.rule=Host(`domain-locker.local`)"
@@ -55,16 +65,17 @@ services:
     container_name: domain-locker-updater
     restart: unless-stopped
     depends_on:
-      - app
+      app:
+        condition: service_healthy
     networks:
       - domain_locker_network
     command: >
       /bin/sh -c "
         apk add --no-cache curl &&
-        echo '0 3 * * * /usr/bin/curl -s -X POST http://app:3000/api/domain-updater' > /etc/crontabs/root &&
-        echo '0 4 * * * /usr/bin/curl -s -X POST http://app:3000/api/expiration-reminders' >> /etc/crontabs/root &&
-        echo '*/15 * * * * /usr/bin/curl -s -X POST http://app:3000/api/domain-monitor' >> /etc/crontabs/root &&
-        echo '0 2 * * 0 /usr/bin/curl -s -X POST http://app:3000/api/cleanup-monitor-data' >> /etc/crontabs/root &&
+        echo '0 3 * * * /usr/bin/curl -f -X POST http://app:3000/api/domain-updater || echo \"ERROR: domain-updater failed at \$(date)\" >&2' > /etc/crontabs/root &&
+        echo '0 4 * * * /usr/bin/curl -f -X POST http://app:3000/api/expiration-reminders || echo \"ERROR: expiration-reminders failed at \$(date)\" >&2' >> /etc/crontabs/root &&
+        echo '*/15 * * * * /usr/bin/curl -f -X POST http://app:3000/api/domain-monitor || echo \"ERROR: domain-monitor failed at \$(date)\" >&2' >> /etc/crontabs/root &&
+        echo '0 2 * * 0 /usr/bin/curl -f -X POST http://app:3000/api/cleanup-monitor-data || echo \"ERROR: cleanup-monitor-data failed at \$(date)\" >&2' >> /etc/crontabs/root &&
         crond -f -L /dev/stdout
       "
 
@@ -76,3 +87,9 @@ volumes:
 networks:
   domain_locker_network:
     driver: bridge
+
+# secrets:
+#   dl_pg_password:
+#     file: ./secrets/dl_pg_password.txt
+#   postgres_password:
+#     file: ./secrets/postgres_password.txt

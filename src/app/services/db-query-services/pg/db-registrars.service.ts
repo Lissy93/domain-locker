@@ -1,4 +1,4 @@
-import { catchError, from, map, Observable, of } from 'rxjs';
+import { catchError, map, Observable, of } from 'rxjs';
 import { PgApiUtilService } from '~/app/utils/pg-api.util';
 import { DbDomain, Registrar } from '~/app/../types/Database';
 
@@ -13,7 +13,7 @@ export class RegistrarQueries {
   getRegistrars(): Observable<Registrar[]> {
     const query = 'SELECT * FROM registrars';
 
-    return from(this.pgApiUtil.postToPgExecutor<Registrar>(query)).pipe(
+    return this.pgApiUtil.postToPgExecutor<Registrar>(query).pipe(
       map((response) => response.data),
       catchError((error) => this.handleError(error))
     );
@@ -21,16 +21,17 @@ export class RegistrarQueries {
 
   // Get or insert a registrar by name
   async getOrInsertRegistrarId(registrarName: string): Promise<string> {
+    const sanitizedName = (registrarName || '').trim().replace(/[\/\\?#%]/g, '');
     const selectQuery = 'SELECT id FROM registrars WHERE name = $1 LIMIT 1';
     const insertQuery = 'INSERT INTO registrars (name) VALUES ($1) RETURNING id';
 
     try {
-      const selectResponse = await this.pgApiUtil.postToPgExecutor<{ id: string }>(selectQuery, [registrarName]).toPromise();
+      const selectResponse = await this.pgApiUtil.postToPgExecutor<{ id: string }>(selectQuery, [sanitizedName]).toPromise();
       if (selectResponse && selectResponse.data.length > 0) {
         return selectResponse.data[0].id;
       }
 
-      const insertResponse = await this.pgApiUtil.postToPgExecutor<{ id: string }>(insertQuery, [registrarName]).toPromise();
+      const insertResponse = await this.pgApiUtil.postToPgExecutor<{ id: string }>(insertQuery, [sanitizedName]).toPromise();
       if (insertResponse && insertResponse.data.length > 0) {
         return insertResponse.data[0].id;
       }
@@ -49,7 +50,7 @@ export class RegistrarQueries {
       GROUP BY r.name
     `;
 
-    return from(this.pgApiUtil.postToPgExecutor<{ registrar_name: string; domain_count: number }>(query)).pipe(
+    return this.pgApiUtil.postToPgExecutor<{ registrar_name: string; domain_count: number }>(query).pipe(
       map((response) => {
         const counts: Record<string, number> = {};
         response.data.forEach((item) => {
@@ -155,7 +156,7 @@ getDomainsByRegistrar(registrarName: string): Observable<DbDomain[]> {
       wi.name, wi.organization, wi.country, wi.street, wi.city, wi.state, wi.postal_code
   `;
 
-  return from(this.pgApiUtil.postToPgExecutor(query, [registrarName])).pipe(
+  return this.pgApiUtil.postToPgExecutor(query, [registrarName]).pipe(
     map((response) => response.data.map(this.formatDomainData)),
     catchError((error) => this.handleError(error))
   );

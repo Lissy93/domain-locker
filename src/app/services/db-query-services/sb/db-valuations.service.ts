@@ -33,9 +33,9 @@ export class ValuationQueries {
           domain_name: item.domains?.domain_name,
           expiry_date: item.domains?.expiry_date,
           registrar: item.domains?.registrars?.name,
-          purchase_price: item.purchase_price,
-          current_value: item.current_value,
-          renewal_cost: item.renewal_cost,
+          purchase_price: parseFloat(item.purchase_price) || 0,
+          current_value: parseFloat(item.current_value) || 0,
+          renewal_cost: parseFloat(item.renewal_cost) || 0,
           auto_renew: item.auto_renew
         }));
       }),

@@ -1,4 +1,4 @@
-import { catchError, from, map, Observable } from 'rxjs';
+import { catchError,  map, Observable } from 'rxjs';
 import { PgApiUtilService } from '~/app/utils/pg-api.util';
 import { DbDomain, SaveDomainData } from '~/app/../types/Database';
 
@@ -18,7 +18,7 @@ export class SslQueries {
       GROUP BY ssl_certificates.issuer
     `;
 
-    return from(this.pgApiUtil.postToPgExecutor<{ issuer: string; domain_count: number }>(query)).pipe(
+    return this.pgApiUtil.postToPgExecutor<{ issuer: string; domain_count: number }>(query).pipe(
       map(response => response.data),
       catchError(error => this.handleError(error))
     );
@@ -60,8 +60,8 @@ export class SslQueries {
       GROUP BY domains.id, registrars.name, registrars.url, whois_info.name, whois_info.organization, whois_info.country, whois_info.street, whois_info.city, whois_info.state, whois_info.postal_code, domain_costings.purchase_price, domain_costings.current_value, domain_costings.renewal_cost, domain_costings.auto_renew, hosts.ip, hosts.lat, hosts.lon, hosts.isp, hosts.org, hosts.as_number, hosts.city, hosts.region, hosts.country
     `;
     const params = [issuer];
-  
-    return from(this.pgApiUtil.postToPgExecutor(query, params)).pipe(
+
+    return this.pgApiUtil.postToPgExecutor(query, params).pipe(
       map(response => response.data.map(domain => this.formatDomainData(domain))),
       catchError(error => this.handleError(error))
     );

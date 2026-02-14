@@ -9,7 +9,27 @@
     <div class="field">
       <label for="registrar">Registrar</label>
       <div class="input-wrap">
-        <input id="registrar" type="text" pInputText formControlName="registrar" class="w-full">
+        <p-autoComplete
+          *ngIf="!registrarLoadFailed"
+          id="registrar"
+          formControlName="registrar"
+          [suggestions]="filteredRegistrars"
+          (completeMethod)="filterRegistrars($event)"
+          [dropdown]="true"
+          [forceSelection]="false"
+          placeholder="Select or type registrar name..."
+          styleClass="w-full"
+          [inputStyle]="{'width':'100%'}"
+        ></p-autoComplete>
+        <input
+          *ngIf="registrarLoadFailed"
+          id="registrar"
+          type="text"
+          pInputText
+          formControlName="registrar"
+          class="w-full"
+          placeholder="Enter registrar name"
+        >
       </div>
     </div>
 

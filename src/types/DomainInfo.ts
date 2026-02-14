@@ -10,7 +10,7 @@ export interface DomainInfo {
   abuse: Abuse;
   dns: Dns;
   ssl: Ssl;
-  host?: Host;
+  host: Host | null;
   subdomains?: Subdomain[];
   links?: Link[];
 }
