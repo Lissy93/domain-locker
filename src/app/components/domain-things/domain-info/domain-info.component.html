@@ -96,7 +96,7 @@
     <div class="row" *ngIf="domain.domain_costings.renewal_cost">
       <h5>Renewal Cost</h5>
       <p>
-        Payment of {{ domain.domain_costings.renewal_cost| currency:'USD':'symbol':'1.0-0' }}
+        Payment of {{ domain.domain_costings.renewal_cost| currency:currencyService.getCurrencyCode():'symbol':'1.0-0' }}
         is due on {{ domain.expiry_date | date:'mediumDate' }}
       </p>
     </div>
@@ -110,11 +110,11 @@
     </div>
     <div class="row" *ngIf="domain.domain_costings.purchase_price">
       <h5>Purchase Price</h5>
-      <p>{{ domain.domain_costings.purchase_price | currency:'USD':'symbol':'1.0-0' }}</p>
+      <p>{{ domain.domain_costings.purchase_price | currency:currencyService.getCurrencyCode():'symbol':'1.0-0' }}</p>
     </div>
     <div class="row" *ngIf="domain.domain_costings.current_value">
       <h5>Current Value</h5>
-      <p>{{ domain.domain_costings.current_value | currency:'USD':'symbol':'1.0-0' }}</p>
+      <p>{{ domain.domain_costings.current_value | currency:currencyService.getCurrencyCode():'symbol':'1.0-0' }}</p>
     </div>
   </p-card>
 

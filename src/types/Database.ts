@@ -135,7 +135,7 @@ export abstract class DatabaseService {
   abstract listDomains(): Observable<DbDomain[]>;
   abstract domainExists(inputUserId: string | null, domainName: string): Promise<boolean>;
   abstract saveDomain(data: SaveDomainData): Observable<DbDomain>;
-  abstract fetchAllForExport(domainNames: string, includeFields: { label: string; value: string }[]): Observable<any[]>;
+  abstract fetchAllForExport(domainNames: string, includeFields: string[] | { label: string; value: string }[]): Observable<any[]>;
   abstract getDomainsByEppCodes(statuses: string[]): Observable<Record<string, { domainId: string; domainName: string }[]>>;
   abstract getDomainExpirations(): Observable<DomainExpiration[]>;
   abstract deleteDomain(domainId: string): Observable<void>;

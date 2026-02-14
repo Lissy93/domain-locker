@@ -36,6 +36,42 @@ For more details on how Domain Locker handles environmental variables, see [Envi
 
 ---
 
+## Using Docker Secrets
+
+Docker Secrets provide a secure way to store sensitive data like passwords and API keys. Domain Locker automatically loads secrets from `/run/secrets/` if they exist.
+
+**Create secret files:**
+```bash
+mkdir -p secrets
+echo 'your-strong-password' > secrets/dl_pg_password.txt
+echo 'your-api-key' > secrets/dl_turnstile_key.txt
+chmod 600 secrets/*
+```
+
+**Update docker-compose.yml:**
+```yaml
+secrets:
+  dl_pg_password:
+    file: ./secrets/dl_pg_password.txt
+
+services:
+  app:
+    secrets:
+      - dl_pg_password
+    environment:
+      # Other non-sensitive env vars
+      DL_PG_HOST: postgres
+```
+
+**Supported secrets:**
+- `dl_pg_password`, `dl_pg_user`, `dl_pg_host`, `dl_pg_port`, `dl_pg_name`
+- `supabase_url`, `supabase_anon_key`
+- `dl_turnstile_key`, `dl_glitchtip_dsn`
+
+Secrets take precedence over environment variables. Existing configurations without secrets continue to work unchanged.
+
+---
+
 ## Running Commands
 
 Execute commands inside the running container:

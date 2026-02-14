@@ -25,24 +25,40 @@ type Subdomain = {
 
 type ServiceResponse = { subdomains?: Subdomain[]; error?: string };
 
+// API tokens from env vars if specified
+const SHODAN_TOKEN = import.meta.env['SHODAN_TOKEN'] || '';
+const DNS_DUMPSTER_TOKEN = import.meta.env['DNS_DUMPSTER_TOKEN'] || '';
+
 // Service URLs
 const SHODAN_URL = import.meta.env['DL_SHODAN_URL'];
 const DNSDUMP_URL = import.meta.env['DL_DNSDUMP_URL'];
 
 const preferredMethod = import.meta.env['DL_PREFERRED_SUBDOMAIN_PROVIDER'];
 
-// Ok yeah, i know, this is messy; but in short we use your preferred method if it's valid
-// otherwise we default to 'both' if both services are available, 
-// Or pick a fallback service based on what's available
-const METHOD: 'shod' | 'dnsdump' | 'both' = (() => {
-  if (['shod', 'dnsdump', 'both'].includes(preferredMethod)) return preferredMethod;
-  if (DNSDUMP_URL && SHODAN_URL) return 'both';
-  return DNSDUMP_URL ? 'dnsdump' : 'shod';
-})();
+// Check if services are actually configured (needs either custom URL or token with actual value)
+const isShodanConfigured = !!(SHODAN_URL || (SHODAN_TOKEN && SHODAN_TOKEN.trim().length > 0));
+const isDnsDumpConfigured = !!(DNSDUMP_URL || (DNS_DUMPSTER_TOKEN && DNS_DUMPSTER_TOKEN.trim().length > 0));
 
-// If user is using one of these services, we need their API keys
-const SHODAN_TOKEN = import.meta.env['SHODAN_TOKEN'] || '';
-const DNS_DUMPSTER_TOKEN = import.meta.env['DNS_DUMPSTER_TOKEN'] || '';
+// Use preferred method if valid, otherwise auto-detect based on what's configured
+const METHOD: 'shod' | 'dnsdump' | 'both' | 'none' = (() => {
+  // If preferred method is set, validate it's actually configured
+  if (preferredMethod === 'shod' && isShodanConfigured) return 'shod';
+  if (preferredMethod === 'dnsdump' && isDnsDumpConfigured) return 'dnsdump';
+  if (preferredMethod === 'both' && isShodanConfigured && isDnsDumpConfigured) return 'both';
+  if (preferredMethod) { // User chose preferred method, but either invalid or not configured
+    log.error(`Skipping subdomain lookup. Either ${preferredMethod} wasn't right, or you forgot to configure it.`);
+    return 'none';
+  }
+
+  // Auto-detect based on what's configured
+  if (isDnsDumpConfigured && isShodanConfigured) return 'both';
+  if (isDnsDumpConfigured) return 'dnsdump';
+  if (isShodanConfigured) return 'shod';
+
+  // Nothing is configured
+  log.warn('Skipping subdomain lookup, no services configured');
+  return 'none';
+})();
 
 // Fetches subdomains from a given service URL
 async function fetchSubdomains(url: string): Promise<ServiceResponse> {
@@ -65,6 +81,17 @@ async function fetchSubdomains(url: string): Promise<ServiceResponse> {
 
   try {
     const response = await fetch(url, requestParams);
+
+    // Check if response is HTML (common when API key invalid or service unavailable)
+    const contentType = response.headers.get('content-type');
+    if (contentType && contentType.includes('text/html')) {
+      const errorMsg = url.includes('shodan')
+        ? 'Shodan returned HTML instead of JSON. Check your API key/token is valid.'
+        : 'Service returned HTML instead of JSON. Check your API configuration.';
+      log.error(errorMsg);
+      return { error: errorMsg };
+    }
+
     const data = await response.json();
     if (data.error) {
       log.error(`Error from ${url}: ${data.error}`);
@@ -76,7 +103,12 @@ async function fetchSubdomains(url: string): Promise<ServiceResponse> {
       return { subdomains: parseDnsDumpResponse(data) };
     }
   } catch (error) {
-    log.error(`Error fetching from ${url}: ${error}`);
+    const errorMsg = error instanceof Error ? error.message : String(error);
+    if (errorMsg.includes('Unexpected token') && errorMsg.includes('<html>')) {
+      log.error(`Service returned HTML instead of JSON. This usually means invalid API credentials or the service is unavailable.`);
+      return { error: 'Service returned invalid response. Check API credentials.' };
+    }
+    log.error(`Error fetching from ${url}: ${errorMsg}`);
     return { error: 'Failed to fetch data from service' };
   }
 }
@@ -142,10 +174,10 @@ async function mergeResponses(domain: string, shodUrl: string, dnsDumpUrl: strin
   return combined.reduce((unique, sub) => {
     // Strip full domain if present
     const strippedSubdomain = sub.subdomain.replace(new RegExp(`\\.?${domain}$`), '') || '';
-  
+
     // Find an existing entry with the same subdomain
     const existing = unique.find((u) => u.subdomain === strippedSubdomain);
-  
+
     if (existing) {
       // Merge the data with the existing entry
       existing.tags = Array.from(new Set([...(existing.tags || []), ...(sub.tags || [])]));
@@ -157,7 +189,7 @@ async function mergeResponses(domain: string, shodUrl: string, dnsDumpUrl: strin
       // Add the new entry
       unique.push({ ...sub, subdomain: strippedSubdomain });
     }
-  
+
     return unique;
   }, [] as Subdomain[]);
 }
@@ -190,8 +222,13 @@ export default defineEventHandler(async (event) => {
     return { error: 'Domain name is required' };
   }
 
-  const shodanUrl = SHODAN_URL ? `${SHODAN_URL}/${domain}` : `https://api.shodan.io/dns/domain/${domain}${SHODAN_TOKEN ? `?key=${SHODAN_TOKEN}` : ''}`;
-  const dnsdumpUrl = DNSDUMP_URL ? `${DNSDUMP_URL}/${domain}` : `https://api.dnsdumpster.com/domain/${domain}`;
+  // Check if subdomain fetching is configured
+  if (METHOD === 'none') {
+    return { error: 'Subdomain fetching is not configured. Please configure at least one subdomain provider.' };
+  }
+
+  const shodanUrl = SHODAN_URL ? `${SHODAN_URL}/${domain}` : (SHODAN_TOKEN ? `https://api.shodan.io/dns/domain/${domain}?key=${SHODAN_TOKEN}` : '');
+  const dnsdumpUrl = DNSDUMP_URL ? `${DNSDUMP_URL}/${domain}` : (DNS_DUMPSTER_TOKEN ? `https://api.dnsdumpster.com/domain/${domain}` : '');
 
   try {
     let subdomains: Subdomain[] = [];
@@ -200,16 +237,26 @@ export default defineEventHandler(async (event) => {
       subdomains = await mergeResponses(domain, shodanUrl, dnsdumpUrl);
     } else {
       const primaryUrl = METHOD === 'shod' ? shodanUrl : dnsdumpUrl;
-      const fallbackUrl = METHOD === 'shod' ? dnsdumpUrl : shodanUrl;
-      log.debug(`Primary URL: ${primaryUrl}, Fallback URL: ${fallbackUrl}`);
+
+      // Determine if fallback is available and configured
+      const hasFallback = METHOD === 'shod' ? isDnsDumpConfigured : isShodanConfigured;
+      const fallbackUrl = hasFallback ? (METHOD === 'shod' ? dnsdumpUrl : shodanUrl) : '';
+
+      log.debug(`Primary URL: ${primaryUrl}, Fallback available: ${hasFallback}`);
 
       const primaryData = await fetchSubdomains(primaryUrl);
       if (primaryData.error) {
-        const fallbackData = await fetchSubdomains(fallbackUrl);
-        if (fallbackData.error) {
-          throw new Error('Both primary and fallback services failed');
+        // Only try fallback if it's actually configured
+        if (hasFallback && fallbackUrl) {
+          log.debug(`Primary service failed, trying fallback`);
+          const fallbackData = await fetchSubdomains(fallbackUrl);
+          if (fallbackData.error) {
+            throw new Error(`Both primary (${METHOD}) and fallback services failed`);
+          }
+          subdomains = fallbackData.subdomains || [];
+        } else {
+          throw new Error(`Primary service (${METHOD}) failed and no fallback configured`);
         }
-        subdomains = fallbackData.subdomains || [];
       } else {
         subdomains = primaryData.subdomains || [];
       }

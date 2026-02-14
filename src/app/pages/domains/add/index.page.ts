@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { PrimeNgModule } from '~/app/prime-ng.module';
@@ -11,6 +11,7 @@ import DatabaseService from '~/app/services/database.service';
 import { SaveDomainData } from '~/app/../types/Database';
 import { notificationTypes } from '~/app/constants/notification-types';
 import { TableModule } from 'primeng/table';
+import { AutoCompleteCompleteEvent } from 'primeng/autocomplete';
 
 import type { DomainInfo } from '~/app/../types/DomainInfo';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -19,6 +20,7 @@ import { subdomainsReadyForSave } from '~/app/pages/assets/subdomains/subdomain-
 import { EnvService } from '~/app/services/environment.service';
 import { ErrorHandlerService } from '~/app/services/error-handler.service';
 import { HitCountingService } from '~/app/services/hit-counting.service';
+import { RegistrarAutocompleteService } from '~/app/services/registrar-autocomplete.service';
 
 @Component({
   selector: 'app-add-domain',
@@ -45,6 +47,10 @@ export default class AddDomainComponent implements OnInit, OnDestroy {
 
   public incompleteDomainInfo = false;
 
+  // Registrar autocomplete properties
+  public filteredRegistrars: string[] = [];
+  public registrarLoadFailed = false;
+
   public readonly saveOptions: MenuItem[] = [
     {
       label: 'Save and Add New',
@@ -69,6 +75,8 @@ export default class AddDomainComponent implements OnInit, OnDestroy {
     private envService: EnvService,
     private errorHandler: ErrorHandlerService,
     private hitCountingService: HitCountingService,
+    private cdr: ChangeDetectorRef,
+    public registrarAutocomplete: RegistrarAutocompleteService,
   ) {}
 
   ngOnInit(): void {
@@ -76,6 +84,17 @@ export default class AddDomainComponent implements OnInit, OnDestroy {
     this.initializeForm();
     this.fetchExistingDomains();
     this.setupDomainValidation();
+    this.registrarAutocomplete.loadRegistrars();
+
+    // Subscribe to registrar error state for reactivity
+    this.registrarAutocomplete.getHasError$().pipe(
+      takeUntil(this.destroy$)
+    ).subscribe({
+      next: (hasError) => {
+        this.registrarLoadFailed = hasError;
+        this.cdr.markForCheck();
+      }
+    });
   }
 
   ngOnDestroy(): void {
@@ -153,6 +172,13 @@ export default class AddDomainComponent implements OnInit, OnDestroy {
         this.existingDomains = [];
       }
     });
+  }
+
+  /**
+   * Filters registrars based on user input for autocomplete
+   */
+  public filterRegistrars(event: AutoCompleteCompleteEvent): void {
+    this.filteredRegistrars = this.registrarAutocomplete.filterRegistrars(event.query);
   }
 
   private domainExistsValidator(): ValidatorFn {

@@ -16,7 +16,7 @@ SET row_security = off;
 
 -- Create the 'public' schema if it doesn't exist
 CREATE SCHEMA IF NOT EXISTS "public";
-ALTER SCHEMA "public" OWNER TO "postgres";
+ALTER SCHEMA "public" OWNER TO CURRENT_USER;
 SET search_path TO public;
 
 -- =========================
@@ -91,7 +91,7 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 CREATE SCHEMA IF NOT EXISTS "public";
-ALTER SCHEMA "public" OWNER TO "postgres";
+ALTER SCHEMA "public" OWNER TO CURRENT_USER;
 COMMENT ON SCHEMA "public" IS 'standard public schema';
 
 -- Domain management functions
@@ -482,9 +482,9 @@ $$;
 
 
 -- Final adjustments and default grants
-GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA "public" TO "postgres";
-GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA "public" TO "postgres";
-GRANT ALL PRIVILEGES ON ALL FUNCTIONS IN SCHEMA "public" TO "postgres";
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA "public" TO CURRENT_USER;
+GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA "public" TO CURRENT_USER;
+GRANT ALL PRIVILEGES ON ALL FUNCTIONS IN SCHEMA "public" TO CURRENT_USER;
 
 COMMENT ON SCHEMA "public" IS 'Schema for self-hosted Domain Locker application. Adjusted to remove dependency on Supabase authentication and RLS policies.';
 

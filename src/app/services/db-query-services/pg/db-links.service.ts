@@ -1,4 +1,4 @@
-import { catchError, from, map, Observable, of, switchMap } from 'rxjs';
+import { catchError, map, Observable, of, switchMap } from 'rxjs';
 import { PgApiUtilService } from '~/app/utils/pg-api.util';
 import { DbDomain, Link } from '~/app/../types/Database';
 import { LinkResponse, ModifiedLink } from '~/app/pages/assets/links/index.page';
@@ -70,7 +70,7 @@ export class LinkQueries {
       FROM domain_links dl
       LEFT JOIN domains d ON dl.domain_id = d.id`;
 
-    return from(this.pgApiUtil.postToPgExecutor(query)).pipe(
+    return this.pgApiUtil.postToPgExecutor(query).pipe(
       map(({ data }) => {
         const groupedByDomain = data.reduce((acc: Record<string, Link[]>, link: any) => {
           const domainName = link.domain_name || 'Unknown Domain';
@@ -121,7 +121,7 @@ export class LinkQueries {
       switchMap((availableDomains) => {
         const validDomains = (domains || []).filter((domain) => availableDomains.map((av) => av.domain_name).includes(domain));
         const fetchQuery = `SELECT id FROM domains WHERE domain_name = ANY($1)`;
-        return from(this.pgApiUtil.postToPgExecutor(fetchQuery, [validDomains])).pipe(
+        return this.pgApiUtil.postToPgExecutor(fetchQuery, [validDomains]).pipe(
           map(({ data }: any) => data.map((domain: DbDomain) => domain.id)),
           switchMap((domainIds) => {
             if (domainIds.length === 0) {
@@ -132,7 +132,7 @@ export class LinkQueries {
               INSERT INTO domain_links (domain_id, link_name, link_url, link_description)
               VALUES ${domainIds.map((_: any, i: number) => `($${i * 4 + 1}, $${i * 4 + 2}, $${i * 4 + 3}, $${i * 4 + 4})`).join(', ')}`;
             const insertParams = domainIds.flatMap((id: string) => [id, link_name, link_url, link_description]);
-            return from(this.pgApiUtil.postToPgExecutor(insertQuery, insertParams)).pipe(map(() => void 0));
+            return this.pgApiUtil.postToPgExecutor(insertQuery, insertParams).pipe(map(() => void 0));
           })
         );
       }),
@@ -145,7 +145,7 @@ export class LinkQueries {
     const query = `DELETE FROM domain_links WHERE id = ANY($1)`;
     const params = [ids];
 
-    return from(this.pgApiUtil.postToPgExecutor(query, params)).pipe(
+    return this.pgApiUtil.postToPgExecutor(query, params).pipe(
       map(() => void 0),
       catchError((error) => this.handleError(error))
     );
@@ -166,9 +166,7 @@ export class LinkQueries {
           FROM domains
           WHERE domain_name = ANY($1)
         `;
-        return from(
-          this.pgApiUtil.postToPgExecutor(fetchDomainQuery, [validDomains])
-        ).pipe(
+        return this.pgApiUtil.postToPgExecutor(fetchDomainQuery, [validDomains]).pipe(
           map(({ data }) => data || []),
         );
       }),

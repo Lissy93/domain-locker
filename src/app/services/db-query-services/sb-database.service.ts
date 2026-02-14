@@ -618,7 +618,7 @@ export default class MainDatabaseService extends DatabaseService {
     );
   }
   
-  fetchAllForExport(domainName: string, includeFields: {label: string, value: string}[]): Observable<any[]> {
+  fetchAllForExport(domainName: string, includeFields: string[] | {label: string, value: string}[]): Observable<any[]> {
     const fieldMap: { [key: string]: string } = {
       domain_statuses: 'domain_statuses(status_code)',
       ip_addresses: 'ip_addresses(ip_address, is_ipv6)',
@@ -630,60 +630,87 @@ export default class MainDatabaseService extends DatabaseService {
       dns_records: 'dns_records(record_type, record_value)',
       domain_costings: 'domain_costings(purchase_price, current_value, renewal_cost, auto_renew)',
     };
-  
-    let selectQuery = '*';
-    if (includeFields.length > 0) {
-      const selectedRelations = includeFields
-      .map(field => fieldMap[field.value])
-      .filter(Boolean);
+
+    // Always include registrar
+    let selectQuery = '*, registrars(name, url)';
+
+    const fields = Array.isArray(includeFields) ? includeFields : [];
+    if (fields.length > 0) {
+      const selectedRelations = fields
+        .map(field => {
+          const fieldValue = typeof field === 'string' ? field : field?.value;
+          return fieldMap[fieldValue];
+        })
+        .filter(Boolean);
 
       if (selectedRelations.length > 0) {
         selectQuery += ', ' + selectedRelations.join(', ');
       }
     }
   
-    let query = this.supabase.supabase
-      .from('domains')
-      .select(selectQuery);
-  
-    if ((domainName || '').split(',').length > 0) {
-      query = query.in('domain_name', domainName.split(','));
-    }
-  
-    return from(query).pipe(
+    return from(this.getCurrentUser()).pipe(
+      switchMap(user => {
+        if (!user) throw new Error('User not authenticated');
+
+        let query = this.supabase.supabase
+          .from('domains')
+          .select(selectQuery)
+          .eq('user_id', user.id)
+          .limit(10000);
+
+        const domainFilter = (domainName || '').trim();
+        if (domainFilter) {
+          query = query.in('domain_name', domainFilter.split(',').map(d => d.trim()));
+        }
+
+        return from(query);
+      }),
       map(({ data, error }) => {
         if (error) throw error;
   
         // Flatten the nested data for CSV export
-        const flattenedData = data.map((domain: any) => {
-          return {
-            ...domain,
-            registrar_name: domain.registrars?.name || '',
-            registrar_url: domain.registrars?.url || '',
-            ip_addresses: domain.ip_addresses ? domain.ip_addresses.map((ip: any) => ip.ip_address).join(', ') : '',
-            ssl_certificates: domain.ssl_certificates ? domain.ssl_certificates.map((cert: any) => cert.issuer).join(', ') : '',
-            whois_name: domain.whois_info?.name || '',
-            whois_organization: domain.whois_info?.organization || '',
-            whois_country: domain.whois_info?.country || '',
-            tags: domain.domain_tags ? domain.domain_tags.map((tag: any) => tag.tags.name).join(', ') : '',
-            hosts: domain.domain_hosts ? domain.domain_hosts.map((host: any) => host.hosts.isp).join(', ') : '',
-            dns_records: domain.dns_records ? domain.dns_records.map((record: any) => record.record_value).join(', ') : '',
-            purchase_price: domain.domain_costings?.purchase_price || 0,
-            current_value: domain.domain_costings?.current_value || 0,
-            renewal_cost: domain.domain_costings?.renewal_cost || 0,
-            auto_renew: domain.domain_costings?.auto_renew ? 'Yes' : 'No',
-          };
-        });
+        const flattenedData = data.map((domain: any) => ({
+          ...domain,
+          registrar_name: domain.registrars?.name || '',
+          registrar_url: domain.registrars?.url || '',
+          ip_addresses: domain.ip_addresses
+            ? domain.ip_addresses.map((ip: any) => ip.ip_address).filter(Boolean).join(', ')
+            : '',
+          ssl_certificates: domain.ssl_certificates
+            ? domain.ssl_certificates.map((cert: any) => cert.issuer).filter(Boolean).join(', ')
+            : '',
+          whois_name: domain.whois_info?.name || '',
+          whois_organization: domain.whois_info?.organization || '',
+          whois_country: domain.whois_info?.country || '',
+          whois_street: domain.whois_info?.street || '',
+          whois_city: domain.whois_info?.city || '',
+          whois_state: domain.whois_info?.state || '',
+          whois_postal_code: domain.whois_info?.postal_code || '',
+          tags: domain.domain_tags
+            ? domain.domain_tags.map((tag: any) => tag.tags?.name).filter(Boolean).join(', ')
+            : '',
+          hosts: domain.domain_hosts
+            ? domain.domain_hosts.map((host: any) => host.hosts?.isp).filter(Boolean).join(', ')
+            : '',
+          dns_records: domain.dns_records
+            ? domain.dns_records.map((record: any) => `${record.record_type}: ${record.record_value}`).filter(Boolean).join('; ')
+            : '',
+          purchase_price: domain.domain_costings?.purchase_price || 0,
+          current_value: domain.domain_costings?.current_value || 0,
+          renewal_cost: domain.domain_costings?.renewal_cost || 0,
+          auto_renew: domain.domain_costings?.auto_renew ? 'Yes' : 'No',
+        }));
   
         return flattenedData;
       }),
       catchError((error) => {
         this.errorHandler.handleError({
-          message: 'Error fetching domain data',
+          message: 'Error exporting domain data',
           error,
           location: 'MainDatabaseService.fetchAllForExport',
+          showToast: true,
         });
-        return [];
+        return throwError(() => error);
       })
     );
   }

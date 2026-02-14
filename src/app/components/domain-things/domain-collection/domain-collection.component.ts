@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, OnChanges, SimpleChanges, Output, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import Fuse from 'fuse.js';
 import { DomainCardComponent } from '~/app/components/domain-things/domain-card/domain-card.component';
@@ -21,7 +21,7 @@ import { TranslateModule } from '@ngx-translate/core';
   ],
   templateUrl: './domain-collection.component.html',
 })
-export class DomainCollectionComponent implements OnInit {
+export class DomainCollectionComponent implements OnInit, OnChanges {
   @Input() domains: DbDomain[] = [];
   @Input() showAddButton: boolean = true;
   @Input() showFooter: boolean = true;
@@ -68,6 +68,16 @@ export class DomainCollectionComponent implements OnInit {
     this.sortDomains();
     this.initializeFuse();
     this.updateVisibleColumns();
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    // When domains input changes, update filtered domains and re-initialize Fuse
+    if (changes['domains'] && !changes['domains'].firstChange) {
+      this.filteredDomains = this.domains;
+      this.initializeFuse();
+      this.sortDomains();
+      this.cdr.markForCheck();
+    }
   }
 
   onVisibilityChange(selectedFields: FieldOption[]) {
