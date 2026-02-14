@@ -1,5 +1,6 @@
-import { ChangeDetectorRef, Component, Inject, OnInit, PLATFORM_ID, NgZone } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, OnInit, OnDestroy, PLATFORM_ID, NgZone } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 import { PrimeNgModule } from '../prime-ng.module';
 import DatabaseService from '~/app/services/database.service';
 import { SupabaseService } from '~/app/services/supabase.service';
@@ -7,7 +8,7 @@ import { DbDomain } from '~/app/../types/Database';
 import AssetListComponent from '~/app/components/misc/asset-list.component';
 import { DomainExpirationBarComponent } from '~/app/components/charts/domain-expiration-bar/domain-expiration-bar.component';
 import { DomainCollectionComponent } from '~/app/components/domain-things/domain-collection/domain-collection.component';
-import { Subscription } from 'rxjs';
+import { Subscription, lastValueFrom } from 'rxjs';
 import { LoadingComponent } from '~/app/components/misc/loading.component';
 import { WelcomeComponent } from '~/app/components/getting-started/welcome.component';
 import { DomainPieChartsComponent } from '~/app/components/charts/domain-pie/domain-pie.component';
@@ -64,7 +65,7 @@ import { Router } from '@angular/router';
   ::ng-deep .gantt-domain-name { background: var(--surface-50) !important; }
   `],
 })
-export default class HomePageComponent implements OnInit {
+export default class HomePageComponent implements OnInit, OnDestroy {
   domains: DbDomain[] = [];
   loading: boolean = true;
   isAuthenticated: boolean = false;
@@ -82,12 +83,14 @@ export default class HomePageComponent implements OnInit {
     private router: Router,
     private cdr: ChangeDetectorRef,
     private ngZone: NgZone,
+    private http: HttpClient,
     @Inject(PLATFORM_ID) private platformId: Object,
   ) {}
 
   ngOnInit() {
     this.setAuthState(); // Set auth state, and listen for changes
     this.checkDemoDevInstance(); // Redirect to login on demo, show note on dev
+    this.triggerBackgroundUpdate(); // Trigger background domain update (managed instances only)
     if (isPlatformBrowser(this.platformId)) {
       this.loadDomains(); // Initiate the loading of user's domains
     }
@@ -159,5 +162,57 @@ export default class HomePageComponent implements OnInit {
         this.isDevInstance = true;
       }
     }
+  }
+
+  /* Triggers background domain update */
+  private async triggerBackgroundUpdate(): Promise<void> {
+    // Only run on managed/Supabase instances and in browser
+    if (
+      !isPlatformBrowser(this.platformId) ||
+      !this.environmentService.isSupabaseEnabled() ||
+      this.environmentService.getEnvironmentType() !== 'managed'
+    ) {
+      return;
+    }
+
+    // Check if we've already triggered recently (24-hour rate limit)
+    const lastTriggerKey = 'DL_last_auto_trigger_timestamp';
+    const lastTrigger = localStorage.getItem(lastTriggerKey);
+    const now = Date.now();
+    if (lastTrigger) {
+      const timeSinceLastTrigger = now - parseInt(lastTrigger, 10);
+      if (timeSinceLastTrigger < (24 * 60 * 60 * 1000)) { // Less than 24 hours ago
+        return;
+      }
+    }
+
+    // Construct endpoint URL
+    const supabaseUrl = this.environmentService.getSupabaseUrl();
+    const endpoint = `${supabaseUrl}/functions/v1/trigger-updates`;
+
+    try {
+      // Make POST request (AuthInterceptor will add Bearer token automatically)
+      await lastValueFrom(
+        this.http.post(endpoint, {}, {
+          observe: 'response',
+          responseType: 'text'
+        })
+      );
+
+      // Update last trigger timestamp on success
+      localStorage.setItem(lastTriggerKey, now.toString());
+    } catch (error) {
+      // Log error silently without showing toast (background operation)
+      this.errorHandlerService.handleError({
+        message: 'Failed to trigger background domain update',
+        error,
+        showToast: false,
+        location: 'HomePageComponent.triggerBackgroundUpdate'
+      });
+    }
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.unsubscribe();
   }
 }
