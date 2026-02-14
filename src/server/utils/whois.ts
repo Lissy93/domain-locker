@@ -60,7 +60,9 @@ export const getWhoisInfo = async (domain: string): Promise<WhoisResult | null> 
     }
 
     const rdap = await tryRdapLookup(trimmed);
-    if (rdap) return rdap;
+    if (rdap && (rdap.dates.expiry_date || rdap.registrar.name)) {
+      return rdap;
+    }
 
     if (WHOISXML_API_KEY) {
       const xml = await tryWhoisXml(trimmed);
@@ -79,8 +81,14 @@ export const getWhoisInfo = async (domain: string): Promise<WhoisResult | null> 
       )
     ]);
     if (raw && typeof raw === 'object' && Object.keys(raw).length > 0 && !raw.error) {
-      log.success(`Got WHOIS data via whois-json for ${domain}`);
-      return normalizeWhoisJson(raw);
+      const normalized = normalizeWhoisJson(raw);
+      // Check if we got useful data (dates or registrar info)
+      if (normalized.dates.expiry_date || normalized.registrar.name !== 'Unknown') {
+        log.success(`Got WHOIS data via whois-json for ${domain}`);
+        return normalized;
+      }
+      log.warn(`whois-json returned incomplete data for ${domain} (no dates/registrar), falling back`);
+      return await fallback();
     }
     log.warn(`whois-json returned empty or error for ${domain}, falling back`);
     return await fallback();
@@ -313,15 +321,28 @@ const tryRdapLookup = async (domain: string): Promise<WhoisResult | null> => {
     const getEvent = (action: string) =>
       events.find((e) => e.eventAction === action)?.eventDate || null;
 
-    const abuseEmail = json.entities?.flatMap((e: any) =>
-      e.vcardArray?.[1]?.filter((v: any[]) => v[0] === 'email').map((v: any) => v[3])
-    )?.[0] ?? null;
+    // Find registrar entity
+    const registrarEntity = json.entities?.find((e: any) => e.roles?.includes('registrar'));
+    const registrarName = registrarEntity?.vcardArray?.[1]
+      ?.find((v: any[]) => v[0] === 'fn')?.[3] || null;
+    const registrarIanaId = registrarEntity?.publicIds
+      ?.find((p: any) => p.type === 'IANA Registrar ID')?.identifier || null;
 
+    // Find abuse contact entity
+    const abuseEntity = json.entities?.flatMap((e: any) =>
+      e.entities?.filter((sub: any) => sub.roles?.includes('abuse')) || []
+    )?.[0];
+    const abuseEmail = abuseEntity?.vcardArray?.[1]
+      ?.find((v: any[]) => v[0] === 'email')?.[3] || null;
+    const abusePhone = abuseEntity?.vcardArray?.[1]
+      ?.find((v: any[]) => v[0] === 'tel')?.[3]?.replace('tel:', '') || null;
+
+    log.success(`Got WHOIS data via RDAP for ${domain}`);
     return {
       domainName: json.ldhName || null,
       registrar: {
-        name: json.handle || null,
-        id: undefined,
+        name: registrarName,
+        id: registrarIanaId,
         url: undefined,
         registryDomainId: json.handle || null,
       },
@@ -341,7 +362,7 @@ const tryRdapLookup = async (domain: string): Promise<WhoisResult | null> => {
       },
       abuse: {
         email: abuseEmail,
-        phone: undefined,
+        phone: abusePhone,
       },
       status: json.status || [],
       dnssec: json.secureDNS?.zoneSigned ? 'signed' : null,
