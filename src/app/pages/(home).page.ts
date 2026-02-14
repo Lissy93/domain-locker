@@ -112,23 +112,26 @@ export default class HomePageComponent implements OnInit, OnDestroy {
 
   loadDomains() {
     this.loading = true;
-    this.databaseService.instance.listDomains().subscribe({
-      next: (domains) => {
-        this.domains = domains;
-        this.loading = false;
-        this.cdr.markForCheck();
-      },
-      error: (error) => {
-        this.errorHandlerService.handleError({
-          message: 'Failed to load domains',
-          error,
-          showToast: true,
-          location: 'HomePageComponent.loadDomains'
-        });
-        this.loading = false;
-        this.cdr.markForCheck();
-      }
-    });
+
+    this.subscriptions.add(
+      this.databaseService.instance.listDomains().subscribe({
+        next: (domains) => {
+          this.domains = domains;
+          this.loading = false;
+          this.cdr.markForCheck();
+        },
+        error: (error) => {
+          this.errorHandlerService.handleError({
+            message: 'Failed to load domains',
+            error,
+            showToast: true,
+            location: 'HomePageComponent.loadDomains'
+          });
+          this.loading = false;
+          this.cdr.markForCheck();
+        }
+      })
+    );
   }
 
   /* Called after new domain is added, re-fetches domain list */
