@@ -1,4 +1,4 @@
-import { catchError, forkJoin, from, map, Observable, of, throwError } from 'rxjs';
+import { catchError, forkJoin,  map, Observable, of, throwError } from 'rxjs';
 import { Notification } from '~/app/../types/Database';
 import { PgApiUtilService } from '~/app/utils/pg-api.util';
 import { Inject, Injectable } from '@angular/core';
@@ -82,7 +82,7 @@ export class NotificationQueries {
   getNotificationPreferences(): Observable<{ domain_id: string; notification_type: string; is_enabled: boolean }[]> {
     const query = `SELECT domain_id, notification_type, is_enabled FROM notification_preferences`;
 
-    return from(this.pgApiUtil.postToPgExecutor(query)).pipe(
+    return this.pgApiUtil.postToPgExecutor(query).pipe(
       map(({ data }) => data) as any,
       catchError((error) => this.handleError(error) as any),
     ) as any;
@@ -115,7 +115,7 @@ export class NotificationQueries {
     `;
     const params = [limit, offset];
 
-    return from(this.pgApiUtil.postToPgExecutor(query, params)).pipe(
+    return this.pgApiUtil.postToPgExecutor(query, params).pipe(
       map(({ data }) => ({
         notifications: (data as any).map((n: any) => ({
           id: n.id,
@@ -137,7 +137,7 @@ export class NotificationQueries {
     const query = `UPDATE notifications SET read = $1 WHERE id = $2`;
     const params = [readStatus, notificationId];
 
-    return from(this.pgApiUtil.postToPgExecutor(query, params)).pipe(
+    return this.pgApiUtil.postToPgExecutor(query, params).pipe(
       map(() => undefined),
       catchError((error) => this.handleError(error) as any),
     ) as any;
@@ -146,7 +146,7 @@ export class NotificationQueries {
   getUnreadNotificationCount(): Observable<number> {
     const query = `SELECT COUNT(*) AS count FROM notifications WHERE read = false`;
 
-    return from(this.pgApiUtil.postToPgExecutor(query)).pipe(
+    return this.pgApiUtil.postToPgExecutor(query).pipe(
       map(({ data }: any) => parseInt(data?.[0]?.count || '0', 10)),
       catchError((error) => this.handleError(error) as any),
     ) as any;
@@ -165,7 +165,7 @@ export class NotificationQueries {
     `;
     const params = [read, userId];
   
-    return from(this.pgApiUtil.postToPgExecutor(query, params)).pipe(
+    return this.pgApiUtil.postToPgExecutor(query, params).pipe(
       map(() => undefined),
       catchError(error => {
         this.handleError(error);

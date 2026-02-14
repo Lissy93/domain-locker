@@ -7,6 +7,7 @@ import { DomainFaviconComponent } from '~/app/components/misc/favicon.component'
 import { type DbDomain } from '~/app/../types/Database';
 import { SecurityCategory, makeEppArrayFromLabels } from '~/app/constants/security-categories';
 import { SafeDatePipe } from '~/app/utils/safe-date.pipe';
+import { CurrencyService } from '~/app/services/currency.service';
 
 @Component({
   standalone: true,
@@ -18,7 +19,10 @@ import { SafeDatePipe } from '~/app/utils/safe-date.pipe';
 export class DomainInfoComponent implements OnInit {
   @Input() domain: DbDomain | null = null;
 
-  constructor(public domainUtils: DomainUtils) {}
+  constructor(
+    public domainUtils: DomainUtils,
+    public currencyService: CurrencyService
+  ) {}
 
   ngOnInit() {
     // Fallback in case we really fuck up the types

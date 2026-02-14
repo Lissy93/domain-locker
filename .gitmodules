@@ -1,6 +1,3 @@
-[submodule "supabase"]
-	path = supabase
-	url = https://github.com/Lissy93/dl-sb-iac
 [submodule "supabase-server"]
 	path = supabase-server
 	url = https://github.com/Lissy93/dl-sb-iac.git

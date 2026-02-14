@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, AfterViewInit, PLATFORM_ID, Inject, ElementRef, Input } from "@angular/core";
+import { Component, OnInit, ViewChild, AfterViewInit, PLATFORM_ID, Inject, ElementRef, Input, ChangeDetectorRef } from "@angular/core";
 import { ChartComponent, NgApexchartsModule } from "ng-apexcharts";
 import { ApexNonAxisChartSeries, ApexChart, ApexResponsive, ApexTheme, ApexLegend, ApexStroke } from "ng-apexcharts";
 import DatabaseService from '~/app/services/database.service';
@@ -55,7 +55,8 @@ export class DomainPieChartsComponent implements OnInit, AfterViewInit {
   constructor(
     private databaseService: DatabaseService,
     private errorHandler: ErrorHandlerService,
-    @Inject(PLATFORM_ID) private platformId: Object
+    @Inject(PLATFORM_ID) private platformId: Object,
+    private cdr: ChangeDetectorRef,
   ) {}
 
   ngOnInit() {
@@ -103,6 +104,7 @@ export class DomainPieChartsComponent implements OnInit, AfterViewInit {
         this.initChartOptions('registrar', data);
         this.registrarDataLoaded = true;
         this.registrarChartReady = true;
+        this.cdr.markForCheck();
       })
     ).subscribe();
   }
@@ -113,6 +115,7 @@ export class DomainPieChartsComponent implements OnInit, AfterViewInit {
         this.initChartOptions('sslIssuer', data);
         this.sslIssuerDataLoaded = true;
         this.sslIssuerChartReady = true;
+        this.cdr.markForCheck();
       })
     ).subscribe();
   }
@@ -123,6 +126,7 @@ export class DomainPieChartsComponent implements OnInit, AfterViewInit {
         this.initChartOptions('host', data);
         this.hostDataLoaded = true;
         this.hostChartReady = true;
+        this.cdr.markForCheck();
       })
     ).subscribe();
   }
@@ -171,9 +175,35 @@ export class DomainPieChartsComponent implements OnInit, AfterViewInit {
     this.setChartSize();
   }
 
+  /**
+   * Normalizes chart data from different backend formats.
+   * Handles both direct arrays and wrapped { data: [...] } responses.
+   * Ensures domain_count is converted to a number.
+   */
+  private normalizeChartData(response: any): any[] {
+    const data = response?.data ?? response;
+    return Array.isArray(data) ? data : [];
+  }
+
   getRegistrarData(): Observable<{name: string, count: number}[]> {
     return this.databaseService.instance.registrarQueries.getDomainCountsByRegistrar().pipe(
-      map(counts => Object.entries(counts).map(([name, count]) => ({ name, count }))),
+      map(response => {
+        const normalized = this.normalizeChartData(response);
+
+        // Handle array of objects (self-hosted PostgreSQL format)
+        if (Array.isArray(normalized) && normalized.length > 0 && typeof normalized[0] === 'object') {
+          return normalized.map(item => ({
+            name: item.registrar_name ?? item.name ?? 'Unknown',
+            count: Number(item.domain_count ?? item.count ?? 0)
+          }));
+        }
+
+        // Handle Record<string, number> (Supabase format)
+        return Object.entries(response).map(([name, count]) => ({
+          name,
+          count: Number(count)
+        }));
+      }),
       catchError(error => {
         this.errorHandler.handleError({
           error,
@@ -187,7 +217,13 @@ export class DomainPieChartsComponent implements OnInit, AfterViewInit {
 
   getSslIssuerData(): Observable<{name: string, count: number}[]> {
     return this.databaseService.instance.sslQueries.getSslIssuersWithDomainCounts().pipe(
-      map(data => data.map(item => ({ name: item.issuer, count: item.domain_count }))),
+      map(response => {
+        const normalized = this.normalizeChartData(response);
+        return normalized.map(item => ({
+          name: item.issuer ?? item.name ?? 'Unknown',
+          count: Number(item.domain_count ?? item.count ?? 0)
+        }));
+      }),
       catchError(error => {
         this.errorHandler.handleError({
           error,
@@ -201,7 +237,13 @@ export class DomainPieChartsComponent implements OnInit, AfterViewInit {
 
   getHostData(): Observable<{name: string, count: number}[]> {
     return this.databaseService.instance.hostsQueries.getHostsWithDomainCounts().pipe(
-      map(data => data.map(item => ({ name: item.isp, count: item.domain_count }))),
+      map(response => {
+        const normalized = this.normalizeChartData(response);
+        return normalized.map(item => ({
+          name: item.isp ?? item.host_name ?? item.name ?? 'Unknown',
+          count: Number(item.domain_count ?? item.count ?? 0)
+        }));
+      }),
       catchError(error => {
         this.errorHandler.handleError({
           error,

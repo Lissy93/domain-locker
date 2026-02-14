@@ -42,19 +42,20 @@ jobs:
           base: demo
           branch: "bot/update-demo"
           title: "Update Demo Branch from Main"
-          body: |
-            A new tag **${{ env.TAG }}** was just pushed!
+          body: >
+            A new version of Domain Locker has been released (**${{ env.TAG }}**)!
 
-            🤖 Let's merge the latest changes **`main`** → **`demo`**,
-            so that the demo environment is updated to version ${{ env.TAG }}.
+            🤖 This PR will merge **`main`** → **`demo`**,
+            updating the demo environment to version ${{ env.TAG }}.
+            [Click here](https://github.com/${{ github.repository }}/compare/demo...main) to view changes.
 
             <details>
             <summary>🔍 View Context</summary>
 
-            - Repository: ${{ github.repository }}
+            - Repository: [${{ github.repository }}](https://github.com/${{ github.repository }})
             - Tag Reference: ${{ github.ref }}
-            - Tag Name: ${{ env.TAG }}
-            - Workflow Run: ${{ github.run_id }}
+            - Tag Name: [${{ env.TAG }}](https://github.com/${{ github.repository }}/releases/tag/${{ env.TAG }})
+            - Workflow Run: [`${{ github.run_id }}`](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
             - Commit SHA: ${{ github.sha }}
 
             </details>
@@ -63,4 +64,4 @@ jobs:
             > Merging this PR will incorporate the latest changes from main
             > into the demo branch, which will promote the latest updates to the demo environment,
             > deploying it to [demo.domain-locker.com](https://demo.domain-locker.com).
-
+            > Ensure you've reviewed all changes before continuing with the merge.

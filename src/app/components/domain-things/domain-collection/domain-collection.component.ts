@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, OnChanges, SimpleChanges, Output, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import Fuse from 'fuse.js';
 import { DomainCardComponent } from '~/app/components/domain-things/domain-card/domain-card.component';
@@ -21,7 +21,7 @@ import { TranslateModule } from '@ngx-translate/core';
   ],
   templateUrl: './domain-collection.component.html',
 })
-export class DomainCollectionComponent implements OnInit {
+export class DomainCollectionComponent implements OnInit, OnChanges {
   @Input() domains: DbDomain[] = [];
   @Input() showAddButton: boolean = true;
   @Input() showFooter: boolean = true;
@@ -70,6 +70,16 @@ export class DomainCollectionComponent implements OnInit {
     this.updateVisibleColumns();
   }
 
+  ngOnChanges(changes: SimpleChanges) {
+    // When domains input changes, update filtered domains and re-initialize Fuse
+    if (changes['domains'] && !changes['domains'].firstChange) {
+      this.filteredDomains = this.domains;
+      this.initializeFuse();
+      this.sortDomains();
+      this.cdr.markForCheck();
+    }
+  }
+
   onVisibilityChange(selectedFields: FieldOption[]) {
     this.visibleFields = selectedFields;
     this.updateVisibleColumns();
@@ -101,7 +111,11 @@ export class DomainCollectionComponent implements OnInit {
         this.filteredDomains.sort((a, b) => a.domain_name.localeCompare(b.domain_name));
         break;
       case 'expiryDate':
-        this.filteredDomains.sort((a, b) => new Date(a.expiry_date).getTime() - new Date(b.expiry_date).getTime());
+        this.filteredDomains.sort((a, b) => {
+          const aTime = a.expiry_date ? new Date(a.expiry_date).getTime() : Number.MAX_SAFE_INTEGER;
+          const bTime = b.expiry_date ? new Date(b.expiry_date).getTime() : Number.MAX_SAFE_INTEGER;
+          return aTime - bTime;
+        });
         break;
       case 'date':
       default:

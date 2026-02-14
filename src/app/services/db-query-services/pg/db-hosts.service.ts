@@ -1,4 +1,4 @@
-import { catchError, from, map, Observable, of } from 'rxjs';
+import { catchError,  map, Observable, of } from 'rxjs';
 import { DbDomain, Host } from '~/app/../types/Database';
 import { PgApiUtilService } from '~/app/utils/pg-api.util';
 
@@ -12,7 +12,7 @@ export class HostsQueries {
   getHosts(): Observable<Host[]> {
     const query = `SELECT * FROM hosts ORDER BY isp ASC;`;
 
-    return from(this.pgApiUtil.postToPgExecutor<Host>(query)).pipe(
+    return this.pgApiUtil.postToPgExecutor<Host>(query).pipe(
       map((response) => response.data),
       catchError((error) => this.handleError(error))
     );
@@ -24,7 +24,7 @@ export class HostsQueries {
                    LEFT JOIN domain_hosts dh ON h.id = dh.host_id
                    GROUP BY h.isp;`;
 
-    return from(this.pgApiUtil.postToPgExecutor<{ isp: string; domain_count: number }>(query)).pipe(
+    return this.pgApiUtil.postToPgExecutor<{ isp: string; domain_count: number }>(query).pipe(
       map((response) => {
         const counts: Record<string, number> = {};
         response.data.forEach((item) => {
@@ -57,7 +57,7 @@ export class HostsQueries {
                    WHERE h.isp = $1
                    GROUP BY d.id, r.name, r.url;`;
 
-    return from(this.pgApiUtil.postToPgExecutor(query, [hostIsp])).pipe(
+    return this.pgApiUtil.postToPgExecutor(query, [hostIsp]).pipe(
       map((response) => response.data.map(this.formatDomainData)),
       catchError((error) => this.handleError(error))
     );
@@ -69,14 +69,14 @@ export class HostsQueries {
                    LEFT JOIN domain_hosts dh ON h.id = dh.host_id
                    GROUP BY h.id;`;
 
-    return from(this.pgApiUtil.postToPgExecutor<Host & { domain_count: number }>(query)).pipe(
+    return this.pgApiUtil.postToPgExecutor<Host & { domain_count: number }>(query).pipe(
       map((response) => response.data),
       catchError((error) => this.handleError(error))
     );
   }
 
   async saveHost(domainId: string, host?: Host): Promise<void> {
-    if (!host?.isp) return;
+    if (!host?.isp || !host?.query) return;
 
     // Step 1: Check if the host already exists
     const selectQuery = `SELECT id FROM hosts WHERE isp = $1 LIMIT 1;`;

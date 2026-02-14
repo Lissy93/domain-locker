@@ -1,4 +1,5 @@
 import { defineEventHandler } from 'h3';
+import { getBaseUrl } from '../utils/base-url';
 
 const RETENTION_DAYS = 7;
 
@@ -22,7 +23,7 @@ export default defineEventHandler(async (event) => {
     return { error: 'Only available in self-hosted mode' };
   }
 
-  const baseUrl = getEnvVar('DL_BASE_URL', 'http://localhost:3000');
+  const baseUrl = getBaseUrl(event);
   const pgUrl = `${baseUrl}/api/pg-executer`;
   const cutoff = new Date(Date.now() - RETENTION_DAYS * 24 * 60 * 60 * 1000).toISOString();
 

@@ -69,4 +69,4 @@ You can either use a Postgres database or a Supabase instance. Postgres is signi
 1. [Postgres Setup](/about/developing/postgres-setup)
 2. [Supabase Setup](/about/developing/supabase-setup)
 
-During development, you can skip the database setup, and connect to our hosted dev db instance, by using [these environment variables](https://github.com/Lissy93/domain-locker/blob/main/.env.sample). This is NOT suitable for production.
+During development, you can skip the database setup, and connect to our hosted dev db instance, by using [these environment variables](https://github.com/Lissy93/domain-locker/blob/main/.env.sample#L5-L14). This is NOT suitable for production.

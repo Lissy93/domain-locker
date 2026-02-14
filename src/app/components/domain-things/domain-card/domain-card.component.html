@@ -118,7 +118,7 @@
     <div class="text-sm">
       <p *ngIf="domain.domain_costings.renewal_cost" class="m-0 mb-2 font-semibold">
         {{ 'DOMAINS.DOMAIN_COLLECTION.GRID.PAYMENT_DUE' | translate:{
-          amount: (domain.domain_costings.renewal_cost | currency:'USD':'symbol':'1.0-0'),
+          amount: (domain.domain_costings.renewal_cost | currency:currencyService.getCurrencyCode():'symbol':'1.0-0'),
           date: (domain.expiry_date | date:'mediumDate')
         } }}
       </p>
@@ -140,23 +140,23 @@
           {{ 'DOMAINS.DOMAIN_COLLECTION.GRID.PROFIT_LOSS' | translate }}
         </h5>
         <span class="text-{{domain.domain_costings.current_value - domain.domain_costings.purchase_price >= 0? 'green' : 'red'}}-400">
-          {{ domain.domain_costings.current_value - domain.domain_costings.purchase_price | currency:'USD':'symbol':'1.0-0' }}
+          {{ domain.domain_costings.current_value - domain.domain_costings.purchase_price | currency:currencyService.getCurrencyCode():'symbol':'1.0-0' }}
         </span>
         <span>
-          ({{ domain.domain_costings.current_value | currency:'USD':'symbol':'1.0-0' }} - {{ domain.domain_costings.purchase_price | currency:'USD':'symbol':'1.0-0' }})
+          ({{ domain.domain_costings.current_value | currency:currencyService.getCurrencyCode():'symbol':'1.0-0' }} - {{ domain.domain_costings.purchase_price | currency:currencyService.getCurrencyCode():'symbol':'1.0-0' }})
         </span>
         <br>
       } @else if (domain.domain_costings.purchase_price) {
         <h5 class="my-2 mr-2 inline">
           {{ 'DOMAINS.DOMAIN_COLLECTION.GRID.PURCHASE_PRICE' | translate }}
         </h5>
-        <span>{{ domain.domain_costings.purchase_price | currency:'USD':'symbol':'1.0-0' }}</span>
+        <span>{{ domain.domain_costings.purchase_price | currency:currencyService.getCurrencyCode():'symbol':'1.0-0' }}</span>
         <br>
       } @else if (domain.domain_costings.current_value) {
         <h5 class="my-2 mr-2 inline">
           {{ 'DOMAINS.DOMAIN_COLLECTION.GRID.CURRENT_VALUE' | translate }}
         </h5>
-        <span>{{ domain.domain_costings.current_value | currency:'USD':'symbol':'1.0-0' }}</span>
+        <span>{{ domain.domain_costings.current_value | currency:currencyService.getCurrencyCode():'symbol':'1.0-0' }}</span>
       }
     </div>
   </p-panel>

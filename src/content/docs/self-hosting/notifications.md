@@ -92,10 +92,11 @@ You can decide which change events you want to be notified about on a per-domain
 | IP Change | Notifies you when the IP address the domain points to changes. Note: If you use a firewall service like Cloudflare, this is NOT recommended, as the IP address will change frequently. |
 | Registrar Change | Notifies you when the domain is transferred to a different registrar. |
 | WHOIS Change | Notifies you when any WHOIS records change. |
-| DNS Change | Notifies you when any DNS records are added, removed or amended. |
+| DNS Change | Notifies you when any DNS records are added, removed or amended. Note: If data fetching fails, this may trigger false positives. See troubleshooting below. |
 | SSL Expiry | Notifies you when an SSL certificate is due to expire. Note: This is not recommended if you have auto-SSL, as the certificates have a short lifespan and are renewed automatically. |
 | SSL Change | Notifies you when any attributes in an SSL certificate change. Note: This is not recommended if you have auto-SSL, as the certificates have a short lifespan and so will change frequently. |
 | Host Change | Notifies you when the domain is moved to a different host. |
 | Security Features Change | Notifies you when any security features on your domain are added, removed or amended. |
 
 
+If you consistently get false notifications for a specific domain, you may want to disable change notifications for that domain specifically while keeping them enabled for others.

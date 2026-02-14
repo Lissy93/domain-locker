@@ -2,7 +2,7 @@
   <h1>Domain Valuation</h1>
   <a routerLink="/value/edit">
     <button pButton label="Edit" icon="pi pi-pencil"></button>
-  </a>  
+  </a>
 </div>
 
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 relative my-4 mx-0.5">
@@ -21,7 +21,7 @@
       <p class="text-4xl m-0">{{ currencySymbol }}{{ portfolioWorth | number:'1.2-2' }}</p>
     </div>
     <div class="w-full">
-      <span class="text-green-300 text-sm">Total Value: {{ currencySymbol }}{{ totalValue | number:'1.2-2' }}</span> - 
+      <span class="text-green-300 text-sm">Total Value: {{ currencySymbol }}{{ totalValue | number:'1.2-2' }}</span> -
       <span class="text-red-300 text-sm">Total Cost: {{ currencySymbol }}{{ totalPurchaseCost | number:'1.2-2' }}</span>
     </div>
   </div>
@@ -78,13 +78,13 @@
         </a>
       </td>
       <td [class]="domain.purchasePriceClass">
-        {{ currencySymbol }}{{ domain.purchase_price }}
+        {{ currencySymbol }}{{ domain.purchase_price | number:'1.2-2' }}
       </td>
       <td [class]="domain.currentValueClass">
-        {{ currencySymbol }}{{ domain.current_value }}
+        {{ currencySymbol }}{{ domain.current_value | number:'1.2-2' }}
       </td>
       <td [class]="domain.renewalCostClass">
-        {{ currencySymbol }}{{ domain.renewal_cost }}
+        {{ currencySymbol }}{{ domain.renewal_cost | number:'1.2-2' }}
       </td>
       <td>
         @if (domain.auto_renew) {

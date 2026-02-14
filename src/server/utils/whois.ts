@@ -1,10 +1,42 @@
 import whois from 'whois-json';
+import { exec } from 'child_process';
+import { promisify } from 'util';
 import type { Dates, Registrar, Contact, Abuse } from '../../types/common';
 import Logger from './logger';
+
+const execAsync = promisify(exec);
 
 const log = new Logger('whois');
 const WHOISXML_API_KEY = process.env['WHOISXML_API_KEY'];
 const RDAP_BOOTSTRAP_URL = 'https://data.iana.org/rdap/dns.json';
+
+// Parse WHOIS date to ISO format, handling DD/MM/YYYY for international domains
+const parseDate = (date: string | null | undefined): string | undefined => {
+  if (!date) return undefined;
+  // Remove timezone suffixes and clean
+  const cleaned = date.trim().replace(/\s+[A-Z]+$/, '').trim();
+
+  // Already ISO format or similar (YYYY-MM-DD with optional time) - return date part only
+  if (/^[0-9]{4}-[0-9]{2}-[0-9]{2}/.test(cleaned)) {
+    return cleaned.split(/[T\s]/)[0];
+  }
+
+  // DD/MM/YYYY or DD.MM.YYYY format (day > 12 = definitely day-first)
+  const match = cleaned.match(/^(\d{1,2})[\/\.\-](\d{1,2})[\/\.\-](\d{4})/);
+  if (match) {
+    const [, a, b, year] = match.map(Number);
+    const day = a > 12 ? a : (b > 12 ? b : a);
+    const month = a > 12 ? b : (b > 12 ? a : b);
+    const parsed = new Date(year, month - 1, day);
+    if (!isNaN(parsed.getTime())) {
+      return parsed.toISOString().split('T')[0];
+    }
+  }
+
+  // Try standard JS parsing for other formats
+  const parsed = new Date(cleaned);
+  return isNaN(parsed.getTime()) ? undefined : parsed.toISOString().split('T')[0];
+};
 
 interface WhoisResult {
   domainName: string | null;
@@ -22,15 +54,22 @@ export const getWhoisInfo = async (domain: string): Promise<WhoisResult | null> 
   const trimmed = domain.replace(/^(?:https?:\/\/)?(?:www\.)?/i, '').trim();
 
   const fallback = async (): Promise<WhoisResult | null> => {
+    const native = await tryNativeWhois(trimmed);
+    if (native && native.domainName && (native.dates.expiry_date || native.registrar.name !== 'Unknown')) {
+      return native;
+    }
+
     const rdap = await tryRdapLookup(trimmed);
-    if (rdap) return rdap;
+    if (rdap && (rdap.dates.expiry_date || rdap.registrar.name)) {
+      return rdap;
+    }
 
     if (WHOISXML_API_KEY) {
       const xml = await tryWhoisXml(trimmed);
       if (xml) return xml;
     }
 
-    return {} as WhoisResult;
+    return null;
   };
 
   try {
@@ -41,11 +80,17 @@ export const getWhoisInfo = async (domain: string): Promise<WhoisResult | null> 
         setTimeout(() => reject(new Error(`WHOIS timeout after ${WHOIS_TIMEOUT_MS}ms for ${domain}`)), WHOIS_TIMEOUT_MS)
       )
     ]);
-    if (raw && typeof raw === 'object' && Object.keys(raw).length > 0) {
-      log.success(`Got WHOIS data via whois-json for ${domain}`);
-      return normalizeWhoisJson(raw);
+    if (raw && typeof raw === 'object' && Object.keys(raw).length > 0 && !raw.error) {
+      const normalized = normalizeWhoisJson(raw);
+      // Check if we got useful data (dates or registrar info)
+      if (normalized.dates.expiry_date || normalized.registrar.name !== 'Unknown') {
+        log.success(`Got WHOIS data via whois-json for ${domain}`);
+        return normalized;
+      }
+      log.warn(`whois-json returned incomplete data for ${domain} (no dates/registrar), falling back`);
+      return await fallback();
     }
-    log.warn(`whois-json returned empty for ${domain}, falling back`);
+    log.warn(`whois-json returned empty or error for ${domain}, falling back`);
     return await fallback();
   } catch (err) {
     log.error(`whois-json failed for ${domain}: ${(err as Error).message}`);
@@ -55,9 +100,10 @@ export const getWhoisInfo = async (domain: string): Promise<WhoisResult | null> 
 
 /* Converts mystery random whois structure into WhoisResult */
 const normalizeWhoisJson = (raw: any): WhoisResult => {
-  const registrarName = raw.registrarName
-  || (typeof raw.registrar === 'string') ? raw.registrar : raw?.registrar?.name
-  || 'Unknown';
+  const registrarName =
+    raw.registrarName ||
+    (typeof raw.registrar === 'string' ? raw.registrar : raw?.registrar?.name) ||
+    'Unknown';
   return {
     domainName: raw.domainName || null,
     registrar: {
@@ -66,26 +112,26 @@ const normalizeWhoisJson = (raw: any): WhoisResult => {
       url: raw.registrarUrl || null,
       registryDomainId: raw.registryDomainId || null,
     },
-    dates: { // Why can't we just have a single date option!!!
-      creation_date:
+    dates: {
+      creation_date: parseDate(
         raw.creationDate ||
         raw.createdDate ||
         raw.created ||
         raw.domainRegistrationDate ||
         raw.registered ||
         raw.registrationDate ||
-        (raw.dates && (raw.dates.creation_date || raw.dates.created)) ||
-        null,
-      updated_date:
+        (raw.dates && (raw.dates.creation_date || raw.dates.created))
+      ),
+      updated_date: parseDate(
         raw.updatedDate ||
         raw.lastUpdated ||
         raw.updated ||
         raw.domainLastUpdated ||
         raw.lastModified ||
         raw.modified ||
-        (raw.dates && (raw.dates.updated_date || raw.dates.updated)) ||
-        null,
-      expiry_date:
+        (raw.dates && (raw.dates.updated_date || raw.dates.updated))
+      ),
+      expiry_date: parseDate(
         raw.expiryDate ||
         raw.registrarRegistrationExpirationDate ||
         raw.expiresDate ||
@@ -93,8 +139,11 @@ const normalizeWhoisJson = (raw: any): WhoisResult => {
         raw.domainExpirationDate ||
         raw.expiry ||
         raw.expires ||
-        (raw.dates && (raw.dates.expiry_date || raw.dates.expires)) ||
-        null,
+        raw.expire ||
+        raw.paidUntil ||
+        raw.paid_until ||
+        (raw.dates && (raw.dates.expiry_date || raw.dates.expires))
+      ),
     },
     whois: {
       name: raw.registrantName || null,
@@ -173,6 +222,86 @@ const getRdapUrlForTld = async (tld: string): Promise<string | null> => {
   }
 };
 
+/* Try native whois command as a fallback when libraries fail */
+const tryNativeWhois = async (domain: string): Promise<WhoisResult | null> => {
+  // Skip native whois on serverless environments where system packages aren't available
+  if (process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME || process.env.NETLIFY) {
+    return null;
+  }
+
+  try {
+    // Sanitize domain input to prevent command injection
+    const sanitizedDomain = domain.replace(/[^a-zA-Z0-9.-]/g, '');
+    if (!sanitizedDomain || sanitizedDomain !== domain) {
+      log.warn(`Invalid domain format for native whois: ${domain}`);
+      return null;
+    }
+
+    const { stdout, stderr } = await execAsync(`whois ${sanitizedDomain}`, { timeout: 10000 });
+
+    if (!stdout || stdout.length < 50) {
+      log.warn(`Native whois returned insufficient data for ${domain}: ${stdout?.length || 0} bytes`);
+      return null;
+    }
+
+    // Parse key-value pairs from whois output
+    const lines = stdout.split(/\r?\n/);  // Handle both \n and \r\n line endings
+    const data: Record<string, string> = {};
+    let lineCount = 0;
+
+    for (const line of lines) {
+      const trimmedLine = line.trim();
+      if (!trimmedLine) continue;
+
+      const match = trimmedLine.match(/^([^:]+):\s*(.+)$/);
+      if (match) {
+        lineCount++;
+        const key = match[1].trim().toLowerCase().replace(/\s+/g, '_').replace(/\//g, '_');
+        const value = match[2].trim();
+        if (value && !value.startsWith('REDACTED')) {
+          data[key] = value;
+        }
+      }
+    }
+
+    const result = {
+      domainName: data.domain_name || null,
+      registrar: {
+        name: data.registrar || 'Unknown',
+        id: data.registrar_iana_id || null,
+        url: data.registrar_url || data.registrar_whois_server || null,
+        registryDomainId: data.registry_domain_id || null,
+      },
+      dates: {
+        creation_date: parseDate(data.creation_date || data.created_date || data.registration_time),
+        updated_date: parseDate(data.updated_date || data.last_updated),
+        expiry_date: parseDate(data.registry_expiry_date || data.registrar_registration_expiration_date || data.expiry_date || data.expiration_time || data.expire || data.paid_until),
+      },
+      whois: {
+        name: data.registrant_name || null,
+        organization: data.registrant_organization || null,
+        street: data.registrant_street || null,
+        city: data.registrant_city || null,
+        country: data.registrant_country || null,
+        state: data.registrant_state_province || data.registrant_state || null,
+        postal_code: data.registrant_postal_code || null,
+      },
+      abuse: {
+        email: data.registrar_abuse_contact_email || null,
+        phone: data.registrar_abuse_contact_phone || null,
+      },
+      status: data.domain_status ? parseStatusArray(data.domain_status) : [],
+      dnssec: data.dnssec || null,
+    };
+
+    log.success(`Got WHOIS data via native whois command for ${domain}`);
+    return result;
+  } catch (err) {
+    log.warn(`Native whois failed for ${domain}: ${(err as Error).message}`);
+    return null;
+  }
+};
+
 const tryRdapLookup = async (domain: string): Promise<WhoisResult | null> => {
   try {
     const tld = domain.split('.').pop();
@@ -192,22 +321,35 @@ const tryRdapLookup = async (domain: string): Promise<WhoisResult | null> => {
     const getEvent = (action: string) =>
       events.find((e) => e.eventAction === action)?.eventDate || null;
 
-    const abuseEmail = json.entities?.flatMap((e: any) =>
-      e.vcardArray?.[1]?.filter((v: any[]) => v[0] === 'email').map((v: any) => v[3])
-    )?.[0] ?? null;
+    // Find registrar entity
+    const registrarEntity = json.entities?.find((e: any) => e.roles?.includes('registrar'));
+    const registrarName = registrarEntity?.vcardArray?.[1]
+      ?.find((v: any[]) => v[0] === 'fn')?.[3] || null;
+    const registrarIanaId = registrarEntity?.publicIds
+      ?.find((p: any) => p.type === 'IANA Registrar ID')?.identifier || null;
 
+    // Find abuse contact entity
+    const abuseEntity = json.entities?.flatMap((e: any) =>
+      e.entities?.filter((sub: any) => sub.roles?.includes('abuse')) || []
+    )?.[0];
+    const abuseEmail = abuseEntity?.vcardArray?.[1]
+      ?.find((v: any[]) => v[0] === 'email')?.[3] || null;
+    const abusePhone = abuseEntity?.vcardArray?.[1]
+      ?.find((v: any[]) => v[0] === 'tel')?.[3]?.replace('tel:', '') || null;
+
+    log.success(`Got WHOIS data via RDAP for ${domain}`);
     return {
       domainName: json.ldhName || null,
       registrar: {
-        name: json.handle || null,
-        id: undefined,
+        name: registrarName,
+        id: registrarIanaId,
         url: undefined,
         registryDomainId: json.handle || null,
       },
       dates: {
-        creation_date: getEvent('registration') || undefined,
-        updated_date: getEvent('last changed') || undefined,
-        expiry_date: getEvent('expiration') || undefined,
+        creation_date: parseDate(getEvent('registration')) || undefined,
+        updated_date: parseDate(getEvent('last changed')) || undefined,
+        expiry_date: parseDate(getEvent('expiration')) || undefined,
       },
       whois: {
         name: undefined,
@@ -220,7 +362,7 @@ const tryRdapLookup = async (domain: string): Promise<WhoisResult | null> => {
       },
       abuse: {
         email: abuseEmail,
-        phone: undefined,
+        phone: abusePhone,
       },
       status: json.status || [],
       dnssec: json.secureDNS?.zoneSigned ? 'signed' : null,
@@ -234,11 +376,12 @@ const tryRdapLookup = async (domain: string): Promise<WhoisResult | null> => {
 /* We can also try a whois lookup using a third-party API. But, unlikely to work if our whois failed */
 const tryWhoisXml = async (domain: string): Promise<WhoisResult | null> => {
   try {
-    const apiUrl =
-      `https://www.whoisxmlapi.com/whoisserver/WhoisService?` +
-      `apiKey=${WHOISXML_API_KEY}&outputFormat=json&domainName=${domain}`;
+    const url = new URL('https://www.whoisxmlapi.com/whoisserver/WhoisService');
+    url.searchParams.set('apiKey', WHOISXML_API_KEY || '');
+    url.searchParams.set('outputFormat', 'json');
+    url.searchParams.set('domainName', domain);
 
-    const res = await fetch(apiUrl);
+    const res = await fetch(url.toString());
     if (!res.ok) throw new Error(res.statusText);
     const data = await res.json();
     const record = data?.WhoisRecord?.registryData ?? {};
@@ -253,9 +396,9 @@ const tryWhoisXml = async (domain: string): Promise<WhoisResult | null> => {
         registryDomainId: record.registryDomainId || null,
       },
       dates: {
-        creation_date: record.createdDateNormalized || null,
-        expiry_date: record.expiresDateNormalized || null,
-        updated_date: record.updatedDateNormalized || null,
+        creation_date: parseDate(record.createdDateNormalized),
+        expiry_date: parseDate(record.expiresDateNormalized),
+        updated_date: parseDate(record.updatedDateNormalized),
       },
       whois: {
         name: registrant.name || null,

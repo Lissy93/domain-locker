@@ -82,11 +82,18 @@ It also has live data on the current health of the app, as well as build info an
 
 ---
 
-### Source Code
-If you have found a bug, either in Domain Locker, or a related package/service, then the method of finding and fixing the issue will be through reading or editing the source code.
+### Common Issues
+
+We've documented common issues and their solutions (or workarounds) in the [Troubleshooting](/about/self-hosting/troubleshooting) guide.
+
+---
+
+### Source Code and Docs
+If you have found a bug, either in Domain Locker, or a related package/service, then the method of finding and fixing the issue will be through reading or the source code and/or documentation.
 
 - Client app and API: [github.com/lissy93/domain-locker](https://github.com/lissy93/domain-locker)
 - Supabase config, schema and functions: [github.com/Lissy93/dl-sb-iac](https://github.com/Lissy93/dl-sb-iac/)
+- Docs for understanding and using the source code: [Dev Docs](/about/developing)
 - Dependencies and third-party docs: [Docs](/about/developing/third-party-docs)
 
 ---

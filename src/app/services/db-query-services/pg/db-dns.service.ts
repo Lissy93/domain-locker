@@ -1,4 +1,4 @@
-import { catchError, forkJoin, from, map, Observable, of } from 'rxjs';
+import { catchError, forkJoin,  map, Observable, of } from 'rxjs';
 import { PgApiUtilService } from '~/app/utils/pg-api.util';
 import { Dns, SaveDomainData } from '~/app/../types/Database';
 
@@ -17,7 +17,7 @@ export class DnsQueries {
       WHERE dns_records.record_type = $1
     `;
 
-    return from(this.pgApiUtil.postToPgExecutor(query, [recordType])).pipe(
+    return this.pgApiUtil.postToPgExecutor(query, [recordType]).pipe(
       map((response) => {
         const data = response.data;
         return data.map((record: any) => ({

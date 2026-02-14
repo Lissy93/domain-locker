@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PrimeNgModule } from '~/app/prime-ng.module';
@@ -35,6 +35,7 @@ export default class TagDomainsPageComponent implements OnInit {
     private messageService: MessageService,
     private confirmationService: ConfirmationService,
     private errorHandler: ErrorHandlerService,
+    private cdr: ChangeDetectorRef,
   ) {}
 
   ngOnInit() {
@@ -54,6 +55,7 @@ export default class TagDomainsPageComponent implements OnInit {
         if (tag.icon && !tag.icon.includes('/')) {
           this.tag.icon = `mdi/${tag.icon}`;
         }
+        this.cdr.markForCheck();
       },
       error: (error) => {
         this.errorHandler.handleError({
@@ -63,6 +65,7 @@ export default class TagDomainsPageComponent implements OnInit {
           showToast: true,
         });
         this.loading = false;
+        this.cdr.markForCheck();
       }
     });
   }
@@ -73,6 +76,7 @@ export default class TagDomainsPageComponent implements OnInit {
       next: (domains) => {
         this.domains = domains;
         this.loading = false;
+        this.cdr.markForCheck();
       },
       error: (error) => {
         this.errorHandler.handleError({
@@ -82,6 +86,7 @@ export default class TagDomainsPageComponent implements OnInit {
           showToast: true,
         });
         this.loading = false;
+        this.cdr.markForCheck();
       }
     });
   }

@@ -8,34 +8,33 @@ meta:
     content: About
 ---
 
-I have documented and open sourced Domain Locker for free. You can find the source on GitHub, at [lissy93/domain-locker](https://github.com/lissy93/domain-locker).
-
-### ⚠️ Important Disclaimer
+### Important Disclaimer
 <blockquote class="warning">
-The self-hosted edition comes with no warranty. There are no guarantees for functionality and maintaining, securing and managing the infrastructure will be your responsibility. The developer cannot be held liable for any damages or losses caused by the use of the self-hosted edition.
-It is not intended to be publicly exposed, unless secured it behind a firewall, with correct access controls implemented.
+⚠️ The self-hosted edition comes with no warranty. There are no guarantees for functionality and maintaining, securing and managing the infrastructure will be your responsibility. The developer cannot be held liable for any damages or losses caused by the use of the self-hosted edition.
+</blockquote>
+
+<blockquote class="error">
+‼️ Domain Locker is not intended to be publicly exposed to the internet. It does not come with authentication, and may be susceptible unrestricted or arbitrary SQL execution unless properly secured behind a firewall, with correct access controls implemented.
 </blockquote>
 
 ---
 
 ## Prerequisites
 
-In order to self-host Domain Locker, you will need a server.
-This can be anything from a low-powered SBC like a Raspberry Pi  to a dedicated VPS.
-
-
-Domain Locker is intended to be run with Docker, so you will need to have Docker and Docker Compose installed on your server.
-You may also need a domain name and a valid SSL certificate for that domain.
+In order to self-host Domain Locker, you will need a server (such as a Raspberry Pi, laptop, VM or VPS).
+Domain Locker is intended to be run with Docker, so you will need to have Docker and Docker Compose installed.
 
 ---
 
 ## Deployment
 
-- [With Docker](/about/self-hosting/deploying-with-docker-compose)
-- [With Kubernetes](/about/self-hosting/deploying-with-kubernetes-helm-charts)
-- [On Proxmox VE](/about/self-hosting/proxmox-community-script)
-- [From Umbrel](/about/self-hosting/umbrel-os-app)
-- [From Source](/about/self-hosting/deploying-from-source)
+- ![🐳](https://favicon.im/docker.com) [With Docker](/about/self-hosting/deploying-with-docker-compose)
+- ![💠](https://favicon.im/kuberns.com) [With Kubernetes](/about/self-hosting/deploying-with-kubernetes-helm-charts)
+- ![🔶](https://favicon.im/proxmox.com) [On Proxmox VE](/about/self-hosting/proxmox-community-script)
+- ![☂️](https://favicon.im/umbrel.com) [On Umbrel](/about/self-hosting/umbrel-os-app)
+- ![](https://favicon.im/easypanel.io) [On easypanel](/about/self-hosting/deploying-on-easypanel-io)
+- ![🐙](https://favicon.im/github.com) [From Source](/about/self-hosting/deploying-from-source)
+- ![](https://favicon.im/supabase.com) [With Supabase](/about/self-hosting/self-hosting-supabase)
 
 #### One-Liner
 
@@ -45,17 +44,19 @@ curl -fsSL https://install.domain-locker.com | bash
 
 ---
 
-## Support
+## Resolving Issues
 
-- [Debugging Docs](/about/developing/debugging)
-- [Checking Logs](/about/developing/checking-logs)
-- [3rd-party Docs](/about/developing/third-party-docs)
+- [Debugging Docs](/about/developing/debugging) - Walk through of diagnosing issues
+- [Checking Logs](/about/developing/checking-logs) - How view and understand the build and runtime logs
+- [Troubleshooting](/about/self-hosting/troubleshooting) - Solutions for common issues and outline of known limitations
+- [3rd-party Docs](/about/developing/third-party-docs) - Signposting to docs for related packages and services
+- [Support](/about/support/self-hosted-support) - Contact details for support queries (currently unavailable for free users)
 
 ---
 
 ## Developing
 
-- [Dev Setup](/about/developing)
+- [Dev Setup and Docs](/about/developing)
 - [Source Code](https://github.com/lissy93/domain-locker)
 
 ---
@@ -63,7 +64,7 @@ curl -fsSL https://install.domain-locker.com | bash
 ## See Also
 - [Auto-Fetching Domain Info](/about/self-hosting/domain-fetching-config)
 - [Configuring Expiry Notifications](/about/self-hosting/notifications-self-hosted)
-- [Docker Best Practices](/about/developing/general-docker-advice)
+- [Docker Best Practices](/about/self-hosting/general-docker-advice)
 - [Architecture Overview](/about/self-hosting/understanding-the-architecture)
 - [Conditions for Public Instances](/about/self-hosting/guidelines-for-public-instance)
 
@@ -74,19 +75,27 @@ a:visited {
   color: var(--primary-400);
 }
 
-  .warning {
+blockquote.warning, blockquote.error {
+  border-radius: 0.25rem;
+  padding: 0.5rem;
+  margin: 0.25rem 0 1rem 0;
+  font-size: 0.8rem;
+  line-height: 1rem;
+  p {
+    margin: 0.2rem 0 0 0;
+  }
+}
+
+.warning {
     background-color: var(--yellow-200);
     color: var(--yellow-800);
     border: 1px solid var(--yellow-600);
-    border-radius: 0.25rem;
-    padding: 0.5rem;
-    margin: 0.25rem 0 1rem 0;
-    font-size: 0.8rem;
-    line-height: 1rem;
-    p {
-      margin: 0.2rem 0 0 0;
-    }
-  }
+}
+.error {
+    background-color: var(--red-200);
+    color: var(--red-800);
+    border: 1px solid var(--red-600);
+}
 .screenshots-wrap {
   display: flex;
   gap: 1rem;
@@ -112,5 +121,10 @@ a:visited {
 }
 }
 
+li img {
+  margin: 0;
+  display: inline;
+  width: 16px;
+}
 
 </style>

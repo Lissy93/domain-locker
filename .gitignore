@@ -103,6 +103,9 @@ coverage
 .env.test
 .env.production
 
+# Docker secrets directory
+/secrets/
+
 # parcel-bundler cache (https://parceljs.org/)
 .cache
 .parcel-cache
@@ -144,3 +147,4 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+.claude/settings.local.json
