@@ -1,4 +1,4 @@
-<div class="flex gap-2 items-center justify-between h-full flex-wrap md:flex-nowrap h-full w-full">
+<div class="flex gap-2 items-center justify-between h-full flex-wrap md:flex-nowrap w-full">
 
   <div class="w-full sm:w-1/2 flex flex-col gap-2 pl-2 py-2">
     <p class="m-0 text-primary opacity-70 font-semibold text-lg">{{ 'HOME.HERO.BRAND' | translate }}</p>
@@ -14,30 +14,30 @@
 
     <div class="flex flex-wrap gap-4 items-center justify-center md:justify-end">
       <a href="https://github.com/lissy93/domain-locker">
-        <p-button 
+        <p-button
           [label]="'HOME.HERO.BUTTON.VIEW_GITHUB' | translate"
-          severity="secondary" 
-          icon="pi pi-github" 
+          severity="secondary"
+          icon="pi pi-github"
           class="min-w-48"
           [outlined]="true"
-          styleClass="w-full" 
+          styleClass="w-full"
         />
       </a>
       <p-button
         routerLink="/login"
         [queryParams]="{ newUser: 'true' }"
         [label]="'HOME.HERO.BUTTON.GET_STARTED' | translate"
-        class="min-w-48" 
-        icon="pi pi-arrow-circle-right" 
-        styleClass="w-full" 
+        class="min-w-48"
+        icon="pi pi-arrow-circle-right"
+        styleClass="w-full"
       />
     </div>
-    
+
   </div>
 
   <a class="w-full sm:w-1/2 flex flex-col gap-2 pl-4 py-2 items-center" routerLink="/about/demo">
-    <p-image 
-      src="https://cdn.as93.net/project-screens/domain-locker-homepage" 
+    <p-image
+      src="https://cdn.as93.net/project-screens/domain-locker-homepage/w1024"
       alt="A screenshot of Domain Locker homepage showing a list of domains"
       title="Domain Locker Homepage"
       imageClass="rounded p-card w-full border-primary border-2"
