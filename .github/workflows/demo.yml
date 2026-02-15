@@ -42,11 +42,10 @@ jobs:
           base: demo
           branch: "bot/update-demo"
           title: "Update Demo Branch from Main"
-          body: >
+          body: |
             A new version of Domain Locker has been released (**${{ env.TAG }}**)!
 
-            🤖 This PR will merge **`main`** → **`demo`**,
-            updating the demo environment to version ${{ env.TAG }}.
+            🤖 This PR will merge **`main`** → **`demo`**, updating the demo environment to version ${{ env.TAG }}.
             [Click here](https://github.com/${{ github.repository }}/compare/demo...main) to view changes.
 
             <details>
