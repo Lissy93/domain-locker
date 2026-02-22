@@ -6,7 +6,7 @@
 
 # allow setting environment variables with docker secrets 
 # the format is <variable-name>__FILE
-SUFFIX="__FILE"
+SUFFIX="_FILE"
 
 # loop through all environment variables
 for VAR in $(printenv | awk -F= '{print $1}'); do
