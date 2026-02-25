@@ -74,7 +74,11 @@ export async function updateSSL(
       newVal = normalizeStr(newVal);
     }
 
-    
+    // Skip if both values are empty (no real change)
+    if (!oldVal && !newVal) {
+      continue;
+    }
+
     // Special date comparison, because timezones are stupid
     if (field.type === 'date') {
       const oldDate = new Date(oldVal);
@@ -82,6 +86,12 @@ export async function updateSSL(
 
       const diffInMs = Math.abs(newDate.getTime() - oldDate.getTime());
       const diffInDays = diffInMs / (1000 * 60 * 60 * 24);
+
+      // Skip if new value is invalid/empty (NaN means we couldn't parse the new date)
+      // This prevents ghost changes when SSL fetch fails
+      if (isNaN(diffInDays) && !newVal) {
+        continue;
+      }
 
       if (isNaN(diffInDays) || diffInDays > 1) {
         updateSet.push(`${field.column} = $${updateSet.length + 2}::date`);
@@ -92,6 +102,11 @@ export async function updateSSL(
     }
     
     if (oldVal !== newVal && field.type != 'date') {
+      // Skip recording if new value is empty (likely a fetch failure, not a real change)
+      if (!newVal && oldVal) {
+        continue;
+      }
+
       updateSet.push(`${field.column} = $${updateSet.length + 2}::${field.type}`);
       updateValues.push(field.new ?? null);
 
