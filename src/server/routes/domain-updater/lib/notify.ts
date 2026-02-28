@@ -31,6 +31,14 @@ export async function notifyUser(
       return;
     }
 
+    // Get domain name from domain ID, to include in notification
+    const domainResult = await callPgExecutor<any>(
+      pgExec,
+      `SELECT domain_name FROM domains WHERE id = $1`,
+      [domainId]
+    );
+    const domainName = domainResult?.[0]?.domain_name ?? 'unknown domain';
+    
     // Insert notification
     await callPgExecutor(
       pgExec,
@@ -43,7 +51,7 @@ export async function notifyUser(
 
     // Send webhook notification
     await sendWebhookNotification(
-      message || `Change detected: ${changeType}`,
+      message || `Change detected in ${domainName}: ${changeType}`,
       'Domain Locker Update',
       [changeType]
     );
