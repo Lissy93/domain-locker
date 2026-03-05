@@ -213,6 +213,7 @@ flowchart TB
 - [![Umbrel](https://img.shields.io/badge/Umbrel-domain_locker-7472fc?style=flat&logo=umbrel&labelColor=5351fb)](https://apps.umbrel.com/app/domain-locker)
 - [![Supabase](https://img.shields.io/badge/Supabase-domain_locker-3FCF8E?style=flat&logo=supabase&labelColor=39ad79&logoColor=ffffff)](https://github.com/Lissy93/dl-sb-iac)
 - [![Proxmox](https://img.shields.io/badge/Proxmox-domain_locker-e57000?style=flat&logo=proxmox&labelColor=cf6806&logoColor=ffffff)](https://community-scripts.github.io/ProxmoxVE/scripts?id=domain-locker)
+- [![TrueNAS](https://img.shields.io/badge/TrueNAS-domain_locker-71BF44?style=flat&logo=truenas&labelColor=0095d5&logoColor=ffffff)](https://apps.truenas.com/catalog/domain-locker/)
 - [![EasyPanel](https://img.shields.io/badge/EasyPanel-domain_locker-15b7b1?style=flat&logo=qlty&labelColor=06976c&logoColor=ffffff)](https://domain-locker.com/about/self-hosting/deploying-on-easypanel-io) _(Pending)_
 - [![Unraid](https://img.shields.io/badge/Unraid-domain_locker-FF754B?style=flat&logo=unraid&labelColor=F15A2C&logoColor=ffffff)](https://domain-locker.com/about/self-hosting/deploying-on-unraid) _(Planned)_
 
@@ -663,14 +664,14 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 <!-- Dinosaurs are Awesome -->
 <!-- 
-                        . - ~ ~ ~ - .
-      ..     _      .-~               ~-.
-     //|     \ `..~                      `.
-    || |      }  }              /       \  \
-(\   \\ \~^..'                 |         }  \
- \`.-~  o      /       }       |        /    \
- (__          |       /        |       /      `.
-  `- - ~ ~ -._|      /_ - ~ ~ ^|      /- _      `.
-              |     /          |     /     ~-.     ~- _
-              |_____|          |_____|         ~ - . _ _~_-_
+                        . - ~ ~ ~ ~ - .
+      ..     _      .-~                 ~-.
+     //|     \ `..~                        `.
+    || |      }  }                /       \  \
+(\   \\ \~^..'                   |         }  \
+ \`.-~  o      /       }         |        /    \
+ (__          |       /          |       /      `.
+  `- - ~ ~ -._|      /_ - ~ ~ ~ ^|      /- _      `.
+              |     /            |     /     ~-.     ~- _
+              |_____|            |_____|         ~ - . _ _~_-_
 -->
