@@ -79,6 +79,7 @@
     "@types/file-saver": "^2.0.7",
     "@types/pg": "^8.11.10",
     "@types/whois-json": "^2.0.4",
+    "angular-eslint": "^21.0.1",
     "autoprefixer": "^10.4.20",
     "jsdom": "^22.1.0",
     "postcss": "^8.4.49",

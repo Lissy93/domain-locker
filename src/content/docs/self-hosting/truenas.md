@@ -77,3 +77,9 @@ To roll back, click the **Roll Back** button on the app's detail page and select
 - If the app name `domain-locker` is already in use (e.g. from a previous install), choose a different name or delete the existing instance first.
 
 - For a general walkthrough of the TrueNAS app installation process, see [Installing Apps](https://apps.truenas.com/managing-apps/installing-apps/) in the TrueNAS documentation.
+
+---
+
+Thank you [@aidik](https://github.com/aidik) for submitting it ([truenas/apps#4475](https://github.com/truenas/apps/pull/4475))!
+
+[![screenshot](https://cdn.as93.net/screenshots/truenas-app-catalog-domain-locker/w1024)](https://apps.truenas.com/catalog/domain-locker/)
