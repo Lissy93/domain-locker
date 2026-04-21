@@ -74,11 +74,17 @@ export async function updateSSL(
       newVal = normalizeStr(newVal);
     }
 
-    
+    // If the fresh fetch didn't produce a value for this field (e.g. the SSL
+    // fetch failed upstream), don't clobber existing data with an empty string.
+    // For date columns this also prevents `""::date` casts which Postgres rejects
+    // with `invalid input syntax for type date: ""`.
+    if (!newVal) continue;
+
     // Special date comparison, because timezones are stupid
     if (field.type === 'date') {
-      const oldDate = new Date(oldVal);
       const newDate = new Date(newVal);
+      if (isNaN(newDate.getTime())) continue;
+      const oldDate = new Date(oldVal);
 
       const diffInMs = Math.abs(newDate.getTime() - oldDate.getTime());
       const diffInDays = diffInMs / (1000 * 60 * 60 * 24);
@@ -90,7 +96,7 @@ export async function updateSSL(
         changes.push(`SSL ${field.label}`);
       }
     }
-    
+
     if (oldVal !== newVal && field.type != 'date') {
       updateSet.push(`${field.column} = $${updateSet.length + 2}::${field.type}`);
       updateValues.push(field.new ?? null);
