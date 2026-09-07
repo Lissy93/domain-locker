@@ -301,10 +301,10 @@ For more complex scheduling, consider [Ofelia](https://github.com/mcuadros/ofeli
 You can mount custom assets using volumes, e.g.
 
 ```bash
--v ~/my-logo.svg:/app/dist/logo.svg
+-v ~/my-logo.svg:/app/dist/analog/public/logo.svg
 ```
 
-Note that static files are served from `/app/dist/` (not `/app/src/assets/`)
+Note that static files are served from `/app/dist/analog/public/` (not `/app/src/assets/`)
 
 ---
 

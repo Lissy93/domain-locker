@@ -93,7 +93,7 @@ const themeFontTargets = Object.values(
   ),
 ).map((src) => ({ src, dest: 'themes/fonts' }));
 
-export default defineConfig( ({ command, mode }) => {
+export default defineConfig( ({ command, mode, isSsrBuild }) => {
 
   // So as to not touch DN or start scheduler while Nitro is building
   if (command === 'build') process.env['DL_BUILDING'] = 'true';
@@ -123,7 +123,7 @@ export default defineConfig( ({ command, mode }) => {
     build: {
       target: ['es2020'],
       sourcemap: mode === 'development' ? 'inline' : false,
-      outDir: 'dist',
+      outDir: 'dist/client',
       assetsDir: 'assets',
       minify: 'terser',
     },
@@ -172,7 +172,7 @@ export default defineConfig( ({ command, mode }) => {
           },
         },
       }),
-      viteStaticCopy({
+      ...(isSsrBuild ? [] : [viteStaticCopy({
         targets: [
           ...themeTargets.map((target) => ({
             src: target.src,
@@ -181,7 +181,7 @@ export default defineConfig( ({ command, mode }) => {
           })),
           ...themeFontTargets,
         ],
-      }),
+      })]),
     ],
 
     test: {

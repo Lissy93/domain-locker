@@ -125,7 +125,7 @@
     "yaml": "^2.9.0",
     "uuid": "^11.1.1",
     "pacote": "^21.5.0",
-    "tar": "^7.5.15",
+    "tar": "^7.5.19",
     "webpack": "^5.106.2",
     "xmlbuilder2": "^4.0.3",
     "@module-federation/enhanced": "^2.4.0",
