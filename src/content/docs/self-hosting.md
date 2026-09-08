@@ -41,11 +41,11 @@ Domain Locker is intended to be run with Docker, so you will need to have Docker
 
 #### From Source
 
-Alternativley you can build and run Domain Locker from source. Following the [this guide](/about/self-hosting/deploying-from-source), along with a database:
+Alternatively you can build and run Domain Locker from source. Following the [this guide](/about/self-hosting/deploying-from-source), along with a database:
 
-- ![🪶](https://pixelflare.cc/alicia/icons/sqlite.png/w128) [SQLite setup instrocutions](/about/developing/sqlite-setup)
-- ![🐘](https://pixelflare.cc/alicia/icons/postgres.png/w128) [Postgres setup instrocutions](/about/developing/postgres-setup)
-- ![🗃️](https://pixelflare.cc/alicia/icons/supabase/w128) [Supabase setup instrocutions](/about/developing/supabase-setup)
+- ![🪶](https://pixelflare.cc/alicia/icons/sqlite.png/w128) [SQLite setup instructions](/about/developing/sqlite-setup)
+- ![🐘](https://pixelflare.cc/alicia/icons/postgres.png/w128) [Postgres setup instructions](/about/developing/postgres-setup)
+- ![🗃️](https://pixelflare.cc/alicia/icons/supabase/w128) [Supabase setup instructions](/about/developing/supabase-setup)
 
 ---
 

@@ -136,11 +136,18 @@ This value is used by **FeatureService** to dynamically enable or disable featur
 | `DL_GLITCHTIP_DSN` | GlitchTip DSN (for error tracking). | ❌ |
 | `DL_PLAUSIBLE_URL` | Plausible instance URL (for analytics). | ❌ |
 | `DL_PLAUSIBLE_SITE` | Plausible site ID. | ❌ |
-| `DL_PG_HOST` | PostgreSQL database hostname. | ✅ (Self-hosted) |
-| `DL_PG_PORT` | PostgreSQL database port. | ✅ (Self-hosted) |
-| `DL_PG_NAME` | PostgreSQL database name. | ✅ (Self-hosted) |
-| `DL_PG_USER` | PostgreSQL username. | ✅ (Self-hosted) |
-| `DL_PG_PASSWORD` | PostgreSQL password. | ✅ (Self-hosted) |
+| `DL_SQLITE_PATH` | Where the SQLite database lives (defaults to `./data/domain-locker.db`). | ❌ |
+| `DL_PG_HOST` | PostgreSQL database hostname. | ❌ (Only for Postgres) |
+| `DL_PG_PORT` | PostgreSQL database port. | ❌ (Only for Postgres) |
+| `DL_PG_NAME` | PostgreSQL database name. | ❌ (Only for Postgres) |
+| `DL_PG_USER` | PostgreSQL username. | ❌ (Only for Postgres) |
+| `DL_PG_PASSWORD` | PostgreSQL password. | ❌ (Only for Postgres) |
+| `DL_AUTH_PASSWORD` | Require a password to use the app. Off by default. | ❌ |
+| `DL_AUTH_SECRET` | Key used to sign session cookies. Derived from the password when unset. | ❌ |
+| `DL_API_KEY` | Lets an external scheduler trigger jobs when a password is set. | ❌ |
+| `DL_DISABLE_SCHEDULER` | Turn off the internal scheduler, and drive the jobs yourself. | ❌ |
+| `DL_UPDATER_INTERVAL_MINUTES` | How often domains are refreshed (default daily). | ❌ |
+| `DL_MONITOR_INTERVAL_MINUTES` | How often uptime is checked (default 15). | ❌ |
 | `DL_DEMO_USER` | Demo user email. | ❌ (Demo mode only) |
 | `DL_DEMO_PASS` | Demo user password. | ❌ (Demo mode only) |
 | `DL_DOMAIN_INFO_API` | API endpoint for domain info (`/api/domain-info`). | ✅ |

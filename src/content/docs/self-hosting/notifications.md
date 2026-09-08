@@ -90,9 +90,9 @@ If you consistently get false notifications for a specific domain, you may want 
 ---
 
 ## Enabling update crons
-SQLite will setup and register crons autonatically. But if you're using the Postgres version, then you need some cron jobs to periodically check for updates and expirations.
+There's nothing to do here. The app checks for updates and expirations itself, on a timer, whichever database you're using. You can change how often with the `DL_UPDATER_INTERVAL_MINUTES` and `DL_REMINDERS_INTERVAL_MINUTES` env vars.
 
-In your Docker Compose, add a section for calling these endpoints as a cron. For example:
+If you'd rather drive these yourself, set `DL_DISABLE_SCHEDULER=true` and call the endpoints from your own cron. For example, in your Docker Compose:
 
 ```yml
   updater:
@@ -101,8 +101,6 @@ In your Docker Compose, add a section for calling these endpoints as a cron. For
     restart: unless-stopped
     depends_on:
       - app
-    networks:
-      - domain_locker_network
     command: >
       /bin/sh -c "
         apk add --no-cache curl &&

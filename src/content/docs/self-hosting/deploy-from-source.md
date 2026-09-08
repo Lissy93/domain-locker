@@ -55,11 +55,11 @@ Set `PORT` to serve it somewhere else
 
 ## The Database Setup
 
-SQLite is reccomended, since it needs no additional setup.
+SQLite is recommended, since it needs no additional setup.
 
-- ![🪶](https://pixelflare.cc/alicia/icons/sqlite.png/w128) [SQLite setup instrocutions](/about/developing/sqlite-setup)
-- ![🐘](https://pixelflare.cc/alicia/icons/postgres.png/w128) [Postgres setup instrocutions](/about/developing/postgres-setup)
-- ![🗃️](https://pixelflare.cc/alicia/icons/supabase/w128) [Supabase setup instrocutions](/about/developing/supabase-setup)
+- ![🪶](https://pixelflare.cc/alicia/icons/sqlite.png/w128) [SQLite setup instructions](/about/developing/sqlite-setup)
+- ![🐘](https://pixelflare.cc/alicia/icons/postgres.png/w128) [Postgres setup instructions](/about/developing/postgres-setup)
+- ![🗃️](https://pixelflare.cc/alicia/icons/supabase/w128) [Supabase setup instructions](/about/developing/supabase-setup)
 
 
 During development, you can skip the database setup, and connect to our hosted dev db instance, by using [these environment variables](https://github.com/Lissy93/domain-locker/blob/main/.env.sample#L5-L14). This is NOT suitable for production.
