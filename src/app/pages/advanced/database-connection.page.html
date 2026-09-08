@@ -3,12 +3,11 @@
     <div>
       <h2 class="text-2xl m-0">Database Connection</h2>
       <p class="opacity-70 mt-2 mb-0">
-        Domain Locker connects to its database on the server. Credentials are never sent
-        to your browser.
+        View and configure which database the backend API is using.
       </p>
     </div>
 
-    <div class="flex flex-column gap-2">
+    <div class="flex flex-column gap-2 bg-surface-25 p-2 rounded">
       <div class="flex justify-content-between align-items-center">
         <span class="font-semibold">Data source</span>
         <p-tag
@@ -30,6 +29,18 @@
         }
       </p>
     </div>
+
+    @if (infoRows.length) {
+      <div class="flex flex-column gap-2">
+        <span class="font-semibold">Details</span>
+        @for (row of infoRows; track row.label) {
+          <div class="flex justify-content-between align-items-start gap-3 text-sm">
+            <span class="opacity-70">{{ row.label }}</span>
+            <span class="text-right break-all font-mono">{{ row.value }}</span>
+          </div>
+        }
+      </div>
+    }
 
     @if (leftoverCredentials.length) {
       <p-message severity="warn" styleClass="w-full">

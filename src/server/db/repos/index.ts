@@ -14,7 +14,7 @@ import { uptimeRepo } from './uptime';
 
 export function createRepos(db: Kysely<Database>, backend: Backend) {
   return {
-    admin: adminRepo(db),
+    admin: adminRepo(db, backend),
     assets: assetsRepo(db),
     domains: domainsRepo(db),
     export: exportRepo(db),

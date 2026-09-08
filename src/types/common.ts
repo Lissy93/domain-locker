@@ -150,3 +150,25 @@ export const ASSET_TYPES = [
 ] as const;
 
 export type AssetType = (typeof ASSET_TYPES)[number];
+
+/** Engine and storage details, for the self-hosted database connection page */
+export type DatabaseInfo = { schemaVersion: string | null } & (
+  | {
+      backend: 'sqlite';
+      version: string;
+      path: string;
+      sizeBytes: number | null;
+      walBytes: number | null;
+      reclaimableBytes: number;
+      journalMode: string;
+      foreignKeys: boolean;
+      busyTimeoutMs: number;
+      lastModified: string | null;
+    }
+  | {
+      backend: 'postgres';
+      version: string;
+      database: string;
+      sizeBytes: number | null;
+    }
+);

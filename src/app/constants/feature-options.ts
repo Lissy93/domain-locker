@@ -33,6 +33,7 @@ export interface FeatureDefinitions {
   enablePreviewDomain: FeatureConfig<boolean>;
   enableDeletionTool: FeatureConfig<boolean>;
   enableAdvancedInfo: FeatureConfig<boolean>;
+  enableServiceStatus: FeatureConfig<boolean>;
 }
 
 export const features: FeatureDefinitions = {
@@ -141,6 +142,11 @@ export const features: FeatureDefinitions = {
   enableAdvancedInfo: {
     default: true,
   },
+  enableServiceStatus: {
+    default: false,
+    managed: true,
+    dev: true,
+  },
   enablePreviewDomain: {
     default: true,
   },
@@ -225,5 +231,9 @@ export const featureDescriptions: Record<
   enableAdvancedInfo: {
     label: 'Advanced Info',
     description: 'Debug tools and settings for advanced users',
+  },
+  enableServiceStatus: {
+    label: 'Service Status',
+    description: 'Health of the hosted Domain Locker services and their dependencies',
   },
 };

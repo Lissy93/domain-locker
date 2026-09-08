@@ -43,8 +43,10 @@ async function fetchHealthchecks(): Promise<unknown[]> {
 }
 
 async function fetchDatabaseHealth(authHeader?: string): Promise<unknown> {
+  const supabaseUrl = import.meta.env['SUPABASE_URL'];
+  if (!supabaseUrl) return {};
   try {
-    const url = `${import.meta.env['SUPABASE_URL']}/functions/v1/health`;
+    const url = `${supabaseUrl}/functions/v1/health`;
     const res = await fetch(url, {
       headers: {
         ...(authHeader ? { Authorization: authHeader } : {}),
@@ -79,8 +81,8 @@ async function fetchSupabaseHealth(): Promise<{ healthy?: boolean } | undefined>
 
 async function fetchUptimeStatus(): Promise<unknown | undefined> {
   const url = import.meta.env['UPTIME_KUMA_URL'];
+  if (!url) return {};
   try {
-    if (!url) throw new Error('UPTIME_KUMA_URL is not set');
     const res = await fetch(url, {
       headers: { 'Content-Type': 'application/json' },
       signal: AbortSignal.timeout(timeout),

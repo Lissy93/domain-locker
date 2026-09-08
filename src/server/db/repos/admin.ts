@@ -1,5 +1,8 @@
+import { statSync } from 'node:fs';
 import { sql, type Kysely } from 'kysely';
 import { TABLE_NAMES, type Database } from '../schema';
+import { sqlitePath, type Backend } from '../client';
+import type { DatabaseInfo } from '../../../types/common';
 import { currentUserId } from './helpers';
 
 export interface TableCheck {
@@ -33,8 +36,82 @@ const DELETABLE_TABLES = [
 
 export type DeletableTable = (typeof DELETABLE_TABLES)[number];
 
-export function adminRepo(db: Kysely<Database>) {
+/** Size and modified time, or null when there is no such file */
+function fileStats(path: string) {
+  try {
+    return statSync(path);
+  } catch {
+    return null;
+  }
+}
+
+export function adminRepo(db: Kysely<Database>, backend: Backend) {
   return {
+    /** Engine and storage details, for the connection page */
+    async databaseInfo(): Promise<DatabaseInfo> {
+      const migration = await db
+        .selectFrom('schema_migrations')
+        .select('version')
+        .orderBy('version', 'desc')
+        .limit(1)
+        .executeTakeFirst();
+      const schemaVersion = migration?.version ?? null;
+
+      if (backend === 'postgres') {
+        const { rows } = await sql<{
+          version: string;
+          database: string;
+          size: string;
+        }>`SELECT current_setting('server_version') AS version,
+                  current_database() AS database,
+                  pg_database_size(current_database()) AS size`.execute(db);
+        const info = rows[0];
+        return {
+          backend,
+          schemaVersion,
+          version: info.version,
+          database: info.database,
+          sizeBytes: Number(info.size),
+        };
+      }
+
+      const { rows } = await sql<{
+        version: string;
+        journalMode: string;
+        foreignKeys: number;
+        busyTimeoutMs: number;
+        pageSize: number;
+        freelistCount: number;
+      }>`SELECT sqlite_version() AS version,
+                (SELECT journal_mode FROM pragma_journal_mode()) AS journalMode,
+                (SELECT foreign_keys FROM pragma_foreign_keys()) AS foreignKeys,
+                (SELECT timeout FROM pragma_busy_timeout()) AS busyTimeoutMs,
+                (SELECT page_size FROM pragma_page_size()) AS pageSize,
+                (SELECT freelist_count FROM pragma_freelist_count()) AS freelistCount`.execute(
+        db,
+      );
+
+      const path = sqlitePath();
+      const stats = fileStats(path);
+      const wal = fileStats(`${path}-wal`);
+      const pragma = rows[0];
+      const written = Math.max(stats?.mtimeMs ?? 0, wal?.mtimeMs ?? 0);
+
+      return {
+        backend,
+        schemaVersion,
+        version: pragma.version,
+        path,
+        sizeBytes: stats?.size ?? null,
+        walBytes: wal?.size ?? null,
+        reclaimableBytes: pragma.pageSize * pragma.freelistCount,
+        journalMode: pragma.journalMode,
+        foreignKeys: Boolean(pragma.foreignKeys),
+        busyTimeoutMs: pragma.busyTimeoutMs,
+        lastModified: written ? new Date(written).toISOString() : null,
+      };
+    },
+
     /** Row count per table, reporting failures rather than throwing */
     async checkTables(): Promise<TableCheck[]> {
       return Promise.all(
